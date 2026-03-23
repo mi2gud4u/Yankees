@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Live Baseball Scoreboard</title>
+
+    <style>
+        body {
+            background: #0b0b0b;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .scoreboard {
+            width: 480px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            border-radius: 12px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.4);
+        }
+
+        .header h2 {
+            margin: 0;
+            text-align: center;
+        }
+
+        .header p {
+            margin: 5px 0 0;
+            text-align: center;
+            font-size: 14px;
+            color: #ccc;
+        }
+
+        .scores {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+
+        .team {
+            text-align: center;
+            flex: 1;
+        }
+
+        .team h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .score {
+            display: block;
+            font-size: 36px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .inning-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .inning-table th,
+        .inning-table td {
+            border: 1px solid #444;
+            padding: 6px;
+            text-align: center;
+        }
+
+        .inning-table th {
+            background: #333;
+        }
+
+        #updatedTime {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+
+<div id="scoreboard" class="scoreboard">
+    <div class="header">
+        <h2 id="teamName">Loading...</h2>
+        <p id="gameStatus"></p>
+    </div>
+
+    <div class="scores">
+        <div class="team">
+            <h3 id="yourTeamName">ALL AAA Yankees</h3>
+            <span id="yourScore" class="score">0</span>
+        </div>
+
+        <div class="team">
+            <h3 id="opponentTeamName">Opponent</h3>
+            <span id="opponentScore" class="score">0</span>
+        </div>
+    </div>
+
+    <table class="inning-table">
+        <thead id="inningHeader"></thead>
+        <tbody id="inningBody"></tbody>
+    </table>
+
+    <p id="updatedTime"></p>
+</div>
+
+<script>
+    const apiUrl =
+        "https://livescoreapi-2hbs.onrender.com/api/score";
+
+    async function fetchLiveScore() {
+        try {
+            const response = await fetch(apiUrl, {
+                headers: {
+                    "accept": "application/vnd.gc.com.public_team_schedule_event_details+json; version=0.0.0",
+                    "gc-app-name": "web"
+                }
+            });
+
+            const game = await response.json();
+            updateScoreboard(game);
+
+        } catch (err) {
+            console.error("Error fetching live score:", err);
+        }
+    }
+
+    function updateScoreboard(game) {
+        document.getElementById("teamName").textContent =
+            `AAA - Yankees vs ${game.opponent_team.name}`;
+
+        document.getElementById("yourTeamName").textContent = "AAA - Yankees";
+        document.getElementById("opponentTeamName").textContent = game.opponent_team.name;
+
+        document.getElementById("yourScore").textContent = game.score.team;
+        document.getElementById("opponentScore").textContent = game.score.opponent_team;
+
+        document.getElementById("gameStatus").textContent =
+            `Status: ${game.game_status.toUpperCase()}`;
+
+        const innings = Math.max(
+            game.line_score.team.scores.length,
+            game.line_score.opponent_team.scores.length
+        );
+
+        let headerRow = "<tr><th></th>";
+        for (let i = 1; i <= innings; i++) {
+            headerRow += `<th>${i}</th>`;
+        }
+        headerRow += "<th>R</th><th>H</th><th>E</th></tr>";
+
+        document.getElementById("inningHeader").innerHTML = headerRow;
+
+        let body = "";
+
+        body += `<tr><td>${document.getElementById("yourTeamName").textContent}</td>`;
+        game.line_score.team.scores.forEach(s => body += `<td>${s}</td>`);
+        game.line_score.team.totals.forEach(t => body += `<td>${t}</td>`);
+        body += "</tr>";
+
+        body += `<tr><td>${game.opponent_team.name}</td>`;
+        game.line_score.opponent_team.scores.forEach(s => body += `<td>${s}</td>`);
+        game.line_score.opponent_team.totals.forEach(t => body += `<td>${t}</td>`);
+        body += "</tr>";
+
+        document.getElementById("inningBody").innerHTML = body;
+
+        document.getElementById("updatedTime").textContent =
+            "Last updated: " + new Date().toLocaleTimeString();
+    }
+
+    fetchLiveScore();
+    setInterval(fetchLiveScore, 10000);
+</script>
+
+</body>
+</html>
