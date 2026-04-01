@@ -272,45 +272,51 @@
         }
     }
 
-    function updateScoreboard(game) {
-        document.getElementById("teamName").textContent =
-            `${game.team.name} vs ${game.opponent_team.name}`;
+function updateScoreboard(game) {
 
-        document.getElementById("yourTeamName").textContent = game.team.name;
-        document.getElementById("opponentTeamName").textContent = game.opponent_team.name;
+    // Team names
+    document.getElementById("teamName").textContent =
+        `Your Team vs ${game.opponent_team.name}`;
 
-        document.getElementById("yourScore").textContent = game.score.team;
-        document.getElementById("opponentScore").textContent = game.score.opponent_team;
+    document.getElementById("yourTeamName").textContent = "Your Team";
+    document.getElementById("opponentTeamName").textContent = game.opponent_team.name;
 
-        document.getElementById("currentInning").textContent = game.current_inning || "1";
+    // Scores
+    document.getElementById("yourScore").textContent = game.score.team;
+    document.getElementById("opponentScore").textContent = game.score.opponent_team;
 
-        const innings = Math.max(
-            game.line_score.team.scores.length,
-            game.line_score.opponent_team.scores.length
-        );
+    // Completed games have no inning state
+    document.getElementById("currentInning").textContent = "Final";
 
-        let header = "<tr><th></th>";
-        for (let i = 1; i <= innings; i++) header += `<th>${i}</th>`;
-        header += "<th>R</th><th>H</th><th>E</th></tr>";
-        document.getElementById("inningHeader").innerHTML = header;
+    // Inning table
+    const innings = Math.max(
+        game.line_score.team.scores.length,
+        game.line_score.opponent_team.scores.length
+    );
 
-        let body = "";
+    let header = "<tr><th></th>";
+    for (let i = 1; i <= innings; i++) header += `<th>${i}</th>`;
+    header += "<th>R</th><th>H</th><th>E</th></tr>";
+    document.getElementById("inningHeader").innerHTML = header;
 
-        body += `<tr><td>${game.team.name}</td>`;
-        game.line_score.team.scores.forEach(s => body += `<td>${s}</td>`);
-        game.line_score.team.totals.forEach(t => body += `<td>${t}</td>`);
-        body += "</tr>";
+    let body = "";
 
-        body += `<tr><td>${game.opponent_team.name}</td>`;
-        game.line_score.opponent_team.scores.forEach(s => body += `<td>${s}</td>`);
-        game.line_score.opponent_team.totals.forEach(t => body += `<td>${t}</td>`);
-        body += "</tr>";
+    body += `<tr><td>Your Team</td>`;
+    game.line_score.team.scores.forEach(s => body += `<td>${s}</td>`);
+    game.line_score.team.totals.forEach(t => body += `<td>${t}</td>`);
+    body += "</tr>";
 
-        document.getElementById("inningBody").innerHTML = body;
+    body += `<tr><td>${game.opponent_team.name}</td>`;
+    game.line_score.opponent_team.scores.forEach(s => body += `<td>${s}</td>`);
+    game.line_score.opponent_team.totals.forEach(t => body += `<td>${t}</td>`);
+    body += "</tr>";
 
-        document.getElementById("updatedTime").textContent =
-            "Last updated: " + new Date().toLocaleTimeString();
-    }
+    document.getElementById("inningBody").innerHTML = body;
+
+    document.getElementById("updatedTime").textContent =
+        "Last updated: " + new Date().toLocaleTimeString();
+}
+
 
     fetchScore();
     fetchPitch();
