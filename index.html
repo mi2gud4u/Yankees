@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Game</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0C2340; /* Yankees navy */
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #FFFFFF;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 600px;
+            margin: auto;
+            background: #13274F; /* lighter Yankees blue */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.2);
+        }
+
+        label {
+            font-weight: bold;
+            color: #FFFFFF;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            grid-column: span 2;
+            padding: 12px;
+            background: #E4002B; /* Yankees red */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #B30022;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>Select Game</h2>
+
+<div class="container">
+
+    <!-- TEAM NAME INPUT -->
+    <div>
+        <label for="teamName">Team Name</label>
+        <input type="text" id="teamName" placeholder="Enter Team Name">
+    </div>
+
+    <!-- GAME ID INPUT -->
+    <div>
+        <label for="gameID">Game ID</label>
+        <input type="text" id="gameID" placeholder="Enter Game ID">
+    </div>
+
+    <!-- BUTTON -->
+    <button onclick="goToGame()">View Game</button>
+</div>
+
+<script>
+function goToGame() {
+    const team = document.getElementById('teamName').value.trim();
+    const game = document.getElementById('gameID').value.trim();
+
+    if (!team || !game) {
+        alert("Please enter both a Team Name and a Game ID");
+        return;
+    }
+
+    // Redirect to viewGame.html with parameters
+    window.location.href =
+        `viewGame.html?team=${encodeURIComponent(team)}&game=${encodeURIComponent(game)}`;
+}
+</script>
+
+</body>
+</html>
