@@ -287,125 +287,116 @@ async function fetchPitch() {
         console.error("Pitch fetch error:", err);
     }
 }
-
-/* ------------------------------
-   UPDATE SCOREBOARD
---------------------------------*/
-function updateScoreboard(game) {
-    const banner = document.getElementById("statusBanner");
-    const liveBar = document.getElementById("liveBar");
-    const indicator = document.getElementById("inningIndicator");
-
-    // Opponent name
-    document.getElementById("opponentTeamName").textContent =
-        game.opponent_team.name;
-
-    // Scores
-    document.getElementById("yourScore").textContent = game.score.team;
-    document.getElementById("opponentScore").textContent = game.score.opponent_team;
-
-    // Inning count
-    let inningCount = Math.max(
-        game.line_score.team.scores.length,
-        game.line_score.opponent_team.scores.length
-    );
-
-    // FINAL or SCHEDULED → inning = 0
-    if (game.game_status === "completed" || game.game_status === "scheduled") {
-        inningCount = 0;
-        indicator.textContent = "";
-    }
-
-    document.getElementById("currentInning").textContent = inningCount;
-
+    
     /* ------------------------------
-       INNING TABLE (ALWAYS SHOW)
+       UPDATE SCOREBOARD
     --------------------------------*/
-    let inningCount = Math.max(
-        game.line_score.team.scores.length,
-        game.line_score.opponent_team.scores.length
-    );
+    function updateScoreboard(game) {
+        const banner = document.getElementById("statusBanner");
+        const liveBar = document.getElementById("liveBar");
+        const indicator = document.getElementById("inningIndicator");
     
-    // If game has not started → force 1 inning with zeros
-    if (game.game_status === "scheduled") {
-        inningCount = 1;
+        // Opponent name
+        document.getElementById("opponentTeamName").textContent =
+            game.opponent_team.name;
+    
+        // Scores
+        document.getElementById("yourScore").textContent = game.score.team;
+        document.getElementById("opponentScore").textContent = game.score.opponent_team;
+    
+        /* ------------------------------
+           DETERMINE INNING COUNT
+        --------------------------------*/
+        let inningCount = Math.max(
+            game.line_score.team.scores.length,
+            game.line_score.opponent_team.scores.length
+        );
+    
+        // If scheduled → force 1 inning of zeros
+        if (game.game_status === "scheduled") {
+            inningCount = 1;
+        }
+    
+        // Display inning number (0 for final/scheduled)
+        document.getElementById("currentInning").textContent =
+            (game.game_status === "live") ? inningCount : 0;
+    
+        /* ------------------------------
+           INNING TABLE (ALWAYS SHOW)
+        --------------------------------*/
+        let header = "<tr><th></th>";
+        for (let i = 1; i <= inningCount; i++) header += `<th>${i}</th>`;
+        header += "<th>R</th><th>H</th><th>E</th></tr>";
+        document.getElementById("inningHeader").innerHTML = header;
+    
+        let body = "";
+    
+        /* ---- YOUR TEAM ---- */
+        body += `<tr><td>${passedTeam}</td>`;
+    
+        if (game.game_status === "scheduled") {
+            // Show zeros for not-started game
+            for (let i = 1; i <= inningCount; i++) body += "<td>0</td>";
+            body += "<td>0</td><td>0</td><td>0</td>";
+        } else {
+            // Live or Final
+            game.line_score.team.scores.forEach(s => body += `<td>${s}</td>`);
+            game.line_score.team.totals.forEach(t => body += `<td>${t}</td>`);
+        }
+    
+        body += "</tr>";
+    
+        /* ---- OPPONENT ---- */
+        body += `<tr><td>${game.opponent_team.name}</td>`;
+    
+        if (game.game_status === "scheduled") {
+            for (let i = 1; i <= inningCount; i++) body += "<td>0</td>";
+            body += "<td>0</td><td>0</td><td>0</td>";
+        } else {
+            game.line_score.opponent_team.scores.forEach(s => body += `<td>${s}</td>`);
+            game.line_score.opponent_team.totals.forEach(t => body += `<td>${t}</td>`);
+        }
+    
+        body += "</tr>";
+    
+        document.getElementById("inningBody").innerHTML = body;
+    
+        /* ------------------------------
+           STATUS BANNER LOGIC
+        --------------------------------*/
+        if (game.game_status === "completed") {
+            banner.style.display = "block";
+            liveBar.style.display = "none";
+            indicator.textContent = "";
+            banner.textContent = "FINAL";
+            banner.style.color = "red";
+        }
+        else if (game.game_status === "scheduled") {
+            banner.style.display = "block";
+            liveBar.style.display = "none";
+            indicator.textContent = "";
+    
+            const date = new Date(game.start_ts);
+            const local = date.toLocaleString("en-US", {
+                timeZone: game.timezone,
+                dateStyle: "medium",
+                timeStyle: "short"
+            });
+    
+            banner.textContent = "Scheduled: " + local;
+            banner.style.color = "yellow";
+        }
+        else {
+            // LIVE
+            banner.style.display = "none";
+            liveBar.style.display = "flex";
+        }
+    
+        // Timestamp
+        document.getElementById("updatedTime").textContent =
+            "Last updated: " + new Date().toLocaleTimeString();
     }
-    
-    document.getElementById("currentInning").textContent =
-        (game.game_status === "live") ? inningCount : 0;
-    
-    // Build header
-    let header = "<tr><th></th>";
-    for (let i = 1; i <= inningCount; i++) header += `<th>${i}</th>`;
-    header += "<th>R</th><th>H</th><th>E</th></tr>";
-    document.getElementById("inningHeader").innerHTML = header;
-    
-    // Build body
-    let body = "";
-    
-    /* ---- YOUR TEAM ---- */
-    body += `<tr><td>${passedTeam}</td>`;
-    
-    if (game.game_status === "scheduled") {
-        // Show zeros for not-started game
-        for (let i = 1; i <= inningCount; i++) body += "<td>0</td>";
-        body += "<td>0</td><td>0</td><td>0</td>";
-    } else {
-        // Live or Final
-        game.line_score.team.scores.forEach(s => body += `<td>${s}</td>`);
-        game.line_score.team.totals.forEach(t => body += `<td>${t}</td>`);
-    }
-    
-    body += "</tr>";
-    
-    /* ---- OPPONENT ---- */
-    body += `<tr><td>${game.opponent_team.name}</td>`;
-    
-    if (game.game_status === "scheduled") {
-        for (let i = 1; i <= inningCount; i++) body += "<td>0</td>";
-        body += "<td>0</td><td>0</td><td>0</td>";
-    } else {
-        game.line_score.opponent_team.scores.forEach(s => body += `<td>${s}</td>`);
-        game.line_score.opponent_team.totals.forEach(t => body += `<td>${t}</td>`);
-    }
-    
-    body += "</tr>";
-    
-    document.getElementById("inningBody").innerHTML = body;
 
-    /* ------------------------------
-       STATUS BANNER LOGIC
-    --------------------------------*/
-    if (game.game_status === "completed") {
-        banner.style.display = "block";
-        liveBar.style.display = "none";
-        banner.textContent = "FINAL";
-        banner.style.color = "red";
-    }
-    else if (game.game_status === "scheduled") {
-        banner.style.display = "block";
-        liveBar.style.display = "none";
-
-        const date = new Date(game.start_ts);
-        const local = date.toLocaleString("en-US", {
-            timeZone: game.timezone,
-            dateStyle: "medium",
-            timeStyle: "short"
-        });
-
-        banner.textContent = "Scheduled: " + local;
-        banner.style.color = "yellow";
-    }
-    else {
-        // LIVE
-        banner.style.display = "none";
-        liveBar.style.display = "flex";
-    }
-
-    // Timestamp
-    document.getElementById("updatedTime").textContent =
-        "Last updated: " + new Date().toLocaleTimeString();
-}
 
 /* ------------------------------
    AUTO REFRESH
