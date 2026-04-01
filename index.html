@@ -208,7 +208,7 @@
     </table>
 
     <!-- BALLS / STRIKES / OUTS -->
-    <div class="bottom-bar">
+    <div class="bottom-bar" id="bottomBar">
         <span>Balls: <span id="balls">0</span></span>
         <span>Strikes: <span id="strikes">0</span></span>
         <span>Outs: <span id="outs">0</span></span>
@@ -296,11 +296,13 @@ function updateScoreboard(game) {
     document.getElementById("currentInning").textContent =
         isFinal ? "0" : (game.current_inning || "1");
 
-    // Balls / Strikes / Outs → Final
+    // Balls / Strikes / Outs → hide when final
+    const bottomBar = document.getElementById("bottomBar");
+    
     if (isFinal) {
-        document.getElementById("balls").textContent = "Final";
-        document.getElementById("strikes").textContent = "";
-        document.getElementById("outs").textContent = "";
+        bottomBar.style.display = "none";
+    } else {
+        bottomBar.style.display = "block";
     }
 
     // Build inning table
