@@ -274,21 +274,36 @@
 
 function updateScoreboard(game) {
 
-    // Team names
-    document.getElementById("teamName").textContent =
-        `Your Team vs ${game.opponent_team.name}`;
+    const isFinal = game.game_status === "completed";
 
-    document.getElementById("yourTeamName").textContent = "Your Team";
-    document.getElementById("opponentTeamName").textContent = game.opponent_team.name;
+    // Hard‑code your team name
+    const yourTeamName = "AAA Yankees";
+    const oppTeamName = game.opponent_team.name;
+
+    // Title
+    document.getElementById("teamName").textContent =
+        `${yourTeamName} vs ${oppTeamName}`;
+
+    // Team labels
+    document.getElementById("yourTeamName").textContent = yourTeamName;
+    document.getElementById("opponentTeamName").textContent = oppTeamName;
 
     // Scores
     document.getElementById("yourScore").textContent = game.score.team;
     document.getElementById("opponentScore").textContent = game.score.opponent_team;
 
-    // Completed games have no inning state
-    document.getElementById("currentInning").textContent = "Final";
+    // Inning display
+    document.getElementById("currentInning").textContent =
+        isFinal ? "0" : (game.current_inning || "1");
 
-    // Inning table
+    // Balls / Strikes / Outs → Final
+    if (isFinal) {
+        document.getElementById("balls").textContent = "Final";
+        document.getElementById("strikes").textContent = "";
+        document.getElementById("outs").textContent = "";
+    }
+
+    // Build inning table
     const innings = Math.max(
         game.line_score.team.scores.length,
         game.line_score.opponent_team.scores.length
@@ -301,18 +316,21 @@ function updateScoreboard(game) {
 
     let body = "";
 
-    body += `<tr><td>Your Team</td>`;
+    // Your team row
+    body += `<tr><td>${yourTeamName}</td>`;
     game.line_score.team.scores.forEach(s => body += `<td>${s}</td>`);
     game.line_score.team.totals.forEach(t => body += `<td>${t}</td>`);
     body += "</tr>";
 
-    body += `<tr><td>${game.opponent_team.name}</td>`;
+    // Opponent row
+    body += `<tr><td>${oppTeamName}</td>`;
     game.line_score.opponent_team.scores.forEach(s => body += `<td>${s}</td>`);
     game.line_score.opponent_team.totals.forEach(t => body += `<td>${t}</td>`);
     body += "</tr>";
 
     document.getElementById("inningBody").innerHTML = body;
 
+    // Timestamp
     document.getElementById("updatedTime").textContent =
         "Last updated: " + new Date().toLocaleTimeString();
 }
