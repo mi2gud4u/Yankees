@@ -63,6 +63,11 @@
             position: relative;
         }
 
+        #inningIndicator {
+            font-size: 28px;
+            margin-top: 5px;
+        }
+
         .base {
             position: absolute;
             width: 18px;
@@ -115,12 +120,24 @@
             background: #222;
             border-radius: 8px;
             text-align: center;
+            display: none;
         }
 
         .bottom-bar span {
             font-size: 18px;
             font-weight: bold;
             margin: 0 15px;
+        }
+
+        .status-banner {
+            margin-top: 20px;
+            padding: 14px;
+            background: #222;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            display: none;
         }
 
         #updatedTime {
@@ -148,6 +165,7 @@
 
         <div class="inning-display">
             <span id="currentInning">1</span>
+            <div id="inningIndicator"></div>
 
             <div class="base second" id="base2"></div>
             <div class="base first" id="base1"></div>
@@ -172,7 +190,9 @@
         <tbody id="inningBody"></tbody>
     </table>
 
-    <div class="bottom-bar">
+    <div id="statusBanner" class="status-banner"></div>
+
+    <div id="liveBar" class="bottom-bar">
         <span>Balls: <span id="balls">0</span></span>
         <span>Strikes: <span id="strikes">0</span></span>
         <span>Outs: <span id="outs">0</span></span>
@@ -182,50 +202,52 @@
 </div>
 
 <script>
-    /* ------------------------------
-       URL PARAMETERS
-    --------------------------------*/
-    const params = new URLSearchParams(window.location.search);
-    const passedTeam = params.get("team");
-    const passedGameID = params.get("game");
+/* ------------------------------
+   URL PARAMETERS
+--------------------------------*/
+const params = new URLSearchParams(window.location.search);
+const passedTeam = params.get("team");
+const passedGameID = params.get("game");
 
-    if (passedTeam) {
-        document.getElementById("yourTeamName").textContent = passedTeam;
-        document.getElementById("teamName").textContent = passedTeam + " Game";
+if (passedTeam) {
+    document.getElementById("yourTeamName").textContent = passedTeam;
+    document.getElementById("teamName").textContent = passedTeam + " Game";
+}
+
+/* ------------------------------
+   API ENDPOINTS
+--------------------------------*/
+const baseUrl = "https://livescoreapi-2hbs.onrender.com";
+const scoreApi = `${baseUrl}/api/score?gameID=${encodeURIComponent(passedGameID)}`;
+const pitchApi = `${baseUrl}/api/pitch?gameID=${encodeURIComponent(passedGameID)}`;
+
+/* ------------------------------
+   SCORE FETCH
+--------------------------------*/
+async function fetchScore() {
+    try {
+        const response = await fetch(scoreApi);
+        const game = await response.json();
+        updateScoreboard(game);
+        window.currentGameStatus = game.game_status;
+    } catch (err) {
+        console.error("Score fetch error:", err);
     }
+}
 
-    /* ------------------------------
-       API ENDPOINTS
-    --------------------------------*/
-    const baseUrl = "https://livescoreapi-2hbs.onrender.com";
-    const scoreApi = `${baseUrl}/api/score?gameID=${encodeURIComponent(passedGameID)}`;
-    const pitchApi = `${baseUrl}/api/pitch?gameID=${encodeURIComponent(passedGameID)}`;
+/* ------------------------------
+   PITCH FETCH
+--------------------------------*/
+async function fetchPitch() {
+    try {
+        const response = await fetch(pitchApi);
+        const events = await response.json();
+        const reversed = [...events].reverse();
 
-    /* ------------------------------
-       SCORE FETCH
-    --------------------------------*/
-    async function fetchScore() {
-        try {
-            const response = await fetch(scoreApi);
-            const game = await response.json();
-            updateScoreboard(game);
-        } catch (err) {
-            console.error("Score fetch error:", err);
-        }
-    }
+        const lastPitch = reversed.find(e => e.event_type === "pitch");
 
-    /* ------------------------------
-       PITCH / RUNNERS FETCH
-       (expects GC stream-style events)
-    --------------------------------*/
-    async function fetchPitch() {
-        try {
-            const response = await fetch(pitchApi);
-            const events = await response.json();
-            const reversed = [...events].reverse();
-
-            const lastPitch = reversed.find(e => e.event_type === "pitch");
-
+        // Only update pitch info if LIVE
+        if (window.currentGameStatus === "live") {
             if (lastPitch?.count) {
                 document.getElementById("balls").textContent = lastPitch.count.balls;
                 document.getElementById("strikes").textContent = lastPitch.count.strikes;
@@ -252,66 +274,111 @@
                 document.getElementById("base3").classList.toggle("on", !!lastPlay.runners.third);
             }
 
-        } catch (err) {
-            console.error("Pitch fetch error:", err);
+            // Inning half indicator
+            const indicator = document.getElementById("inningIndicator");
+            if (lastPitch?.inning_half === "top") {
+                indicator.textContent = "▲";
+            } else if (lastPitch?.inning_half === "bottom") {
+                indicator.textContent = "▼";
+            }
         }
+
+    } catch (err) {
+        console.error("Pitch fetch error:", err);
+    }
+}
+
+/* ------------------------------
+   UPDATE SCOREBOARD
+--------------------------------*/
+function updateScoreboard(game) {
+    const banner = document.getElementById("statusBanner");
+    const liveBar = document.getElementById("liveBar");
+    const indicator = document.getElementById("inningIndicator");
+
+    // Opponent name
+    document.getElementById("opponentTeamName").textContent =
+        game.opponent_team.name;
+
+    // Scores
+    document.getElementById("yourScore").textContent = game.score.team;
+    document.getElementById("opponentScore").textContent = game.score.opponent_team;
+
+    // Inning count
+    let inningCount = Math.max(
+        game.line_score.team.scores.length,
+        game.line_score.opponent_team.scores.length
+    );
+
+    // FINAL or SCHEDULED → inning = 0
+    if (game.game_status === "completed" || game.game_status === "scheduled") {
+        inningCount = 0;
+        indicator.textContent = "";
     }
 
+    document.getElementById("currentInning").textContent = inningCount;
+
+    // Inning table
+    let header = "<tr><th></th>";
+    for (let i = 1; i <= inningCount; i++) header += `<th>${i}</th>`;
+    header += "<th>R</th><th>H</th><th>E</th></tr>";
+    document.getElementById("inningHeader").innerHTML = header;
+
+    let body = "";
+
+    body += `<tr><td>${passedTeam}</td>`;
+    game.line_score.team.scores.forEach(s => body += `<td>${s}</td>`);
+    game.line_score.team.totals.forEach(t => body += `<td>${t}</td>`);
+    body += "</tr>";
+
+    body += `<tr><td>${game.opponent_team.name}</td>`;
+    game.line_score.opponent_team.scores.forEach(s => body += `<td>${s}</td>`);
+    game.line_score.opponent_team.totals.forEach(t => body += `<td>${t}</td>`);
+    body += "</tr>";
+
+    document.getElementById("inningBody").innerHTML = body;
+
     /* ------------------------------
-       UPDATE SCOREBOARD FROM YOUR API
+       STATUS BANNER LOGIC
     --------------------------------*/
-    function updateScoreboard(game) {
-        // Opponent name
-        document.getElementById("opponentTeamName").textContent =
-            game.opponent_team.name;
+    if (game.game_status === "completed") {
+        banner.style.display = "block";
+        liveBar.style.display = "none";
+        banner.textContent = "FINAL";
+        banner.style.color = "red";
+    }
+    else if (game.game_status === "scheduled") {
+        banner.style.display = "block";
+        liveBar.style.display = "none";
 
-        // Scores
-        document.getElementById("yourScore").textContent = game.score.team;
-        document.getElementById("opponentScore").textContent = game.score.opponent_team;
+        const date = new Date(game.start_ts);
+        const local = date.toLocaleString("en-US", {
+            timeZone: game.timezone,
+            dateStyle: "medium",
+            timeStyle: "short"
+        });
 
-        // Inning count from line_score arrays
-        const inningCount = Math.max(
-            game.line_score.team.scores.length,
-            game.line_score.opponent_team.scores.length
-        );
-
-        document.getElementById("currentInning").textContent = inningCount;
-
-        // Header row
-        let header = "<tr><th></th>";
-        for (let i = 1; i <= inningCount; i++) header += `<th>${i}</th>`;
-        header += "<th>R</th><th>H</th><th>E</th></tr>";
-        document.getElementById("inningHeader").innerHTML = header;
-
-        // Body rows
-        let body = "";
-
-        // Your team row
-        body += `<tr><td>${passedTeam}</td>`;
-        game.line_score.team.scores.forEach(s => body += `<td>${s}</td>`);
-        game.line_score.team.totals.forEach(t => body += `<td>${t}</td>`);
-        body += "</tr>";
-
-        // Opponent row
-        body += `<tr><td>${game.opponent_team.name}</td>`;
-        game.line_score.opponent_team.scores.forEach(s => body += `<td>${s}</td>`);
-        game.line_score.opponent_team.totals.forEach(t => body += `<td>${t}</td>`);
-        body += "</tr>";
-
-        document.getElementById("inningBody").innerHTML = body;
-
-        // Timestamp
-        document.getElementById("updatedTime").textContent =
-            "Last updated: " + new Date().toLocaleTimeString();
+        banner.textContent = "Scheduled: " + local;
+        banner.style.color = "yellow";
+    }
+    else {
+        // LIVE
+        banner.style.display = "none";
+        liveBar.style.display = "flex";
     }
 
-    /* ------------------------------
-       AUTO REFRESH
-    --------------------------------*/
-    fetchScore();
-    fetchPitch();
-    setInterval(fetchScore, 10000);
-    setInterval(fetchPitch, 10000);
+    // Timestamp
+    document.getElementById("updatedTime").textContent =
+        "Last updated: " + new Date().toLocaleTimeString();
+}
+
+/* ------------------------------
+   AUTO REFRESH
+--------------------------------*/
+fetchScore();
+fetchPitch();
+setInterval(fetchScore, 10000);
+setInterval(fetchPitch, 10000);
 </script>
 
 </body>
