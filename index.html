@@ -218,8 +218,10 @@
 </div>
 
 <script>
-    const scoreApi = "https://livescoreapi-2hbs.onrender.com/api/score";
-    const pitchApi = "https://livescoreapi-2hbs.onrender.com/api/pitch";
+    const gameID = "427ddbc4-44ee-435b-a41e-756683a3be44";
+
+    const scoreApi = `https://livescoreapi-2hbs.onrender.com/api/score?gameID=${gameID}`;
+    const pitchApi = `https://livescoreapi-2hbs.onrender.com/api/pitch?gameID=${gameID}`;
 
     async function fetchScore() {
         try {
