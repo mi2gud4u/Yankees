@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Game View</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -15,6 +16,20 @@
         h2 {
             text-align: center;
             margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 16px;
+            background: #E4002B;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        button:hover {
+            background: #B30022;
         }
 
         .scores {
@@ -75,21 +90,6 @@
             display: flex;
             justify-content: space-around;
         }
-
-        button {
-            margin-top: 20px;
-            padding: 12px;
-            background: #E4002B;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #B30022;
-        }
     </style>
 </head>
 
@@ -99,16 +99,15 @@
 
 <button onclick="window.location.href='index.html'">⬅ Back to Index</button>
 
-<!-- SCORES + INNING + DIAMOND -->
 <div class="scores">
     <div class="team">
         <h3 id="yourTeamName">Your Team</h3>
         <span id="yourScore" class="score">0</span>
-        <div class="pitch-small">Pitches: <span id="pitchTeam">0</span></div>
+        <div>Pitches: <span id="pitchTeam">0</span></div>
     </div>
 
     <div class="inning-display">
-        <span id="currentInning">1</span>
+        <span id="currentInning" style="font-size: 40px; position: absolute; top: 80px; left: 90px;">1</span>
 
         <div class="base second" id="base2"></div>
         <div class="base first" id="base1"></div>
@@ -119,18 +118,16 @@
     <div class="team">
         <h3 id="opponentTeamName">Opponent</h3>
         <span id="opponentScore" class="score">0</span>
-        <div class="pitch-small">Pitches: <span id="pitchOpp">0</span></div>
+        <div>Pitches: <span id="pitchOpp">0</span></div>
     </div>
 </div>
 
-<!-- INNING TABLE -->
 <table class="inning-table">
     <thead id="inningHeader"></thead>
     <tbody id="inningBody"></tbody>
 </table>
 
-<!-- BALLS / STRIKES / OUTS -->
-<div class="bottom-bar" id="bottomBar">
+<div class="bottom-bar">
     <span>Balls: <span id="balls">0</span></span>
     <span>Strikes: <span id="strikes">0</span></span>
     <span>Outs: <span id="outs">0</span></span>
@@ -147,20 +144,19 @@ const passedTeam = params.get("team");
 const passedGameID = params.get("game");
 
 /* ------------------------------
-   AUTO-LOAD GAME ON PAGE OPEN
+   SET TEAM NAME + GAME ID
 --------------------------------*/
 if (passedTeam) {
     document.getElementById("yourTeamName").textContent = passedTeam;
 }
-if (passedGameID) {
-    window.gameID = passedGameID;
-}
+
+let gameID = passedGameID;
 
 /* ------------------------------
-   API ENDPOINTS (dynamic)
+   API ENDPOINTS
 --------------------------------*/
-let scoreApi = `https://statsapi.mlb.com/api/v1.1/game/${passedGameID}/feed/live`;
-let pitchApi = `https://statsapi.mlb.com/api/v1/game/${passedGameID}/playByPlay`;
+let scoreApi = `https://statsapi.mlb.com/api/v1.1/game/${gameID}/feed/live`;
+let pitchApi = `https://statsapi.mlb.com/api/v1/game/${gameID}/playByPlay`;
 
 /* ------------------------------
    FETCH SCORE
@@ -220,10 +216,7 @@ async function fetchPitch() {
    UPDATE SCOREBOARD
 --------------------------------*/
 function updateScoreboard(game) {
-    const yourTeam = passedTeam || "AAA Yankees";
     const oppTeam = game.gameData.teams.away.name;
-
-    document.getElementById("yourTeamName").textContent = yourTeam;
     document.getElementById("opponentTeamName").textContent = oppTeam;
 
     const linescore = game.liveData.linescore;
