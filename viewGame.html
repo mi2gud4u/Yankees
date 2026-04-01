@@ -218,9 +218,27 @@
 </div>
 
 <script>
-    const scoreApi = "https://livescoreapi-2hbs.onrender.com/api/score";
-    const pitchApi = "https://livescoreapi-2hbs.onrender.com/api/pitch";
+/* ------------------------------
+   READ URL PARAMETERS
+--------------------------------*/
+const params = new URLSearchParams(window.location.search);
+const passedTeam = params.get("team");
+const passedGameID = params.get("game");
 
+/* ------------------------------
+   SET TEAM NAME + GAME ID
+--------------------------------*/
+if (passedTeam) {
+    document.getElementById("yourTeamName").textContent = passedTeam;
+}
+
+let gameID = passedGameID;
+
+/* ------------------------------
+   API ENDPOINTS
+--------------------------------*/
+let scoreApi = `https://statsapi.mlb.com/api/v1.1/game/${gameID}/feed/live`;
+let pitchApi = `https://statsapi.mlb.com/api/v1/game/${gameID}/playByPlay`;
     async function fetchScore() {
         try {
             const response = await fetch(scoreApi);
