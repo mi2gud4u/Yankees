@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Game Schedule</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -147,7 +148,8 @@
     }
 
     function viewGame(id, team) {
-        window.location.href = `viewgame.html?id=${encodeURIComponent(id)}&team=${encodeURIComponent(team)}`;
+        // MATCHES viewgame.html EXACTLY
+        window.location.href = `viewgame.html?game=${encodeURIComponent(id)}&team=${encodeURIComponent(team)}`;
     }
 
     async function deleteGame(id) {
