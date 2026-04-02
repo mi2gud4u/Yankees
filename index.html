@@ -2,101 +2,132 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Select Game</title>
-
+    <title>Game Library</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: #0C2340; /* Yankees navy */
-            color: white;
+            background: #f5f5f5;
             margin: 0;
             padding: 20px;
         }
 
-        h2 {
+        h1 {
             text-align: center;
-            color: #FFFFFF;
-            margin-bottom: 20px;
         }
 
         .container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            max-width: 600px;
+            max-width: 700px;
             margin: auto;
-            background: #13274F; /* lighter Yankees blue */
+            background: white;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(255,255,255,0.2);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
 
-        label {
-            font-weight: bold;
-            color: #FFFFFF;
-        }
-
-        input {
-            width: 100%;
+        input, button {
             padding: 10px;
-            margin-top: 5px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
+            margin: 5px 0;
+            width: 100%;
+            font-size: 16px;
         }
 
         button {
-            grid-column: span 2;
-            padding: 12px;
-            background: #E4002B; /* Yankees red */
+            cursor: pointer;
+            background: #0078d4;
             color: white;
             border: none;
             border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
         }
 
         button:hover {
-            background: #B30022;
+            background: #005fa3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .delete-btn {
+            background: #d9534f;
+        }
+
+        .delete-btn:hover {
+            background: #b52b27;
         }
     </style>
 </head>
-
 <body>
 
-<h2>Select Game</h2>
-
 <div class="container">
+    <h1>Game Library</h1>
 
-    <!-- TEAM NAME INPUT -->
-    <div>
-        <label for="teamName">Team Name</label>
-        <input type="text" id="teamName" placeholder="Enter Team Name">
-    </div>
+    <h3>Add a Game</h3>
+    <input id="gameName" placeholder="Game name">
+    <button onclick="addGame()">Add Game</button>
 
-    <!-- GAME ID INPUT -->
-    <div>
-        <label for="gameID">Game ID</label>
-        <input type="text" id="gameID" placeholder="Enter Game ID">
-    </div>
-
-    <!-- BUTTON -->
-    <button onclick="goToGame()">View Game</button>
+    <h3>Games</h3>
+    <table id="gamesTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th style="width: 120px;">Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 </div>
 
 <script>
-function goToGame() {
-    const team = document.getElementById('teamName').value.trim();
-    const game = document.getElementById('gameID').value.trim();
+    const API_BASE = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net/api";
 
-    if (!team || !game) {
-        alert("Please enter both a Team Name and a Game ID");
-        return;
+    async function loadGames() {
+        const res = await fetch(`${API_BASE}/ListGames`);
+        const games = await res.json();
+
+        const tbody = document.querySelector("#gamesTable tbody");
+        tbody.innerHTML = "";
+
+        games.forEach(game => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${game.Name}</td>
+                <td>
+                    <button class="delete-btn" onclick="deleteGame('${game.Id}')">Delete</button>
+                </td>
+            `;
+
+            tbody.appendChild(row);
+        });
     }
 
-    // Redirect to viewGame.html with parameters
-    window.location.href =
-        `viewGame.html?team=${encodeURIComponent(team)}&game=${encodeURIComponent(game)}`;
-}
+    async function addGame() {
+        const name = document.getElementById("gameName").value.trim();
+        if (!name) return alert("Enter a game name");
+
+        await fetch(`${API_BASE}/AddGame`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ Name: name })
+        });
+
+        document.getElementById("gameName").value = "";
+        loadGames();
+    }
+
+    async function deleteGame(id) {
+        await fetch(`${API_BASE}/DeleteGame/${id}`, { method: "DELETE" });
+        loadGames();
+    }
+
+    loadGames();
 </script>
 
 </body>
