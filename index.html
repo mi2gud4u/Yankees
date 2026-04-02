@@ -98,7 +98,7 @@
 
 <script>
     const API_BASE = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net/api";
-
+    
     async function loadGames() {
         const res = await fetch(`${API_BASE}/ListGames`, {
             cache: "no-store"
@@ -114,9 +114,8 @@
     
             row.innerHTML = `
                 <td>${game.myTeam}</td>
-                <td>Opponent TBD</td>
-                <td>${game.gameID}</td>
-                <td>Schedule TBD</td>
+                <td>${game.opponent || "TBD"}</td>
+                <td>${formatDate(game.startTime) || "TBD"}</td>
                 <td>
                     <button class="view-btn" onclick="viewGame('${game.gameID}', '${game.myTeam}')">View</button>
                     <button class="delete-btn" onclick="deleteGame('${game.gameID}')">Delete</button>
@@ -126,17 +125,22 @@
             tbody.appendChild(row);
         });
     }
-
-
+    
+    function formatDate(dateString) {
+        if (!dateString) return null;
+        const d = new Date(dateString);
+        return d.toLocaleString(); // Local timezone formatting
+    }
+    
     async function addGame() {
         const teamName = document.getElementById("teamName").value.trim();
         const gameId = document.getElementById("gameId").value.trim();
-
+    
         if (!teamName || !gameId) {
             alert("Enter both Team Name and Game ID");
             return;
         }
-
+    
         await fetch(`${API_BASE}/AddGame`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -145,24 +149,24 @@
                 Id: gameId
             })
         });
-
+    
         document.getElementById("teamName").value = "";
         document.getElementById("gameId").value = "";
-
+    
         loadGames();
     }
-
+    
     function viewGame(id, team) {
-        // MATCHES viewgame.html EXACTLY
         window.location.href = `viewgame.html?game=${encodeURIComponent(id)}&team=${encodeURIComponent(team)}`;
     }
-
+    
     async function deleteGame(id) {
         await fetch(`${API_BASE}/DeleteGame/${id}`, { method: "DELETE" });
         loadGames();
     }
-
+    
     loadGames();
+
 </script>
 
 </body>
