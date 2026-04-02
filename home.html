@@ -103,15 +103,36 @@
             </td>
         </tr>
 
+        <!-- Yankees Game 3 (NEW) -->
+        <tr>
+            <td>Yankees</td>
+            <td>Red Sox</td>
+            <td>aca52998-0d30-48e9-a0d1-913dd88602e2</td>
+            <td>2024-06-18 5:00 PM</td>
+            <td>
+                <button onclick="viewGame(
+                    'Yankees',
+                    'Red Sox',
+                    'aca52998-0d30-48e9-a0d1-913dd88602e2',
+                    '2024-06-18 5:00 PM'
+                )">View</button>
+            </td>
+        </tr>
+
     </tbody>
 </table>
 
 <script>
 function viewGame(team, opponent, gameId, schedule) {
-    const url = `viewGame.html?team=${encodeURIComponent(team)}&opponent=${encodeURIComponent(opponent)}&game=${encodeURIComponent(gameId)}&schedule=${encodeURIComponent(schedule)}`;
+    const url =
+        `viewGame.html?team=${encodeURIComponent(team)}` +
+        `&opponent=${encodeURIComponent(opponent)}` +
+        `&schedule=${encodeURIComponent(schedule)}` +
+        `&game=${encodeURIComponent(gameId)}`;  // <-- FIXED
     window.location.href = url;
 }
 </script>
+
 
 
 </body>
