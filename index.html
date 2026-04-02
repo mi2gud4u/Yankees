@@ -114,8 +114,8 @@
     
             row.innerHTML = `
                 <td>${game.myTeam}</td>
-                <td>${game.opponent || "TBD"}</td>
-                <td>${formatDate(game.startTime) || "TBD"}</td>
+                <td>Opponent TBD</td>
+                <td>Schedule TBD</td>
                 <td>
                     <button class="view-btn" onclick="viewGame('${game.gameID}', '${game.myTeam}')">View</button>
                     <button class="delete-btn" onclick="deleteGame('${game.gameID}')">Delete</button>
@@ -124,12 +124,6 @@
     
             tbody.appendChild(row);
         });
-    }
-    
-    function formatDate(dateString) {
-        if (!dateString) return null;
-        const d = new Date(dateString);
-        return d.toLocaleString(); // Local timezone formatting
     }
     
     async function addGame() {
