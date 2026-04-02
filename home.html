@@ -48,9 +48,7 @@
             <td>
                 <button onclick="viewGame(
                     'Placer Grit',
-                    'Rocklin Thunder',
                     '23373a65-ba16-4fd9-8908-b068b6b7d6e9',
-                    '2024-05-12 6:00 PM'
                 )">View</button>
             </td>
         </tr>
@@ -64,9 +62,7 @@
             <td>
                 <button onclick="viewGame(
                     'Placer Grit',
-                    'Folsom Fury',
                     '7160bb50-15f7-4621-8831-7783116e4709',
-                    '2024-05-19 4:30 PM'
                 )">View</button>
             </td>
         </tr>
@@ -80,9 +76,7 @@
             <td>
                 <button onclick="viewGame(
                     'Yankees',
-                    'Giants',
                     '60f5c380-5d80-4003-a1f5-f043ccc12649',
-                    '2024-06-02 1:00 PM'
                 )">View</button>
             </td>
         </tr>
@@ -96,9 +90,7 @@
             <td>
                 <button onclick="viewGame(
                     'Yankees',
-                    'Dodgers',
                     'e12431ee-d1c3-40e4-9071-dc428abf4092',
-                    '2024-06-10 7:15 PM'
                 )">View</button>
             </td>
         </tr>
@@ -112,9 +104,7 @@
             <td>
                 <button onclick="viewGame(
                     'Yankees',
-                    'Red Sox',
                     'aca52998-0d30-48e9-a0d1-913dd88602e2',
-                    '2024-06-18 5:00 PM'
                 )">View</button>
             </td>
         </tr>
@@ -126,9 +116,7 @@
 function viewGame(team, opponent, gameId, schedule) {
     const url =
         `viewGame.html?team=${encodeURIComponent(team)}` +
-        `&opponent=${encodeURIComponent(opponent)}` +
-        `&schedule=${encodeURIComponent(schedule)}` +
-        `&game=${encodeURIComponent(gameId)}`;  // <-- FIXED
+        `&game=${encodeURIComponent(gameId)}`; 
     window.location.href = url;
 }
 </script>
