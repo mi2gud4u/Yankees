@@ -150,7 +150,7 @@
     }
     
     function viewGame(id, team) {
-        window.location.href = `viewgame.html?game=${encodeURIComponent(id)}&team=${encodeURIComponent(team)}`;
+        window.location.href = `viewgame.html?team=${encodeURIComponent(team)}&game=${encodeURIComponent(id)}`;
     }
     
     async function deleteGame(id) {
