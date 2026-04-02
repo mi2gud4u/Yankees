@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Game Library</title>
+    <title>Game Schedule</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,7 +16,7 @@
         }
 
         .container {
-            max-width: 700px;
+            max-width: 800px;
             margin: auto;
             background: white;
             padding: 20px;
@@ -61,23 +61,34 @@
         .delete-btn:hover {
             background: #b52b27;
         }
+
+        .view-btn {
+            background: #5cb85c;
+        }
+
+        .view-btn:hover {
+            background: #3d8b3d;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Game Library</h1>
+    <h1>Game Schedule</h1>
 
-    <h3>Add a Game</h3>
-    <input id="gameName" placeholder="Game name">
+    <h3>Add Game</h3>
+    <input id="teamName" placeholder="Team Name">
+    <input id="gameId" placeholder="Game ID">
     <button onclick="addGame()">Add Game</button>
 
     <h3>Games</h3>
     <table id="gamesTable">
         <thead>
             <tr>
-                <th>Name</th>
-                <th style="width: 120px;">Actions</th>
+                <th>My Team</th>
+                <th>Opponent</th>
+                <th>Schedule</th>
+                <th style="width: 160px;">Actions</th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -98,8 +109,11 @@
             const row = document.createElement("tr");
 
             row.innerHTML = `
-                <td>${game.Name}</td>
+                <td>${game.MyTeam}</td>
+                <td>${game.Opponent}</td>
+                <td>${game.Schedule}</td>
                 <td>
+                    <button class="view-btn" onclick="viewGame('${game.Id}', '${game.MyTeam}')">View</button>
                     <button class="delete-btn" onclick="deleteGame('${game.Id}')">Delete</button>
                 </td>
             `;
@@ -109,17 +123,31 @@
     }
 
     async function addGame() {
-        const name = document.getElementById("gameName").value.trim();
-        if (!name) return alert("Enter a game name");
+        const teamName = document.getElementById("teamName").value.trim();
+        const gameId = document.getElementById("gameId").value.trim();
+
+        if (!teamName || !gameId) {
+            alert("Enter both Team Name and Game ID");
+            return;
+        }
 
         await fetch(`${API_BASE}/AddGame`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ Name: name })
+            body: JSON.stringify({
+                MyTeam: teamName,
+                Id: gameId
+            })
         });
 
-        document.getElementById("gameName").value = "";
+        document.getElementById("teamName").value = "";
+        document.getElementById("gameId").value = "";
+
         loadGames();
+    }
+
+    function viewGame(id, team) {
+        window.location.href = `viewgame.html?id=${encodeURIComponent(id)}&team=${encodeURIComponent(team)}`;
     }
 
     async function deleteGame(id) {
