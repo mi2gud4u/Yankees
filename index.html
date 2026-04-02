@@ -87,8 +87,7 @@
         <thead>
             <tr>
                 <th>My Team</th>
-                <th>Opponent</th>
-                <th>Schedule</th>
+                <th>Game ID</th>
                 <th style="width: 160px;">Actions</th>
             </tr>
         </thead>
@@ -103,6 +102,8 @@
         const res = await fetch(`${API_BASE}/ListGames`, {
             cache: "no-store"
         });
+
+        console.log(game);
     
         const games = await res.json();
     
@@ -114,7 +115,6 @@
     
             row.innerHTML = `
                 <td>${game.myTeam}</td>
-                <td>Opponent TBD</td>
                 <td>${game.gameID}</td>
                 <td>
                     <button class="view-btn" onclick="viewGame('${game.gameID}', '${game.myTeam}')">View</button>
