@@ -110,14 +110,15 @@
             const row = document.createElement("tr");
 
             row.innerHTML = `
-                <td>${game.MyTeam}</td>
-                <td>${game.Opponent}</td>
-                <td>${game.Schedule}</td>
+                <td>${game.myTeam}</td>
+                <td>Opponent TBD</td>
+                <td>${game.gameID}</td>
+                <td>Schedule TBD</td>
                 <td>
-                    <button class="view-btn" onclick="viewGame('${game.Id}', '${game.MyTeam}')">View</button>
-                    <button class="delete-btn" onclick="deleteGame('${game.Id}')">Delete</button>
+                    <button class="view-btn" onclick="viewGame('${game.gameID}', '${game.myTeam}')">View</button>
+                    <button class="delete-btn" onclick="deleteGame('${game.gameID}')">Delete</button>
                 </td>
-            `;
+                `;
 
             tbody.appendChild(row);
         });
