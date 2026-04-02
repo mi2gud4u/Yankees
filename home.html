@@ -108,10 +108,11 @@
 
 <script>
 function viewGame(team, opponent, gameId, schedule) {
-    const url = `viewGame.html?team=${encodeURIComponent(team)}&opponent=${encodeURIComponent(opponent)}&gameId=${encodeURIComponent(gameId)}&schedule=${encodeURIComponent(schedule)}`;
+    const url = `viewGame.html?team=${encodeURIComponent(team)}&opponent=${encodeURIComponent(opponent)}&game=${encodeURIComponent(gameId)}&schedule=${encodeURIComponent(schedule)}`;
     window.location.href = url;
 }
 </script>
+
 
 </body>
 </html>
