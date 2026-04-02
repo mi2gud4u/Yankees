@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Game List</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Game Schedule</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Team Name</th>
+            <th>Opponent Name</th>
+            <th>GameID</th>
+            <th>Schedule</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <!-- Placer Grit Game 1 -->
+        <tr>
+            <td>Placer Grit</td>
+            <td>Rocklin Thunder</td>
+            <td>23373a65-ba16-4fd9-8908-b068b6b7d6e9</td>
+            <td>2024-05-12 6:00 PM</td>
+            <td>
+                <button onclick="viewGame(
+                    'Placer Grit',
+                    'Rocklin Thunder',
+                    '23373a65-ba16-4fd9-8908-b068b6b7d6e9',
+                    '2024-05-12 6:00 PM'
+                )">View</button>
+            </td>
+        </tr>
+
+        <!-- Placer Grit Game 2 -->
+        <tr>
+            <td>Placer Grit</td>
+            <td>Folsom Fury</td>
+            <td>7160bb50-15f7-4621-8831-7783116e4709</td>
+            <td>2024-05-19 4:30 PM</td>
+            <td>
+                <button onclick="viewGame(
+                    'Placer Grit',
+                    'Folsom Fury',
+                    '7160bb50-15f7-4621-8831-7783116e4709',
+                    '2024-05-19 4:30 PM'
+                )">View</button>
+            </td>
+        </tr>
+
+        <!-- Yankees Game 1 -->
+        <tr>
+            <td>Yankees</td>
+            <td>Giants</td>
+            <td>60f5c380-5d80-4003-a1f5-f043ccc12649</td>
+            <td>2024-06-02 1:00 PM</td>
+            <td>
+                <button onclick="viewGame(
+                    'Yankees',
+                    'Giants',
+                    '60f5c380-5d80-4003-a1f5-f043ccc12649',
+                    '2024-06-02 1:00 PM'
+                )">View</button>
+            </td>
+        </tr>
+
+        <!-- Yankees Game 2 -->
+        <tr>
+            <td>Yankees</td>
+            <td>Dodgers</td>
+            <td>e12431ee-d1c3-40e4-9071-dc428abf4092</td>
+            <td>2024-06-10 7:15 PM</td>
+            <td>
+                <button onclick="viewGame(
+                    'Yankees',
+                    'Dodgers',
+                    'e12431ee-d1c3-40e4-9071-dc428abf4092',
+                    '2024-06-10 7:15 PM'
+                )">View</button>
+            </td>
+        </tr>
+
+    </tbody>
+</table>
+
+<script>
+function viewGame(team, opponent, gameId, schedule) {
+    const url = `viewGame.html?team=${encodeURIComponent(team)}&opponent=${encodeURIComponent(opponent)}&gameId=${encodeURIComponent(gameId)}&schedule=${encodeURIComponent(schedule)}`;
+    window.location.href = url;
+}
+</script>
+
+</body>
+</html>
