@@ -82,85 +82,76 @@
     <input id="gameId" placeholder="Game ID">
     <button onclick="addGame()">Add Game</button>
 
-    <h3>Games</h3>
+    <h2>Games</h2>
     <table id="gamesTable">
         <thead>
             <tr>
                 <th>My Team</th>
-                <th>Game ID</th>
-                <th style="width: 160px;">Actions</th>
+                <th>Opponent</th>
+                <th>Status</th>
+                <th>Actions</th>
             </tr>
         </thead>
-        <tbody></tbody>
+        <tbody id="gamesBody"></tbody>
     </table>
+
 </div>
 
 <script>
-    const API_BASE = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net/api";
+    const apiUrl = "https://your-api-url-here"; // keep your existing URL
     
     async function loadGames() {
-        const res = await fetch(`${API_BASE}/ListGames`, {
-            cache: "no-store"
-        });
+        const response = await fetch(`${apiUrl}/api/games`);
+        const games = await response.json();
     
-        const games = await res.json();
-    
-        const tbody = document.querySelector("#gamesTable tbody");
+        const tbody = document.getElementById("gamesBody");
         tbody.innerHTML = "";
     
         games.forEach(game => {
-            const row = document.createElement("tr");
+            const tr = document.createElement("tr");
     
-            row.innerHTML = `
+            // Determine status text
+            let statusText = "";
+            if (game.game_status === "scheduled") {
+                const date = new Date(game.start_ts);
+                statusText = date.toLocaleString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    hour: "numeric",
+                    minute: "2-digit"
+                });
+            } else if (game.game_status === "in_progress") {
+                statusText = "LIVE";
+            } else if (game.game_status === "completed") {
+                statusText = "FINAL";
+            }
+    
+            tr.innerHTML = `
                 <td>${game.myTeam}</td>
-                <td>${game.gameID}</td>
+                <td>${game.opponentTeamName}</td>
+                <td>${statusText}</td>
                 <td>
-                    <button class="view-btn" onclick="viewGame('${game.myTeam}', '${game.gameID}')">View</button>
-                    <button class="delete-btn" onclick="deleteGame('${game.gameID}')">Delete</button>
+                    <button onclick="viewGame('${game.gameID}')">View</button>
+                    <button onclick="deleteGame('${game.gameID}')">Delete</button>
                 </td>
             `;
-
-            tbody.appendChild(row);
+    
+            tbody.appendChild(tr);
         });
-
     }
     
-    async function addGame() {
-        const teamName = document.getElementById("teamName").value.trim();
-        const gameId = document.getElementById("gameId").value.trim();
-    
-        if (!teamName || !gameId) {
-            alert("Enter both Team Name and Game ID");
-            return;
-        }
-    
-        await fetch(`${API_BASE}/AddGame`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                MyTeam: teamName,
-                Id: gameId
-            })
-        });
-    
-        document.getElementById("teamName").value = "";
-        document.getElementById("gameId").value = "";
-    
-        loadGames();
+    function viewGame(gameID) {
+        window.location.href = \`viewGame.html?gameID=\${gameID}\`;
     }
     
-    function viewGame(team, id) {
-        window.location.href = `viewGame.html?team=${encodeURIComponent(team)}&game=${encodeURIComponent(id)}`;
-    }
-    
-    async function deleteGame(id) {
-        await fetch(`${API_BASE}/DeleteGame/${id}`, { method: "DELETE" });
+    async function deleteGame(gameID) {
+        await fetch(\`${apiUrl}/api/deleteGame?gameID=\${gameID}\`, { method: "DELETE" });
         loadGames();
     }
     
     loadGames();
-
 </script>
+
 
 </body>
 </html>
