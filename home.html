@@ -3,8 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <title>Game Schedule</title>
-    <link rel="stylesheet" href="style.css">
 
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #2b0000;
+            margin: 0;
+            padding: 20px;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 42px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .subheader {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: #ff4d4d;
+            margin-bottom: 30px;
+        }
+
+        /* COLLAPSIBLE ADD GAME */
+        .collapsible {
+            background: #660000;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            width: 300px;
+            margin: 0 auto 10px auto;
+        }
+
+        .content {
+            display: none;
+            padding: 15px;
+            background: #3a0000;
+            border-radius: 8px;
+            width: 300px;
+            margin: 0 auto 20px auto;
+        }
+
+        input, button {
+            padding: 10px;
+            margin: 5px 0;
+            width: 100%;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            cursor: pointer;
+            background: #ff1a1a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #cc0000;
+        }
+
+        /* MATCHUP BLOCK */
+        .schedule-container {
+            max-width: 700px;
+            margin: 40px auto;
+        }
+
+        .match-block {
+            background: linear-gradient(180deg, #c00000 0%, #7a0000 100%);
+            padding: 35px 25px;
+            margin: 25px 0;
+            border-radius: 12px;
+            box-shadow: 0 0 18px rgba(0,0,0,0.45);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .match-block::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: repeating-linear-gradient(
+                45deg,
+                rgba(255,255,255,0.06) 0,
+                rgba(255,255,255,0.06) 2px,
+                transparent 2px,
+                transparent 6px
+            );
+            opacity: 0.25;
+            pointer-events: none;
+        }
+
+        .team-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 26px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            z-index: 2;
+            position: relative;
+        }
+
+        .team-left, .team-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 45%;
+            justify-content: center;
+        }
+
+        .vs-bar {
+            background: black;
+            color: white;
+            padding: 10px 40px;
+            font-size: 24px;
+            font-weight: 900;
+            margin: 25px auto 15px auto;
+            width: fit-content;
+            border-radius: 6px;
+            z-index: 2;
+            position: relative;
+        }
+
+        .status-text {
+            font-size: 20px;
+            margin-top: 5px;
+            color: #ffe6e6;
+            font-weight: bold;
+            letter-spacing: 1px;
+            z-index: 2;
+            position: relative;
+        }
+    </style>
 </head>
 <body>
 
@@ -40,40 +182,32 @@
         games.forEach(game => {
             const block = document.createElement("div");
             block.className = "match-block";
-        
-            let status = game.GameStatus;
-            if (!status) status = "scheduled";
-        
-            let statusText = "";
-            if (status === "completed") statusText = "FINAL";
-            else if (status === "in_progress") statusText = "LIVE";
-            else statusText = "SCHEDULED";
-        
+
+            let status = game.GameStatus || "scheduled";
+            let statusText = status === "completed" ? "FINAL" :
+                             status === "in_progress" ? "LIVE" : "SCHEDULED";
+
             const teamScore = status === "completed" ? game.Score.Team : "";
             const oppScore = status === "completed" ? game.Score.Opponent : "";
-        
+
             block.innerHTML = `
                 <div class="team-row">
-        
-                    <!-- LEFT SIDE: SCORE BEFORE TEAM NAME -->
                     <div class="team-left">
                         <span>${teamScore}</span>
                         <span>${game.MyTeam}</span>
                     </div>
-        
-                    <!-- RIGHT SIDE: SCORE AFTER TEAM NAME -->
+
                     <div class="team-right">
                         <span>${game.OpponentTeamName}</span>
                         <span>${oppScore}</span>
                     </div>
-        
                 </div>
-        
+
                 <div class="vs-bar">VS</div>
-        
+
                 <div class="status-text">${statusText}</div>
             `;
-        
+
             visual.appendChild(block);
         });
     }
@@ -89,27 +223,21 @@
 
         const payload = { MyTeam: teamName, GameID: gameId };
 
-        try {
-            const response = await fetch(`${apiUrl}/api/AddGame`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
+        const response = await fetch(`${apiUrl}/api/AddGame`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
 
-            if (!response.ok) {
-                alert("Error adding game.");
-                return;
-            }
-
-            document.getElementById("teamName").value = "";
-            document.getElementById("gameId").value = "";
-
-            loadGames();
-
-        } catch (err) {
-            console.error("AddGame error:", err);
-            alert("Failed to add game.");
+        if (!response.ok) {
+            alert("Error adding game.");
+            return;
         }
+
+        document.getElementById("teamName").value = "";
+        document.getElementById("gameId").value = "";
+
+        loadGames();
     }
 
     loadGames();
