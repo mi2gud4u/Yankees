@@ -188,7 +188,7 @@
     const gameID = params.get("gameID");
 
     async function loadGame() {
-        const response = await fetch(`${apiUrl}/api/GetGame?gameID=${gameID}`);
+        const response = await fetch(`${apiUrl}/api/ListGames?gameID=${gameID}`);
         const game = await response.json();
 
         document.getElementById("teamName").textContent =
