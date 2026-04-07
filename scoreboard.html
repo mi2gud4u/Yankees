@@ -91,60 +91,79 @@
         .line-3-home { width: 45px; bottom: 8%; left: -6px; transform: rotate(35deg); }
         .line-home-1 { width: 45px; bottom: 8%; right: -6px; transform: rotate(-35deg); }
 
-        /* --- ELECTRONIC SCOREBOARD MATCHING THE IMAGE --- */
+        /* --- ELECTRONIC SCOREBOARD (YOUR THEME) --- */
 
         .electronic-scoreboard {
-            background: #0b2d66; /* same blue */
+            background-color: #002395; /* Deep blue */
+            border: 4px solid #b22222; /* Red frame */
             padding: 20px;
-            border-radius: 10px;
-            margin-top: 25px;
-            color: #ff2a2a; /* LED red */
-            font-family: 'Courier New', monospace;
-            text-align: center;
-            border: 6px solid #001a40; /* outer frame like image */
-        }
-
-        .scoreboard-top {
+            font-family: 'Arial Narrow', sans-serif;
+            color: white;
+            width: fit-content;
+            margin: 20px auto;
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        .scoreboard-top .sb-box {
-            width: 18%;
-            background: #001a40;
-            padding: 10px;
+        /* RED LED DIGITS */
+        .digit {
+            background-color: #000;
+            color: #ff0000;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 2.5rem;
+            padding: 5px 15px;
             border-radius: 4px;
-            font-size: 14px;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+            border: 1px solid #333;
+        }
+
+        /* TOP ROW */
+        .top-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            align-items: center;
+            border-bottom: 2px solid #b22222;
+            padding-bottom: 10px;
+        }
+
+        .top-item {
+            text-align: center;
+            border-right: 2px solid #b22222;
+        }
+
+        .top-item:last-child {
+            border-right: none;
+        }
+
+        /* INNINGS GRID (VERTICAL SEPARATORS ONLY) */
+        .innings-grid {
+            display: grid;
+            grid-template-columns: 120px repeat(9, 50px) 100px;
+            align-items: center;
+            text-align: center;
+        }
+
+        .innings-grid > div {
+            padding: 8px 0;
+            border-right: 2px solid #b22222;
+        }
+
+        .innings-grid > div:last-child {
+            border-right: none;
+        }
+
+        .label {
+            font-size: 2rem;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .inning-num {
+            font-size: 1.5rem;
             font-weight: bold;
-            border: 4px solid #ff2a2a; /* thick LED border */
-        }
-
-        .sb-value {
-            display: block;
-            font-size: 36px;
-            margin-top: 5px;
-        }
-
-        .scoreboard-grid {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        .scoreboard-grid th,
-        .scoreboard-grid td {
-            border: 3px solid #ff2a2a; /* thick LED borders */
-            padding: 10px;
-            font-size: 22px;
-            background: #001a40;
-            color: #ff2a2a;
-        }
-
-        .team-label {
-            font-weight: bold;
-            width: 80px;
-            background: #001a40;
+            color: white;
         }
 
         #updatedTime {
@@ -164,7 +183,7 @@
     </div>
 
     <div class="scores">
-        <!-- GUEST TEAM ON LEFT -->
+        <!-- GUEST TEAM LEFT -->
         <div class="team">
             <h3 id="opponentTeamName">Opponent</h3>
             <span id="opponentScore" class="score">0</span>
@@ -185,7 +204,7 @@
             <div class="diamond-line line-home-1"></div>
         </div>
 
-        <!-- HOME TEAM ON RIGHT -->
+        <!-- HOME TEAM RIGHT -->
         <div class="team">
             <h3 id="yourTeamName">Your Team</h3>
             <span id="yourScore" class="score">0</span>
@@ -196,38 +215,78 @@
     <!-- ⭐ NEW ELECTRONIC SCOREBOARD -->
     <div class="electronic-scoreboard">
 
-        <div class="scoreboard-top">
-            <div class="sb-box">PITCHES HOME <span id="pitchesHome" class="sb-value">0</span></div>
-            <div class="sb-box">BALL <span id="balls" class="sb-value">0</span></div>
-            <div class="sb-box">STRIKE <span id="strikes" class="sb-value">0</span></div>
-            <div class="sb-box">OUT <span id="outs" class="sb-value">0</span></div>
-            <div class="sb-box">PITCHES GUEST <span id="pitchesGuest" class="sb-value">0</span></div>
+        <!-- TOP ROW -->
+        <div class="top-row">
+            <div class="top-item">
+                PITCHES HOME
+                <div id="pitchesHome" class="digit">0</div>
+            </div>
+
+            <div class="top-item">
+                BALL
+                <div id="balls" class="digit">0</div>
+            </div>
+
+            <div class="top-item">
+                STRIKE
+                <div id="strikes" class="digit">0</div>
+            </div>
+
+            <div class="top-item">
+                OUT
+                <div id="outs" class="digit">0</div>
+            </div>
+
+            <div class="top-item">
+                PITCHES GUEST
+                <div id="pitchesGuest" class="digit">0</div>
+            </div>
         </div>
 
-        <table class="scoreboard-grid">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
-                    <th>6</th><th>7</th><th>8</th><th>9</th>
-                    <th>TOTAL</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="team-label">GUEST</td>
-                    <td id="g1">0</td><td id="g2">0</td><td id="g3">0</td><td id="g4">0</td><td id="g5">0</td>
-                    <td id="g6">0</td><td id="g7">0</td><td id="g8">0</td><td id="g9">0</td>
-                    <td id="gTotal">0</td>
-                </tr>
-                <tr>
-                    <td class="team-label">HOME</td>
-                    <td id="h1">0</td><td id="h2">0</td><td id="h3">0</td><td id="h4">0</td><td id="h5">0</td>
-                    <td id="h6">0</td><td id="h7">0</td><td id="h8">0</td><td id="h9">0</td>
-                    <td id="hTotal">0</td>
-                </tr>
-            </tbody>
-        </table>
+        <!-- INNING NUMBERS -->
+        <div class="innings-grid">
+            <div class="label"></div>
+            <div class="inning-num">1</div>
+            <div class="inning-num">2</div>
+            <div class="inning-num">3</div>
+            <div class="inning-num">4</div>
+            <div class="inning-num">5</div>
+            <div class="inning-num">6</div>
+            <div class="inning-num">7</div>
+            <div class="inning-num">8</div>
+            <div class="inning-num">9</div>
+            <div class="label">TOTAL</div>
+        </div>
+
+        <!-- GUEST ROW -->
+        <div class="innings-grid">
+            <div class="label">GUEST</div>
+            <div class="digit" id="g1">0</div>
+            <div class="digit" id="g2">0</div>
+            <div class="digit" id="g3">0</div>
+            <div class="digit" id="g4">0</div>
+            <div class="digit" id="g5">0</div>
+            <div class="digit" id="g6">0</div>
+            <div class="digit" id="g7">0</div>
+            <div class="digit" id="g8">0</div>
+            <div class="digit" id="g9">0</div>
+            <div class="digit" id="gTotal">0</div>
+        </div>
+
+        <!-- HOME ROW -->
+        <div class="innings-grid">
+            <div class="label">HOME</div>
+            <div class="digit" id="h1">0</div>
+            <div class="digit" id="h2">0</div>
+            <div class="digit" id="h3">0</div>
+            <div class="digit" id="h4">0</div>
+            <div class="digit" id="h5">0</div>
+            <div class="digit" id="h6">0</div>
+            <div class="digit" id="h7">0</div>
+            <div class="digit" id="h8">0</div>
+            <div class="digit" id="h9">0</div>
+            <div class="digit" id="hTotal">0</div>
+        </div>
 
     </div>
 
@@ -245,36 +304,30 @@
         const games = await response.json();
         const game = games.find(g => g.GameID === gameID);
 
-        // TEAM NAMES
         document.getElementById("teamName").textContent =
             `${game.MyTeam} vs ${game.OpponentTeamName}`;
 
         document.getElementById("yourTeamName").textContent = game.MyTeam;
         document.getElementById("opponentTeamName").textContent = game.OpponentTeamName;
 
-        // SCORES
         document.getElementById("yourScore").textContent = game.Score.Team;
         document.getElementById("opponentScore").textContent = game.Score.Opponent;
 
-        // PITCHES
         document.getElementById("pitchTeam").textContent = game.Pitches.Team;
         document.getElementById("pitchOpp").textContent = game.Pitches.Opponent;
 
         document.getElementById("pitchesHome").textContent = game.Pitches.Team;
         document.getElementById("pitchesGuest").textContent = game.Pitches.Opponent;
 
-        // BALLS / STRIKES / OUTS
         document.getElementById("balls").textContent = game.Count.Balls;
         document.getElementById("strikes").textContent = game.Count.Strikes;
         document.getElementById("outs").textContent = game.Count.Outs;
 
-        // INNINGS
         for (let i = 0; i < 9; i++) {
             document.getElementById("g" + (i+1)).textContent = game.Innings.Opponent[i] ?? "0";
             document.getElementById("h" + (i+1)).textContent = game.Innings.Team[i] ?? "0";
         }
 
-        // TOTALS
         document.getElementById("gTotal").textContent = game.Totals.Opponent[0];
         document.getElementById("hTotal").textContent = game.Totals.Team[0];
 
