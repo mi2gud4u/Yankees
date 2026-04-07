@@ -98,60 +98,53 @@
 </div>
 
 <script>
-    const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net"; // keep your existing URL
-    
+    const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
+
     async function loadGames() {
         const response = await fetch(`${apiUrl}/api/ListGames`);
         const games = await response.json();
-    
+
         const tbody = document.getElementById("gamesBody");
         tbody.innerHTML = "";
-    
+
         games.forEach(game => {
             const tr = document.createElement("tr");
-    
+
             // Determine status text
             let statusText = "";
-            if (game.game_status === "scheduled") {
-                const date = new Date(game.start_ts);
-                statusText = date.toLocaleString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    hour: "numeric",
-                    minute: "2-digit"
-                });
-            } else if (game.game_status === "in_progress") {
+            if (game.GameStatus === "scheduled") {
+                statusText = "Scheduled";
+            } else if (game.GameStatus === "in_progress") {
                 statusText = "LIVE";
-            } else if (game.game_status === "completed") {
+            } else if (game.GameStatus === "completed") {
                 statusText = "FINAL";
             }
-    
+
             tr.innerHTML = `
-                <td>${game.myTeam}</td>
-                <td>${game.opponentTeamName}</td>
+                <td>${game.MyTeam}</td>
+                <td>${game.OpponentTeamName}</td>
                 <td>${statusText}</td>
                 <td>
-                    <button onclick="viewGame('${game.gameID}')">View</button>
-                    <button onclick="deleteGame('${game.gameID}')">Delete</button>
+                    <button onclick="viewGame('${game.GameID}')">View</button>
+                    <button onclick="deleteGame('${game.GameID}')">Delete</button>
                 </td>
             `;
-    
+
             tbody.appendChild(tr);
         });
     }
-    
+
     function viewGame(gameID) {
-        window.location.href = \`viewGame.html?gameID=\${gameID}\`;
+        window.location.href = `viewGame.html?gameID=${gameID}`;
     }
-    
+
     async function deleteGame(gameID) {
-        await fetch(\`${apiUrl}/api/deleteGame?gameID=\${gameID}\`, { method: "DELETE" });
+        await fetch(`${apiUrl}/api/deleteGame?gameID=${gameID}`, { method: "DELETE" });
         loadGames();
     }
-    
+
     loadGames();
 </script>
-
 
 </body>
 </html>
