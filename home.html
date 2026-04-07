@@ -74,7 +74,7 @@
 
         /* MATCHUP BLOCK */
         .schedule-container {
-            max-width: 100%;
+            max-width: 70%;
             margin: 40px auto;
         }
 
@@ -106,7 +106,8 @@
         }
 
         .team-row {
-            display: flex;
+            display: flex !important;
+            flex-direction: row;
             justify-content: space-between;
             align-items: center;
             font-size: 22px;
@@ -117,7 +118,8 @@
         }
 
         .team-left, .team-right {
-            display: flex;
+            display: flex !important;
+            flex-direction: row;
             align-items: center;
             gap: 10px;
             flex: 0 0 45%;        /* LOCK WIDTH — prevents merging */
