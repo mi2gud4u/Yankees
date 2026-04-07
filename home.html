@@ -152,24 +152,24 @@
             font-weight: 900;
         }
 
-        /* BOTTOM BAR WITH BUTTONS */
+        /* BOTTOM BAR: VIEW | FINAL | DELETE */
         .info-bar {
             background-color: var(--black);
             color: var(--white);
-            padding: 10px 20px;
+            padding: 12px 20px;
             font-size: 1rem;
             letter-spacing: 3px;
             margin-top: -5px;
             border-radius: 0 0 5px 5px;
             z-index: 3;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        
-            width: 100%;
+
+            width: 50%;
             display: flex;
-            justify-content: space-between; /* 3 sections */
+            justify-content: space-between;
             align-items: center;
         }
-        
+
         .info-btn {
             background: #ff1a1a;
             border: none;
@@ -180,23 +180,24 @@
             border-radius: 4px;
             cursor: pointer;
         }
-        
+
         .info-btn:hover {
             background: #cc0000;
         }
-        
-        .info-btn.delete {
+
+        .delete-btn {
             background: #990000;
         }
-        
-        .info-btn.delete:hover {
+
+        .delete-btn:hover {
             background: #660000;
         }
-        
+
         .info-label {
             font-weight: bold;
             text-align: center;
             flex: 1;
+        }
     </style>
 </head>
 <body>
@@ -266,12 +267,10 @@
 
                 <div class="info-bar">
                     <button class="info-btn" onclick="viewGame('${game.GameID}')">VIEW</button>
-                
-                    <div class="info-label">${statusText}</div>
-                
-                    <button class="info-btn delete" onclick="deleteGame('${game.GameID}')">DELETE</button>
-                </div>
 
+                    <div class="info-label">${statusText}</div>
+
+                    <button class="info-btn delete-btn" onclick="deleteGame('${game.GameID}')">DELETE</button>
                 </div>
             `;
 
