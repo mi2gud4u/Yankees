@@ -177,7 +177,7 @@
     }
 
     async function deleteGame(gameID) {
-        await fetch(`${apiUrl}/api/deleteGame?gameID=${gameID}`, { method: "DELETE" });
+        await fetch(`${apiUrl}/api/DeleteGame?gameID=${gameID}`, { method: "DELETE" });
         loadGames();
     }
 
