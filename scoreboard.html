@@ -91,7 +91,7 @@
         .line-3-home { width: 45px; bottom: 8%; left: -6px; transform: rotate(35deg); }
         .line-home-1 { width: 45px; bottom: 8%; right: -6px; transform: rotate(-35deg); }
 
-        /* --- NEW ELECTRONIC SCOREBOARD --- */
+        /* --- ELECTRONIC SCOREBOARD --- */
 
         .electronic-scoreboard {
             background: #0b2d66;
@@ -116,6 +116,7 @@
             border-radius: 6px;
             font-size: 14px;
             font-weight: bold;
+            border: 3px solid #ff2a2a; /* ⭐ NEW RED BORDER LIKE REAL SCOREBOARD */
         }
 
         .sb-value {
@@ -163,10 +164,11 @@
     </div>
 
     <div class="scores">
+        <!-- GUEST TEAM ON LEFT -->
         <div class="team">
-            <h3 id="yourTeamName">Your Team</h3>
-            <span id="yourScore" class="score">0</span>
-            <div class="pitch-small">Pitches: <span id="pitchTeam">0</span></div>
+            <h3 id="opponentTeamName">Opponent</h3>
+            <span id="opponentScore" class="score">0</span>
+            <div class="pitch-small">Pitches: <span id="pitchOpp">0</span></div>
         </div>
 
         <div class="inning-display">
@@ -183,10 +185,11 @@
             <div class="diamond-line line-home-1"></div>
         </div>
 
+        <!-- HOME TEAM ON RIGHT -->
         <div class="team">
-            <h3 id="opponentTeamName">Opponent</h3>
-            <span id="opponentScore" class="score">0</span>
-            <div class="pitch-small">Pitches: <span id="pitchOpp">0</span></div>
+            <h3 id="yourTeamName">Your Team</h3>
+            <span id="yourScore" class="score">0</span>
+            <div class="pitch-small">Pitches: <span id="pitchTeam">0</span></div>
         </div>
     </div>
 
@@ -242,21 +245,38 @@
         const games = await response.json();
         const game = games.find(g => g.GameID === gameID);
 
+        // TEAM NAMES
         document.getElementById("teamName").textContent =
             `${game.MyTeam} vs ${game.OpponentTeamName}`;
 
         document.getElementById("yourTeamName").textContent = game.MyTeam;
         document.getElementById("opponentTeamName").textContent = game.OpponentTeamName;
 
-        if (game.GameStatus !== "completed") {
-            document.getElementById("yourScore").textContent = "-";
-            document.getElementById("opponentScore").textContent = "-";
-            document.getElementById("currentInning").textContent = "-";
-            return;
-        }
-
+        // SCORES
         document.getElementById("yourScore").textContent = game.Score.Team;
         document.getElementById("opponentScore").textContent = game.Score.Opponent;
+
+        // PITCHES
+        document.getElementById("pitchTeam").textContent = game.Pitches.Team;
+        document.getElementById("pitchOpp").textContent = game.Pitches.Opponent;
+
+        document.getElementById("pitchesHome").textContent = game.Pitches.Team;
+        document.getElementById("pitchesGuest").textContent = game.Pitches.Opponent;
+
+        // BALLS / STRIKES / OUTS
+        document.getElementById("balls").textContent = game.Count.Balls;
+        document.getElementById("strikes").textContent = game.Count.Strikes;
+        document.getElementById("outs").textContent = game.Count.Outs;
+
+        // INNINGS
+        for (let i = 0; i < 9; i++) {
+            document.getElementById("g" + (i+1)).textContent = game.Innings.Opponent[i] ?? "-";
+            document.getElementById("h" + (i+1)).textContent = game.Innings.Team[i] ?? "-";
+        }
+
+        // TOTALS
+        document.getElementById("gTotal").textContent = game.Totals.Opponent[0];
+        document.getElementById("hTotal").textContent = game.Totals.Team[0];
 
         document.getElementById("updatedTime").textContent =
             "Loaded from DynamoDB: " + new Date().toLocaleTimeString();
