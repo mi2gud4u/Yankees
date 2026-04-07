@@ -55,58 +55,21 @@
             color: #ccc;
         }
 
-        .inning-display {
-            width: 20%;
-            text-align: center;
-            font-size: 48px;
-            font-weight: bold;
-            position: relative;
-        }
+        /* --- ELECTRONIC SCOREBOARD --- */
 
-        .base {
-            position: absolute;
-            width: 18px;
-            height: 18px;
-            background: #777;
-            transform: rotate(45deg);
-        }
-
-        .base.on {
-            background: red !important;
-        }
-
-        .base.second { top: -32px; left: 50%; transform: translateX(-50%) rotate(45deg); }
-        .base.first  { top: 50%; right: -32px; transform: translateY(-50%) rotate(45deg); }
-        .base.third  { top: 50%; left: -32px; transform: translateY(-50%) rotate(45deg); }
-        .base.home   { bottom: -32px; left: 50%; transform: translateX(-50%) rotate(45deg); }
-
-        .diamond-line {
-            position: absolute;
-            background: #777;
-            height: 2px;
-        }
-
-        .line-1-2 { width: 45px; top: 8%; right: -6px; transform: rotate(35deg); }
-        .line-2-3 { width: 45px; top: 8%; left: -6px; transform: rotate(-35deg); }
-        .line-3-home { width: 45px; bottom: 8%; left: -6px; transform: rotate(35deg); }
-        .line-home-1 { width: 45px; bottom: 8%; right: -6px; transform: rotate(-35deg); }
-
-        /* --- ELECTRONIC SCOREBOARD (FINAL CLEAN VERSION) --- */
-        
         .electronic-scoreboard {
             background-color: #002395;
             border: 4px solid #b22222;
-            padding: 50px 25px 30px 25px; /* more top padding */
+            padding: 50px 25px 30px 25px;
             font-family: 'Arial Narrow', sans-serif;
             color: white;
             width: fit-content;
-            margin: 70px auto; /* more space from diamond */
+            margin: 70px auto;
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
-        
-        /* LED DIGITS */
+
         .digit {
             background-color: #000;
             color: #ff0000;
@@ -120,66 +83,62 @@
             width: 55px;
             margin: 0 auto;
         }
-        
-        /* 2-digit wide boxes (pitches) */
+
         .digit.wide {
             width: 80px;
-            font-size: 2.1rem; /* smaller than ball/strike/out */
+            font-size: 2.1rem;
         }
-        
-        /* TOP ROW */
+
         .top-row {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             align-items: center;
             border-bottom: 2px solid #b22222;
             padding-bottom: 15px;
-            font-size: 2.2rem; /* bigger labels */
+            font-size: 2.2rem;
             font-weight: bold;
         }
-        
-        /* NO separators anywhere */
+
         .top-item {
             text-align: center;
-            border: none;
         }
-        
-        /* INNINGS GRID */
+
         .innings-grid {
             display: grid;
             grid-template-columns: 140px repeat(9, 60px) 100px;
             align-items: center;
             text-align: center;
-            padding: 10px 0; /* more padding */
+            padding: 10px 0;
         }
-        
-        /* remove separators */
+
         .innings-grid > div {
-            padding: 12px 0; /* more padding for guest/home rows */
-            border: none;
+            padding: 12px 0;
         }
-        
-        /* TOTAL label same size as inning labels */
+
         .label {
             font-size: 1.6rem;
             font-weight: 900;
             text-transform: uppercase;
             color: white;
         }
-        
-        /* inning numbers */
+
         .inning-num {
             font-size: 1.6rem;
             font-weight: bold;
             color: white;
         }
-        
-        /* TOTAL score same size as inning digits */
+
         .total-digit {
             width: 55px;
             font-size: 2.4rem;
         }
 
+        #updatedTime {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #aaa;
+        }
     </style>
 </head>
 <body>
@@ -191,28 +150,12 @@
     </div>
 
     <div class="scores">
-        <!-- GUEST LEFT -->
         <div class="team">
             <h3 id="opponentTeamName">Opponent</h3>
             <span id="opponentScore" class="score">0</span>
             <div class="pitch-small">Pitches: <span id="pitchOpp">0</span></div>
         </div>
 
-        <div class="inning-display">
-            <span id="currentInning">-</span>
-
-            <div class="base second" id="base2"></div>
-            <div class="base first" id="base1"></div>
-            <div class="base third" id="base3"></div>
-            <div class="base home" id="baseHome"></div>
-
-            <div class="diamond-line line-1-2"></div>
-            <div class="diamond-line line-2-3"></div>
-            <div class="diamond-line line-3-home"></div>
-            <div class="diamond-line line-home-1"></div>
-        </div>
-
-        <!-- HOME RIGHT -->
         <div class="team">
             <h3 id="yourTeamName">Your Team</h3>
             <span id="yourScore" class="score">0</span>
@@ -220,37 +163,36 @@
         </div>
     </div>
 
+    <!-- ELECTRONIC SCOREBOARD -->
     <div class="electronic-scoreboard">
-    
-        <!-- TOP ROW -->
+
         <div class="top-row">
             <div class="top-item">
                 PITCHES HOME
                 <div id="pitchesHome" class="digit wide">0</div>
             </div>
-    
+
             <div class="top-item">
                 BALL
                 <div id="balls" class="digit">0</div>
             </div>
-    
+
             <div class="top-item">
                 STRIKE
                 <div id="strikes" class="digit">0</div>
             </div>
-    
+
             <div class="top-item">
                 OUT
                 <div id="outs" class="digit">0</div>
             </div>
-    
+
             <div class="top-item">
                 PITCHES GUEST
                 <div id="pitchesGuest" class="digit wide">0</div>
             </div>
         </div>
-    
-        <!-- INNING NUMBERS -->
+
         <div class="innings-grid">
             <div class="label"></div>
             <div class="inning-num">1</div>
@@ -264,8 +206,7 @@
             <div class="inning-num">9</div>
             <div class="label">TOTAL</div>
         </div>
-    
-        <!-- GUEST ROW -->
+
         <div class="innings-grid">
             <div class="label">GUEST</div>
             <div class="digit" id="g1">0</div>
@@ -279,8 +220,7 @@
             <div class="digit" id="g9">0</div>
             <div class="digit total-digit" id="gTotal">0</div>
         </div>
-    
-        <!-- HOME ROW -->
+
         <div class="innings-grid">
             <div class="label">HOME</div>
             <div class="digit" id="h1">0</div>
@@ -294,65 +234,58 @@
             <div class="digit" id="h9">0</div>
             <div class="digit total-digit" id="hTotal">0</div>
         </div>
-    
-    </div>
 
+    </div>
 
     <p id="updatedTime"></p>
 </div>
 
 <script>
-    const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
-    
-    const params = new URLSearchParams(window.location.search);
-    const gameID = params.get("gameID");
-    
-    async function loadGame() {
-        const response = await fetch(`${apiUrl}/api/ListGames?gameID=${gameID}`);
-        const games = await response.json();
-        const game = games.find(g => g.GameID === gameID);
-    
-        // TEAM NAMES
-        document.getElementById("teamName").textContent =
-            `${game.MyTeam} vs ${game.OpponentTeamName}`;
-    
-        document.getElementById("yourTeamName").textContent = game.MyTeam;
-        document.getElementById("opponentTeamName").textContent = game.OpponentTeamName;
-    
-        // MAIN SCORE
-        document.getElementById("yourScore").textContent = game.Score.Team;
-        document.getElementById("opponentScore").textContent = game.Score.Opponent;
-    
-        // ELECTRONIC SCOREBOARD — PITCHES
-        document.getElementById("pitchesHome").textContent = game.Pitches.Team;
-        document.getElementById("pitchesGuest").textContent = game.Pitches.Opponent;
-    
-        // BALL / STRIKE / OUT
-        document.getElementById("balls").textContent = game.Count.Balls;
-        document.getElementById("strikes").textContent = game.Count.Strikes;
-        document.getElementById("outs").textContent = game.Count.Outs;
-    
-        // INNINGS (1–9)
-        for (let i = 0; i < 9; i++) {
-            document.getElementById("g" + (i + 1)).textContent =
-                game.Innings.Opponent[i] ?? "0";
-    
-            document.getElementById("h" + (i + 1)).textContent =
-                game.Innings.Team[i] ?? "0";
-        }
-    
-        // TOTALS
-        document.getElementById("gTotal").textContent = game.Totals.Opponent[0];
-        document.getElementById("hTotal").textContent = game.Totals.Team[0];
-    
-        // TIMESTAMP
-        document.getElementById("updatedTime").textContent =
-            "Loaded from DynamoDB: " + new Date().toLocaleTimeString();
+const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
+
+const params = new URLSearchParams(window.location.search);
+const gameID = params.get("gameID");
+
+async function loadGame() {
+    const response = await fetch(`${apiUrl}/api/ListGames?gameID=${gameID}`);
+    const games = await response.json();
+    const game = games.find(g => g.GameID === gameID);
+
+    document.getElementById("teamName").textContent =
+        `${game.MyTeam} vs ${game.OpponentTeamName}`;
+
+    document.getElementById("yourTeamName").textContent = game.MyTeam;
+    document.getElementById("opponentTeamName").textContent = game.OpponentTeamName;
+
+    document.getElementById("yourScore").textContent = game.Score.Team;
+    document.getElementById("opponentScore").textContent = game.Score.Opponent;
+
+    document.getElementById("pitchTeam").textContent = game.Pitches.Team;
+    document.getElementById("pitchOpp").textContent = game.Pitches.Opponent;
+
+    document.getElementById("pitchesHome").textContent = game.Pitches.Team;
+    document.getElementById("pitchesGuest").textContent = game.Pitches.Opponent;
+
+    document.getElementById("balls").textContent = game.Count.Balls;
+    document.getElementById("strikes").textContent = game.Count.Strikes;
+    document.getElementById("outs").textContent = game.Count.Outs;
+
+    for (let i = 0; i < 9; i++) {
+        document.getElementById("g" + (i + 1)).textContent =
+            game.Innings.Opponent[i] ?? "0";
+
+        document.getElementById("h" + (i + 1)).textContent =
+            game.Innings.Team[i] ?? "0";
     }
-    
-    loadGame();
 
+    document.getElementById("gTotal").textContent = game.Totals.Opponent[0];
+    document.getElementById("hTotal").textContent = game.Totals.Team[0];
 
+    document.getElementById("updatedTime").textContent =
+        "Loaded from DynamoDB: " + new Date().toLocaleTimeString();
+}
+
+loadGame();
 </script>
 
 </body>
