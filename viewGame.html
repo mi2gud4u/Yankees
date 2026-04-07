@@ -190,7 +190,8 @@
     async function loadGame() {
         const response = await fetch(`${apiUrl}/api/ListGames?gameID=${gameID}`);
         const games = await response.json();
-        const game = games[0];  // FIX: ListGames returns an array
+        const game = games.find(g => g.GameID === gameID);
+        //const game = games[0];  // FIX: ListGames returns an array
     
         document.getElementById("teamName").textContent =
             `${game.MyTeam} vs ${game.OpponentTeamName}`;
