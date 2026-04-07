@@ -2,409 +2,147 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Live Baseball Scoreboard</title>
+    <title>View Game</title>
 
     <style>
         body {
-            background: #0b0b0b;
-            color: white;
             font-family: Arial, sans-serif;
-        }
-
-        .scoreboard {
-            width: 520px;
-            margin: 40px auto;
+            background: #f5f5f5;
+            margin: 0;
             padding: 20px;
-            background: #1a1a1a;
-            border-radius: 12px;
-            box-shadow: 0 0 12px rgba(0,0,0,0.4);
         }
 
-        .header h2 {
-            margin: 0;
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h1, h2 {
             text-align: center;
         }
 
-        .scores {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 25px 0;
-        }
-
-        .team {
-            text-align: center;
-            width: 40%;
-        }
-
-        .team h3 {
-            margin: 0;
-            font-size: 16px;
-        }
-
-        .score {
-            display: block;
-            font-size: 40px;
-            font-weight: bold;
-            margin-top: 5px;
-        }
-
-        .pitch-small {
-            font-size: 14px;
-            margin-top: 4px;
-            color: #ccc;
-        }
-
-        .inning-display {
-            width: 20%;
-            text-align: center;
-            font-size: 48px;
-            font-weight: bold;
-            position: relative;
-        }
-
-        #inningIndicator {
-            font-size: 28px;
-            margin-top: 5px;
-        }
-
-        .base {
-            position: absolute;
-            width: 18px;
-            height: 18px;
-            background: #777;
-            transform: rotate(45deg);
-        }
-
-        .base.on {
-            background: red !important;
-        }
-
-        .base.second { top: -32px; left: 50%; transform: translateX(-50%) rotate(45deg); }
-        .base.first  { top: 50%; right: -32px; transform: translateY(-50%) rotate(45deg); }
-        .base.third  { top: 50%; left: -32px; transform: translateY(-50%) rotate(45deg); }
-        .base.home   { bottom: -32px; left: 50%; transform: translateX(-50%) rotate(45deg); }
-
-        .diamond-line {
-            position: absolute;
-            background: #777;
-            height: 2px;
-        }
-
-        .line-1-2 { width: 45px; top: 8%; right: -6px; transform: rotate(35deg); }
-        .line-2-3 { width: 45px; top: 8%; left: -6px; transform: rotate(-35deg); }
-        .line-3-home { width: 45px; bottom: 8%; left: -6px; transform: rotate(35deg); }
-        .line-home-1 { width: 45px; bottom: 8%; right: -6px; transform: rotate(-35deg); }
-
-        .inning-table {
+        table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
-            font-size: 14px;
         }
 
-        .inning-table th,
-        .inning-table td {
-            border: 1px solid #444;
-            padding: 6px;
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
             text-align: center;
         }
 
-        .inning-table th {
-            background: #333;
-        }
-
-        .bottom-bar {
-            margin-top: 20px;
-            padding: 12px;
-            background: #222;
-            border-radius: 8px;
+        .back-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
             text-align: center;
-            display: none;
+            width: 200px;
         }
 
-        .bottom-bar span {
-            font-size: 18px;
-            font-weight: bold;
-            margin: 0 15px;
-        }
-
-        .status-banner {
-            margin-top: 20px;
-            padding: 14px;
-            background: #222;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 22px;
-            font-weight: bold;
-            display: none;
-        }
-
-        #updatedTime {
-            text-align: center;
-            margin-top: 10px;
-            font-size: 12px;
-            color: #aaa;
+        .back-btn:hover {
+            background: #005fa3;
         }
     </style>
 </head>
 <body>
 
-<div id="scoreboard" class="scoreboard">
+<div class="container">
+    <h1>Game Details</h1>
 
-    <div class="header">
-        <h2 id="teamName">Loading...</h2>
-    </div>
+    <div id="gameInfo"></div>
 
-    <div class="scores">
-        <div class="team">
-            <h3 id="yourTeamName">Your Team</h3>
-            <span id="yourScore" class="score">0</span>
-            <div class="pitch-small">Pitches: <span id="pitchTeam">0</span></div>
-        </div>
+    <h2>Score</h2>
+    <table id="scoreTable"></table>
 
-        <div class="inning-display">
-            <span id="currentInning">1</span>
-            <div id="inningIndicator"></div>
+    <h2>Innings</h2>
+    <table id="inningsTable"></table>
 
-            <div class="base second" id="base2"></div>
-            <div class="base first" id="base1"></div>
-            <div class="base third" id="base3"></div>
-            <div class="base home" id="baseHome"></div>
+    <h2>Totals</h2>
+    <table id="totalsTable"></table>
 
-            <div class="diamond-line line-1-2"></div>
-            <div class="diamond-line line-2-3"></div>
-            <div class="diamond-line line-3-home"></div>
-            <div class="diamond-line line-home-1"></div>
-        </div>
-
-        <div class="team">
-            <h3 id="opponentTeamName">Opponent</h3>
-            <span id="opponentScore" class="score">0</span>
-            <div class="pitch-small">Pitches: <span id="pitchOpp">0</span></div>
-        </div>
-    </div>
-
-    <table class="inning-table">
-        <thead id="inningHeader"></thead>
-        <tbody id="inningBody"></tbody>
-    </table>
-
-    <div id="statusBanner" class="status-banner"></div>
-
-    <div id="liveBar" class="bottom-bar">
-        <span>Balls: <span id="balls">0</span></span>
-        <span>Strikes: <span id="strikes">0</span></span>
-        <span>Outs: <span id="outs">0</span></span>
-    </div>
-
-    <p id="updatedTime"></p>
+    <button class="back-btn" onclick="window.location.href='index.html'">Back to Schedule</button>
 </div>
 
 <script>
-/* ------------------------------
-   URL PARAMETERS
---------------------------------*/
-const params = new URLSearchParams(window.location.search);
-const passedTeam = params.get("team");
-const passedGameID = params.get("game");
+    const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
 
-if (passedTeam) {
-    document.getElementById("yourTeamName").textContent = passedTeam;
-    document.getElementById("teamName").textContent = passedTeam + " Game";
-}
+    // Get gameID from URL
+    const params = new URLSearchParams(window.location.search);
+    const gameID = params.get("gameID");
 
-/* ------------------------------
-   API ENDPOINTS
---------------------------------*/
-const baseUrl = "https://livescoreapi-2hbs.onrender.com";
-const scoreApi = `${baseUrl}/api/score?gameID=${encodeURIComponent(passedGameID)}`;
-const pitchApi = `${baseUrl}/api/pitch?gameID=${encodeURIComponent(passedGameID)}`;
-
-/* ------------------------------
-   SCORE FETCH
---------------------------------*/
-async function fetchScore() {
-    try {
-        const response = await fetch(scoreApi);
+    async function loadGame() {
+        const response = await fetch(`${apiUrl}/api/GetGame?gameID=${gameID}`);
         const game = await response.json();
-        updateScoreboard(game);
-        window.currentGameStatus = game.game_status;
-    } catch (err) {
-        console.error("Score fetch error:", err);
-    }
-}
 
-/* ------------------------------
-   PITCH FETCH
---------------------------------*/
-async function fetchPitch() {
-    try {
-        const response = await fetch(pitchApi);
-        const events = await response.json();
-        const reversed = [...events].reverse();
+        const infoDiv = document.getElementById("gameInfo");
 
-        const lastPitch = reversed.find(e => e.event_type === "pitch");
+        infoDiv.innerHTML = `
+            <h2>${game.MyTeam} vs ${game.OpponentTeamName}</h2>
+            <p>Status: <strong>${game.GameStatus.toUpperCase()}</strong></p>
+        `;
 
-        // Only update pitch info if LIVE
-        if (window.currentGameStatus === "live") {
-            if (lastPitch?.count) {
-                document.getElementById("balls").textContent = lastPitch.count.balls;
-                document.getElementById("strikes").textContent = lastPitch.count.strikes;
-            }
-
-            if (lastPitch?.pitch_count !== undefined) {
-                document.getElementById("pitchTeam").textContent = lastPitch.pitch_count;
-                document.getElementById("pitchOpp").textContent = lastPitch.pitch_count;
-            }
-
-            const lastPlay = reversed.find(e =>
-                e.event_type === "play" ||
-                e.event_type === "at_bat" ||
-                e.event_type === "pitch"
-            );
-
-            if (lastPlay?.outs !== undefined) {
-                document.getElementById("outs").textContent = lastPlay.outs;
-            }
-
-            if (lastPlay?.runners) {
-                document.getElementById("base1").classList.toggle("on", !!lastPlay.runners.first);
-                document.getElementById("base2").classList.toggle("on", !!lastPlay.runners.second);
-                document.getElementById("base3").classList.toggle("on", !!lastPlay.runners.third);
-            }
-
-            // Inning half indicator
-            const indicator = document.getElementById("inningIndicator");
-            if (lastPitch?.inning_half === "top") {
-                indicator.textContent = "▲";
-            } else if (lastPitch?.inning_half === "bottom") {
-                indicator.textContent = "▼";
-            }
+        // Only show score + innings if FINAL
+        if (game.GameStatus !== "completed") {
+            document.getElementById("scoreTable").innerHTML = "<tr><td>Game not completed yet.</td></tr>";
+            document.getElementById("inningsTable").innerHTML = "";
+            document.getElementById("totalsTable").innerHTML = "";
+            return;
         }
 
-    } catch (err) {
-        console.error("Pitch fetch error:", err);
-    }
-}
-    
-    /* ------------------------------
-       UPDATE SCOREBOARD
-    --------------------------------*/
-    function updateScoreboard(game) {
-        const banner = document.getElementById("statusBanner");
-        const liveBar = document.getElementById("liveBar");
-        const indicator = document.getElementById("inningIndicator");
-    
-        // Opponent name
-        document.getElementById("opponentTeamName").textContent =
-            game.opponent_team.name;
-    
-        // Scores
-        document.getElementById("yourScore").textContent = game.score.team;
-        document.getElementById("opponentScore").textContent = game.score.opponent_team;
-    
-        /* ------------------------------
-           DETERMINE INNING COUNT
-        --------------------------------*/
-        let inningCount = Math.max(
-            game.line_score.team.scores.length,
-            game.line_score.opponent_team.scores.length
-        );
-    
-        // If scheduled → force 1 inning of zeros
-        if (game.game_status === "scheduled") {
-            inningCount = 1;
+        // SCORE TABLE
+        document.getElementById("scoreTable").innerHTML = `
+            <tr><th>Team</th><th>Opponent</th></tr>
+            <tr><td>${game.Score.Team}</td><td>${game.Score.Opponent}</td></tr>
+        `;
+
+        // INNINGS TABLE
+        const inningsTeam = game.Innings.Team;
+        const inningsOpp = game.Innings.Opponent;
+
+        let inningsHTML = "<tr><th>Inning</th><th>Team</th><th>Opponent</th></tr>";
+
+        for (let i = 0; i < inningsTeam.length; i++) {
+            inningsHTML += `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${inningsTeam[i]}</td>
+                    <td>${inningsOpp[i]}</td>
+                </tr>
+            `;
         }
-    
-        // Display inning number (0 for final/scheduled)
-        document.getElementById("currentInning").textContent =
-            (game.game_status === "live") ? inningCount : 0;
-    
-        /* ------------------------------
-           INNING TABLE (ALWAYS SHOW)
-        --------------------------------*/
-        let header = "<tr><th></th>";
-        for (let i = 1; i <= inningCount; i++) header += `<th>${i}</th>`;
-        header += "<th>R</th><th>H</th><th>E</th></tr>";
-        document.getElementById("inningHeader").innerHTML = header;
-    
-        let body = "";
-    
-        /* ---- YOUR TEAM ---- */
-        body += `<tr><td>${passedTeam}</td>`;
-    
-        if (game.game_status === "scheduled") {
-            // Show zeros for not-started game
-            for (let i = 1; i <= inningCount; i++) body += "<td>0</td>";
-            body += "<td>0</td><td>0</td><td>0</td>";
-        } else {
-            // Live or Final
-            game.line_score.team.scores.forEach(s => body += `<td>${s}</td>`);
-            game.line_score.team.totals.forEach(t => body += `<td>${t}</td>`);
-        }
-    
-        body += "</tr>";
-    
-        /* ---- OPPONENT ---- */
-        body += `<tr><td>${game.opponent_team.name}</td>`;
-    
-        if (game.game_status === "scheduled") {
-            for (let i = 1; i <= inningCount; i++) body += "<td>0</td>";
-            body += "<td>0</td><td>0</td><td>0</td>";
-        } else {
-            game.line_score.opponent_team.scores.forEach(s => body += `<td>${s}</td>`);
-            game.line_score.opponent_team.totals.forEach(t => body += `<td>${t}</td>`);
-        }
-    
-        body += "</tr>";
-    
-        document.getElementById("inningBody").innerHTML = body;
-    
-        /* ------------------------------
-           STATUS BANNER LOGIC
-        --------------------------------*/
-        if (game.game_status === "completed") {
-            banner.style.display = "block";
-            liveBar.style.display = "none";
-            indicator.textContent = "";
-            banner.textContent = "FINAL";
-            banner.style.color = "red";
-        }
-        else if (game.game_status === "scheduled") {
-            banner.style.display = "block";
-            liveBar.style.display = "none";
-            indicator.textContent = "";
-    
-            const date = new Date(game.start_ts);
-            const local = date.toLocaleString("en-US", {
-                timeZone: game.timezone,
-                dateStyle: "medium",
-                timeStyle: "short"
-            });
-    
-            banner.textContent = "Scheduled: " + local;
-            banner.style.color = "yellow";
-        }
-        else {
-            // LIVE
-            banner.style.display = "none";
-            liveBar.style.display = "flex";
-        }
-    
-        // Timestamp
-        document.getElementById("updatedTime").textContent =
-            "Last updated: " + new Date().toLocaleTimeString();
+
+        document.getElementById("inningsTable").innerHTML = inningsHTML;
+
+        // TOTALS TABLE
+        document.getElementById("totalsTable").innerHTML = `
+            <tr><th></th><th>Runs</th><th>Hits</th><th>Errors</th></tr>
+            <tr>
+                <td>${game.MyTeam}</td>
+                <td>${game.Totals.Team[0]}</td>
+                <td>${game.Totals.Team[1]}</td>
+                <td>${game.Totals.Team[2]}</td>
+            </tr>
+            <tr>
+                <td>${game.OpponentTeamName}</td>
+                <td>${game.Totals.Opponent[0]}</td>
+                <td>${game.Totals.Opponent[1]}</td>
+                <td>${game.Totals.Opponent[2]}</td>
+            </tr>
+        `;
     }
 
-
-/* ------------------------------
-   AUTO REFRESH
---------------------------------*/
-fetchScore();
-fetchPitch();
-setInterval(fetchScore, 10000);
-setInterval(fetchPitch, 10000);
+    loadGame();
 </script>
 
 </body>
