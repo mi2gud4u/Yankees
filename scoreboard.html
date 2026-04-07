@@ -91,19 +91,19 @@
         .line-3-home { width: 45px; bottom: 8%; left: -6px; transform: rotate(35deg); }
         .line-home-1 { width: 45px; bottom: 8%; right: -6px; transform: rotate(-35deg); }
 
-        /* --- ELECTRONIC SCOREBOARD (FINAL TUNED VERSION) --- */
+        /* --- ELECTRONIC SCOREBOARD (FINAL CLEAN VERSION) --- */
         
         .electronic-scoreboard {
             background-color: #002395;
             border: 4px solid #b22222;
-            padding: 40px 20px 20px 20px;
+            padding: 50px 25px 30px 25px; /* more top padding */
             font-family: 'Arial Narrow', sans-serif;
             color: white;
             width: fit-content;
-            margin: 60px auto;
+            margin: 70px auto; /* more space from diamond */
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 20px;
         }
         
         /* LED DIGITS */
@@ -112,18 +112,19 @@
             color: #ff0000;
             font-family: 'Courier New', monospace;
             font-weight: bold;
-            font-size: 2.5rem;
+            font-size: 2.4rem;
             padding: 5px 0;
             border-radius: 4px;
             text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
             border: 1px solid #333;
-            width: 55px; /* default width for inning digits */
+            width: 55px;
             margin: 0 auto;
         }
         
         /* 2-digit wide boxes (pitches) */
         .digit.wide {
-            width: 85px;
+            width: 80px;
+            font-size: 2.1rem; /* smaller than ball/strike/out */
         }
         
         /* TOP ROW */
@@ -132,48 +133,35 @@
             grid-template-columns: repeat(5, 1fr);
             align-items: center;
             border-bottom: 2px solid #b22222;
-            padding-bottom: 10px;
-            font-size: 2rem; /* bigger text */
+            padding-bottom: 15px;
+            font-size: 2.2rem; /* bigger labels */
             font-weight: bold;
         }
         
+        /* NO separators anywhere */
         .top-item {
             text-align: center;
-            border-right: none;
-        }
-        
-        /* separator after PITCHES HOME */
-        .top-item:nth-child(1) {
-            border-right: 2px solid #b22222;
-        }
-        
-        /* separator BEFORE PITCHES GUEST */
-        .top-item:nth-child(5) {
-            border-left: 2px solid #b22222;
+            border: none;
         }
         
         /* INNINGS GRID */
         .innings-grid {
             display: grid;
-            grid-template-columns: 120px repeat(9, 55px) 100px;
+            grid-template-columns: 140px repeat(9, 60px) 100px;
             align-items: center;
             text-align: center;
+            padding: 10px 0; /* more padding */
         }
         
-        /* remove separators between inning cells */
+        /* remove separators */
         .innings-grid > div {
-            padding: 8px 0;
-            border-right: none;
+            padding: 12px 0; /* more padding for guest/home rows */
+            border: none;
         }
         
-        /* separator before TOTAL column */
-        .innings-grid > div:nth-child(11) {
-            border-left: 2px solid #b22222;
-        }
-        
-        /* TOTAL label */
+        /* TOTAL label same size as inning labels */
         .label {
-            font-size: 2rem;
+            font-size: 1.6rem;
             font-weight: 900;
             text-transform: uppercase;
             color: white;
@@ -181,7 +169,7 @@
         
         /* inning numbers */
         .inning-num {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             font-weight: bold;
             color: white;
         }
@@ -189,7 +177,9 @@
         /* TOTAL score same size as inning digits */
         .total-digit {
             width: 55px;
+            font-size: 2.4rem;
         }
+
     </style>
 </head>
 <body>
@@ -306,6 +296,7 @@
         </div>
     
     </div>
+
 
     <p id="updatedTime"></p>
 </div>
