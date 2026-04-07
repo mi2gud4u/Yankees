@@ -225,12 +225,12 @@
     async function loadGames() {
         const response = await fetch(`${apiUrl}/api/ListGames`);
         const games = await response.json();
-        const isHome = game.home_away === "home";
 
         const visual = document.getElementById("visualSchedule");
         visual.innerHTML = "";
 
-        games.forEach(game => {
+        games.forEach(game => {            
+            const isHome = game.home_away === "home";
             const status = game.GameStatus || "scheduled";
             const statusText =
                 status === "completed" ? "FINAL" :
