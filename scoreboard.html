@@ -12,7 +12,7 @@
         }
 
         .scoreboard {
-            width: 520px;
+            width: 700px;
             margin: 40px auto;
             padding: 20px;
             background: #1a1a1a;
@@ -91,16 +91,17 @@
         .line-3-home { width: 45px; bottom: 8%; left: -6px; transform: rotate(35deg); }
         .line-home-1 { width: 45px; bottom: 8%; right: -6px; transform: rotate(-35deg); }
 
-        /* --- ELECTRONIC SCOREBOARD --- */
+        /* --- ELECTRONIC SCOREBOARD MATCHING THE IMAGE --- */
 
         .electronic-scoreboard {
-            background: #0b2d66;
+            background: #0b2d66; /* same blue */
             padding: 20px;
             border-radius: 10px;
             margin-top: 25px;
-            color: #ff2a2a;
+            color: #ff2a2a; /* LED red */
             font-family: 'Courier New', monospace;
             text-align: center;
+            border: 6px solid #001a40; /* outer frame like image */
         }
 
         .scoreboard-top {
@@ -113,15 +114,15 @@
             width: 18%;
             background: #001a40;
             padding: 10px;
-            border-radius: 6px;
+            border-radius: 4px;
             font-size: 14px;
             font-weight: bold;
-            border: 3px solid #ff2a2a; /* ⭐ NEW RED BORDER LIKE REAL SCOREBOARD */
+            border: 4px solid #ff2a2a; /* thick LED border */
         }
 
         .sb-value {
             display: block;
-            font-size: 32px;
+            font-size: 36px;
             margin-top: 5px;
         }
 
@@ -133,18 +134,17 @@
 
         .scoreboard-grid th,
         .scoreboard-grid td {
-            border: 2px solid #ff2a2a;
-            padding: 8px;
-            font-size: 20px;
-        }
-
-        .scoreboard-grid th {
+            border: 3px solid #ff2a2a; /* thick LED borders */
+            padding: 10px;
+            font-size: 22px;
             background: #001a40;
+            color: #ff2a2a;
         }
 
         .team-label {
             font-weight: bold;
             width: 80px;
+            background: #001a40;
         }
 
         #updatedTime {
@@ -270,8 +270,8 @@
 
         // INNINGS
         for (let i = 0; i < 9; i++) {
-            document.getElementById("g" + (i+1)).textContent = game.Innings.Opponent[i] ?? "-";
-            document.getElementById("h" + (i+1)).textContent = game.Innings.Team[i] ?? "-";
+            document.getElementById("g" + (i+1)).textContent = game.Innings.Opponent[i] ?? "0";
+            document.getElementById("h" + (i+1)).textContent = game.Innings.Team[i] ?? "0";
         }
 
         // TOTALS
