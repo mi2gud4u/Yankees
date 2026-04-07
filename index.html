@@ -134,6 +134,44 @@
         });
     }
 
+    async function addGame() {
+        const teamName = document.getElementById("teamName").value.trim();
+        const gameId = document.getElementById("gameId").value.trim();
+    
+        if (!teamName || !gameId) {
+            alert("Please enter both Team Name and Game ID.");
+            return;
+        }
+    
+        const payload = {
+            MyTeam: teamName,
+            GameID: gameId
+        };
+    
+        try {
+            const response = await fetch(`${apiUrl}/api/AddGame`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+    
+            if (!response.ok) {
+                alert("Error adding game.");
+                return;
+            }
+    
+            document.getElementById("teamName").value = "";
+            document.getElementById("gameId").value = "";
+    
+            loadGames();
+    
+        } catch (err) {
+            console.error("AddGame error:", err);
+            alert("Failed to add game.");
+        }
+    }
+
+
     function viewGame(gameID) {
         window.location.href = `viewGame.html?gameID=${gameID}`;
     }
