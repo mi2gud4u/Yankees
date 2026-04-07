@@ -91,36 +91,59 @@
         .line-3-home { width: 45px; bottom: 8%; left: -6px; transform: rotate(35deg); }
         .line-home-1 { width: 45px; bottom: 8%; right: -6px; transform: rotate(-35deg); }
 
-        .inning-table {
+        /* --- NEW ELECTRONIC SCOREBOARD --- */
+
+        .electronic-scoreboard {
+            background: #0b2d66;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            color: #ff2a2a;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+        }
+
+        .scoreboard-top {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .scoreboard-top .sb-box {
+            width: 18%;
+            background: #001a40;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .sb-value {
+            display: block;
+            font-size: 32px;
+            margin-top: 5px;
+        }
+
+        .scoreboard-grid {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
-            font-size: 14px;
+            margin-top: 10px;
         }
 
-        .inning-table th,
-        .inning-table td {
-            border: 1px solid #444;
-            padding: 6px;
-            text-align: center;
+        .scoreboard-grid th,
+        .scoreboard-grid td {
+            border: 2px solid #ff2a2a;
+            padding: 8px;
+            font-size: 20px;
         }
 
-        .inning-table th {
-            background: #333;
+        .scoreboard-grid th {
+            background: #001a40;
         }
 
-        .bottom-bar {
-            margin-top: 20px;
-            padding: 12px;
-            background: #222;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .bottom-bar span {
-            font-size: 18px;
+        .team-label {
             font-weight: bold;
-            margin: 0 15px;
+            width: 80px;
         }
 
         #updatedTime {
@@ -167,9 +190,42 @@
         </div>
     </div>
 
-    <!-- ⭐ NEW SCOREBOARD IMAGE -->
-    <div style="text-align:center; margin-top:25px;">
-        <img src="scoreboard.png" alt="Scoreboard" style="max-width:100%; height:auto;">
+    <!-- ⭐ NEW ELECTRONIC SCOREBOARD -->
+    <div class="electronic-scoreboard">
+
+        <div class="scoreboard-top">
+            <div class="sb-box">PITCHES HOME <span id="pitchesHome" class="sb-value">0</span></div>
+            <div class="sb-box">BALL <span id="balls" class="sb-value">0</span></div>
+            <div class="sb-box">STRIKE <span id="strikes" class="sb-value">0</span></div>
+            <div class="sb-box">OUT <span id="outs" class="sb-value">0</span></div>
+            <div class="sb-box">PITCHES GUEST <span id="pitchesGuest" class="sb-value">0</span></div>
+        </div>
+
+        <table class="scoreboard-grid">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
+                    <th>6</th><th>7</th><th>8</th><th>9</th>
+                    <th>TOTAL</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="team-label">GUEST</td>
+                    <td id="g1">0</td><td id="g2">0</td><td id="g3">0</td><td id="g4">0</td><td id="g5">0</td>
+                    <td id="g6">0</td><td id="g7">0</td><td id="g8">0</td><td id="g9">0</td>
+                    <td id="gTotal">0</td>
+                </tr>
+                <tr>
+                    <td class="team-label">HOME</td>
+                    <td id="h1">0</td><td id="h2">0</td><td id="h3">0</td><td id="h4">0</td><td id="h5">0</td>
+                    <td id="h6">0</td><td id="h7">0</td><td id="h8">0</td><td id="h9">0</td>
+                    <td id="hTotal">0</td>
+                </tr>
+            </tbody>
+        </table>
+
     </div>
 
     <p id="updatedTime"></p>
