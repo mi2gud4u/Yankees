@@ -230,7 +230,7 @@
         visual.innerHTML = "";
 
         games.forEach(game => {            
-            const isHome = game.home_away === "home";
+            
             const status = game.GameStatus || "scheduled";
             const statusText =
                 status === "completed" ? "FINAL" :
