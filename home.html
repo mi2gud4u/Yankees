@@ -79,7 +79,7 @@
             background: #cc0000;
         }
 
-        /* MATCHUP BLOCK (ANGLED BOX LAYOUT) */
+        /* MATCHUP BLOCK */
         .scoreboard-container {
             width: 100%;
             max-width: 900px;
@@ -94,6 +94,15 @@
             width: 100%;
             height: 100px;
             filter: drop-shadow(5px 5px 10px rgba(0,0,0,0.5));
+            align-items: center;
+        }
+
+        /* SCORE OUTSIDE BOXES */
+        .score {
+            font-size: 2.2rem;
+            font-weight: 900;
+            padding: 0 20px;
+            color: var(--white);
         }
 
         .player-box {
@@ -143,16 +152,37 @@
             font-weight: 900;
         }
 
+        /* BOTTOM BAR WITH BUTTONS */
         .info-bar {
             background-color: var(--black);
             color: var(--white);
-            padding: 8px 40px;
+            padding: 10px 20px;
             font-size: 1rem;
             letter-spacing: 3px;
             margin-top: -5px;
             border-radius: 0 0 5px 5px;
             z-index: 3;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-label {
+            font-weight: bold;
+        }
+
+        .info-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .info-buttons button {
+            width: auto;
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
         }
     </style>
 </head>
@@ -203,10 +233,10 @@
             block.innerHTML = `
                 <div class="main-bar">
 
+                    <div class="score">${teamScore}</div>
+
                     <div class="player-box left">
-                        <div class="player-name">
-                            ${teamScore} ${game.MyTeam}
-                        </div>
+                        <div class="player-name">${game.MyTeam}</div>
                     </div>
 
                     <div class="vs-block">
@@ -214,18 +244,33 @@
                     </div>
 
                     <div class="player-box right">
-                        <div class="player-name">
-                            ${game.OpponentTeamName} ${oppScore}
-                        </div>
+                        <div class="player-name">${game.OpponentTeamName}</div>
                     </div>
+
+                    <div class="score">${oppScore}</div>
 
                 </div>
 
-                <div class="info-bar">${statusText}</div>
+                <div class="info-bar">
+                    <div class="info-label">${statusText}</div>
+
+                    <div class="info-buttons">
+                        <button onclick="viewGame('${game.GameID}')">VIEW</button>
+                        <button onclick="deleteGame('${game.GameID}')">DELETE</button>
+                    </div>
+                </div>
             `;
 
             visual.appendChild(block);
         });
+    }
+
+    function viewGame(id) {
+        alert("View game: " + id);
+    }
+
+    async function deleteGame(id) {
+        alert("Delete game: " + id);
     }
 
     async function addGame() {
