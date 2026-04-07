@@ -120,9 +120,18 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            width: 45%;
-            justify-content: center;
-            text-wrap: nowrap;
+            flex: 0 0 45%;        /* LOCK WIDTH — prevents merging */
+            overflow: hidden;     /* Prevents spillover */
+            text-overflow: ellipsis;
+            white-space: nowrap;  /* Prevents wrapping */
+        }
+        
+        .team-left {
+            justify-content: flex-start;   /* Push left team outward */
+        }
+        
+        .team-right {
+            justify-content: flex-end;     /* Push right team outward */
         }
 
         .vs-bar {
