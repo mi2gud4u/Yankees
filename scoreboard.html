@@ -91,7 +91,7 @@
         .line-3-home { width: 45px; bottom: 8%; left: -6px; transform: rotate(35deg); }
         .line-home-1 { width: 45px; bottom: 8%; right: -6px; transform: rotate(-35deg); }
 
-        /* --- ELECTRONIC SCOREBOARD (FINAL VERSION) --- */
+        /* --- ELECTRONIC SCOREBOARD (FINAL) --- */
 
         .electronic-scoreboard {
             background-color: #002395;
@@ -106,7 +106,6 @@
             gap: 10px;
         }
 
-        /* RED LED DIGITS */
         .digit {
             background-color: #000;
             color: #ff0000;
@@ -126,23 +125,26 @@
             align-items: center;
             border-bottom: 2px solid #b22222;
             padding-bottom: 10px;
-            font-size: 1.8rem; /* bigger font */
+            font-size: 1.9rem; /* a bit bigger */
             font-weight: bold;
         }
 
-        /* DEFAULT: NO SEPARATOR */
         .top-item {
             text-align: center;
             border-right: none;
         }
 
-        /* ONLY THESE GET SEPARATORS */
-        .top-item:nth-child(1),
-        .top-item:nth-child(5) {
+        /* separator after PITCHES HOME */
+        .top-item:nth-child(1) {
             border-right: 2px solid #b22222;
         }
 
-        /* INNINGS GRID (NO SEPARATORS BETWEEN CELLS) */
+        /* separator on LEFT of PITCHES GUEST */
+        .top-item:nth-child(5) {
+            border-left: 2px solid #b22222;
+        }
+
+        /* INNINGS GRID */
         .innings-grid {
             display: grid;
             grid-template-columns: 120px repeat(9, 50px) 100px;
@@ -155,17 +157,16 @@
             border-right: none;
         }
 
-        /* TOTAL smaller */
-        .innings-grid > div:last-child {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #ff0000;
+        /* vertical separator before TOTAL column (all rows) */
+        .innings-grid > div:nth-child(11) {
+            border-left: 2px solid #b22222;
         }
 
         .label {
             font-size: 2rem;
             font-weight: 900;
             text-transform: uppercase;
+            color: white; /* TOTAL text white */
         }
 
         .inning-num {
@@ -191,7 +192,7 @@
     </div>
 
     <div class="scores">
-        <!-- GUEST TEAM LEFT -->
+        <!-- GUEST LEFT -->
         <div class="team">
             <h3 id="opponentTeamName">Opponent</h3>
             <span id="opponentScore" class="score">0</span>
@@ -212,7 +213,7 @@
             <div class="diamond-line line-home-1"></div>
         </div>
 
-        <!-- HOME TEAM RIGHT -->
+        <!-- HOME RIGHT -->
         <div class="team">
             <h3 id="yourTeamName">Your Team</h3>
             <span id="yourScore" class="score">0</span>
@@ -220,7 +221,6 @@
         </div>
     </div>
 
-    <!-- ⭐ NEW ELECTRONIC SCOREBOARD -->
     <div class="electronic-scoreboard">
 
         <!-- TOP ROW -->
