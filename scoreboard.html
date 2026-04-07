@@ -91,8 +91,8 @@
         .line-3-home { width: 45px; bottom: 8%; left: -6px; transform: rotate(35deg); }
         .line-home-1 { width: 45px; bottom: 8%; right: -6px; transform: rotate(-35deg); }
 
-        /* --- ELECTRONIC SCOREBOARD (FINAL) --- */
-
+        /* --- ELECTRONIC SCOREBOARD (FINAL TUNED VERSION) --- */
+        
         .electronic-scoreboard {
             background-color: #002395;
             border: 4px solid #b22222;
@@ -105,19 +105,27 @@
             flex-direction: column;
             gap: 10px;
         }
-
+        
+        /* LED DIGITS */
         .digit {
             background-color: #000;
             color: #ff0000;
             font-family: 'Courier New', monospace;
             font-weight: bold;
             font-size: 2.5rem;
-            padding: 5px 15px;
+            padding: 5px 0;
             border-radius: 4px;
             text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
             border: 1px solid #333;
+            width: 55px; /* default width for inning digits */
+            margin: 0 auto;
         }
-
+        
+        /* 2-digit wide boxes (pitches) */
+        .digit.wide {
+            width: 85px;
+        }
+        
         /* TOP ROW */
         .top-row {
             display: grid;
@@ -125,61 +133,62 @@
             align-items: center;
             border-bottom: 2px solid #b22222;
             padding-bottom: 10px;
-            font-size: 1.9rem; /* a bit bigger */
+            font-size: 2rem; /* bigger text */
             font-weight: bold;
         }
-
+        
         .top-item {
             text-align: center;
             border-right: none;
         }
-
+        
         /* separator after PITCHES HOME */
         .top-item:nth-child(1) {
             border-right: 2px solid #b22222;
         }
-
-        /* separator on LEFT of PITCHES GUEST */
+        
+        /* separator BEFORE PITCHES GUEST */
         .top-item:nth-child(5) {
             border-left: 2px solid #b22222;
         }
-
+        
         /* INNINGS GRID */
         .innings-grid {
             display: grid;
-            grid-template-columns: 120px repeat(9, 50px) 100px;
+            grid-template-columns: 120px repeat(9, 55px) 100px;
             align-items: center;
             text-align: center;
         }
-
+        
+        /* remove separators between inning cells */
         .innings-grid > div {
             padding: 8px 0;
             border-right: none;
         }
-
-        /* vertical separator before TOTAL column (all rows) */
+        
+        /* separator before TOTAL column */
         .innings-grid > div:nth-child(11) {
             border-left: 2px solid #b22222;
         }
-
+        
+        /* TOTAL label */
         .label {
             font-size: 2rem;
             font-weight: 900;
             text-transform: uppercase;
-            color: white; /* TOTAL text white */
+            color: white;
         }
-
+        
+        /* inning numbers */
         .inning-num {
             font-size: 1.5rem;
             font-weight: bold;
             color: white;
         }
-
-        #updatedTime {
-            text-align: center;
-            margin-top: 10px;
-            font-size: 12px;
-            color: #aaa;
+        
+        /* TOTAL score same size as inning digits */
+        .total-digit {
+            width: 55px;
         }
     </style>
 </head>
@@ -222,35 +231,35 @@
     </div>
 
     <div class="electronic-scoreboard">
-
+    
         <!-- TOP ROW -->
         <div class="top-row">
             <div class="top-item">
                 PITCHES HOME
-                <div id="pitchesHome" class="digit">0</div>
+                <div id="pitchesHome" class="digit wide">0</div>
             </div>
-
+    
             <div class="top-item">
                 BALL
                 <div id="balls" class="digit">0</div>
             </div>
-
+    
             <div class="top-item">
                 STRIKE
                 <div id="strikes" class="digit">0</div>
             </div>
-
+    
             <div class="top-item">
                 OUT
                 <div id="outs" class="digit">0</div>
             </div>
-
+    
             <div class="top-item">
                 PITCHES GUEST
-                <div id="pitchesGuest" class="digit">0</div>
+                <div id="pitchesGuest" class="digit wide">0</div>
             </div>
         </div>
-
+    
         <!-- INNING NUMBERS -->
         <div class="innings-grid">
             <div class="label"></div>
@@ -265,7 +274,7 @@
             <div class="inning-num">9</div>
             <div class="label">TOTAL</div>
         </div>
-
+    
         <!-- GUEST ROW -->
         <div class="innings-grid">
             <div class="label">GUEST</div>
@@ -278,9 +287,9 @@
             <div class="digit" id="g7">0</div>
             <div class="digit" id="g8">0</div>
             <div class="digit" id="g9">0</div>
-            <div class="digit" id="gTotal">0</div>
+            <div class="digit total-digit" id="gTotal">0</div>
         </div>
-
+    
         <!-- HOME ROW -->
         <div class="innings-grid">
             <div class="label">HOME</div>
@@ -293,9 +302,9 @@
             <div class="digit" id="h7">0</div>
             <div class="digit" id="h8">0</div>
             <div class="digit" id="h9">0</div>
-            <div class="digit" id="hTotal">0</div>
+            <div class="digit total-digit" id="hTotal">0</div>
         </div>
-
+    
     </div>
 
     <p id="updatedTime"></p>
