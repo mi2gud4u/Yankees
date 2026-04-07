@@ -212,25 +212,38 @@
         document.getElementById("yourScore").textContent = game.Score.Team;
         document.getElementById("opponentScore").textContent = game.Score.Opponent;
     
-        const innings = game.Innings.Team.length;
-    
+        // Determine max innings
+        const innings = Math.max(
+            game.Innings.Team.length,
+            game.Innings.Opponent.length
+        );
+        
+        // Pad innings so both teams match
+        const teamInnings = [...game.Innings.Team];
+        const oppInnings = [...game.Innings.Opponent];
+        
+        while (teamInnings.length < innings) teamInnings.push("-");
+        while (oppInnings.length < innings) oppInnings.push("-");
+        
+        // Build header
         let header = "<tr><th></th>";
         for (let i = 1; i <= innings; i++) header += `<th>${i}</th>`;
         header += "<th>R</th><th>H</th><th>E</th></tr>";
         document.getElementById("inningHeader").innerHTML = header;
-    
+        
+        // Build body
         let body = "";
-    
+        
         body += `<tr><td>${game.MyTeam}</td>`;
-        game.Innings.Team.forEach(s => body += `<td>${s}</td>`);
+        teamInnings.forEach(s => body += `<td>${s}</td>`);
         game.Totals.Team.forEach(t => body += `<td>${t}</td>`);
         body += "</tr>";
-    
+        
         body += `<tr><td>${game.OpponentTeamName}</td>`;
-        game.Innings.Opponent.forEach(s => body += `<td>${s}</td>`);
+        oppInnings.forEach(s => body += `<td>${s}</td>`);
         game.Totals.Opponent.forEach(t => body += `<td>${t}</td>`);
         body += "</tr>";
-    
+        
         document.getElementById("inningBody").innerHTML = body;
     
         document.getElementById("updatedTime").textContent =
