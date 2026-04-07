@@ -189,15 +189,15 @@
 
     async function loadGame() {
         const response = await fetch(`${apiUrl}/api/ListGames?gameID=${gameID}`);
-        const game = await response.json();
-
+        const games = await response.json();
+        const game = games[0];  // FIX: ListGames returns an array
+    
         document.getElementById("teamName").textContent =
             `${game.MyTeam} vs ${game.OpponentTeamName}`;
-
+    
         document.getElementById("yourTeamName").textContent = game.MyTeam;
         document.getElementById("opponentTeamName").textContent = game.OpponentTeamName;
-
-        // If not completed, show simple view
+    
         if (game.GameStatus !== "completed") {
             document.getElementById("yourScore").textContent = "-";
             document.getElementById("opponentScore").textContent = "-";
@@ -207,36 +207,35 @@
                 `<tr><td colspan="20">Game not completed yet.</td></tr>`;
             return;
         }
-
-        // Completed game → show full scoreboard
+    
         document.getElementById("yourScore").textContent = game.Score.Team;
         document.getElementById("opponentScore").textContent = game.Score.Opponent;
-
-        // Build inning table
+    
         const innings = game.Innings.Team.length;
-
+    
         let header = "<tr><th></th>";
         for (let i = 1; i <= innings; i++) header += `<th>${i}</th>`;
         header += "<th>R</th><th>H</th><th>E</th></tr>";
         document.getElementById("inningHeader").innerHTML = header;
-
+    
         let body = "";
-
+    
         body += `<tr><td>${game.MyTeam}</td>`;
         game.Innings.Team.forEach(s => body += `<td>${s}</td>`);
         game.Totals.Team.forEach(t => body += `<td>${t}</td>`);
         body += "</tr>";
-
+    
         body += `<tr><td>${game.OpponentTeamName}</td>`;
         game.Innings.Opponent.forEach(s => body += `<td>${s}</td>`);
         game.Totals.Opponent.forEach(t => body += `<td>${t}</td>`);
         body += "</tr>";
-
+    
         document.getElementById("inningBody").innerHTML = body;
-
+    
         document.getElementById("updatedTime").textContent =
             "Loaded from DynamoDB: " + new Date().toLocaleTimeString();
     }
+
 
     loadGame();
 </script>
