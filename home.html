@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game Schedule</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #2b0000;
+            margin: 0;
+            padding: 20px;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 42px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .subheader {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: #ff4d4d;
+            margin-bottom: 30px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #3a0000;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255,0,0,0.2);
+        }
+
+        input, button {
+            padding: 10px;
+            margin: 5px 0;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        button {
+            cursor: pointer;
+            background: #ff1a1a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #cc0000;
+        }
+
+        /* POSTER STYLE BLOCKS */
+        .schedule-container {
+            max-width: 700px;
+            margin: 40px auto;
+        }
+
+        .match-block {
+            background: #8b0000;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(255,0,0,0.3);
+            text-align: center;
+        }
+
+        .match-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .match-time {
+            font-size: 18px;
+            color: #ffcccc;
+        }
+
+        .final-score {
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .final-label {
+            font-size: 20px;
+            color: #ffd1d1;
+        }
+.input-row {
+    width: 100%;
+}
+.input-row input,
+.input-row button {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+    </style>
+</head>
+<body>
+
+<h1>GAME SCHEDULE</h1>
+<div class="subheader">OFFICIAL MATCH LIST</div>
+
+<div class="container">
+    
+<h3>Add Game</h3>
+<div class="input-row">
+    <input id="teamName" placeholder="Team Name">
+</div>
+
+<div class="input-row">
+    <input id="gameId" placeholder="Game ID">
+</div>
+
+<div class="input-row">
+    <button onclick="addGame()">Add Game</button>
+</div>
+</div>
+
+<div class="schedule-container" id="visualSchedule"></div>
+
+<script>
+    const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
+
+    async function loadGames() {
+    const response = await fetch(`${apiUrl}/api/ListGames`);
+    const games = await response.json();
+
+    const visual = document.getElementById("visualSchedule");
+    visual.innerHTML = "";
+
+    games.forEach(game => {
+        const block = document.createElement("div");
+        block.className = "match-block";
+
+        // Normalize status
+        let status = game.GameStatus;
+        if (!status) status = "scheduled";
+
+        // COMPLETED GAME
+        if (status === "completed") {
+            block.innerHTML = `
+                <div class="final-score">${game.Score.Team} - ${game.Score.Opponent}</div>
+                <div class="match-title">${game.MyTeam} VS ${game.OpponentTeamName}</div>
+                <div class="final-label">FINAL</div>
+            `;
+        }
+
+        // SCHEDULED or LIVE GAME
+        else {
+            let statusText = status === "in_progress" ? "LIVE" : "Scheduled";
+
+            block.innerHTML = `
+                <div class="match-title">${game.MyTeam} VS ${game.OpponentTeamName}</div>
+                <div class="match-time">${statusText}</div>
+            `;
+        }
+
+        visual.appendChild(block);
+    });
+}
+
+
+    async function addGame() {
+        const teamName = document.getElementById("teamName").value.trim();
+        const gameId = document.getElementById("gameId").value.trim();
+
+        if (!teamName || !gameId) {
+            alert("Please enter both Team Name and Game ID.");
+            return;
+        }
+
+        const payload = {
+            MyTeam: teamName,
+            GameID: gameId
+        };
+
+        try {
+            const response = await fetch(`${apiUrl}/api/AddGame`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                alert("Error adding game.");
+                return;
+            }
+
+            document.getElementById("teamName").value = "";
+            document.getElementById("gameId").value = "";
+
+            loadGames();
+
+        } catch (err) {
+            console.error("AddGame error:", err);
+            alert("Failed to add game.");
+        }
+    }
+
+    loadGames();
+</script>
+
+</body>
+</html>
