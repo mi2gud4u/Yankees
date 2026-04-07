@@ -29,13 +29,24 @@
             margin-bottom: 30px;
         }
 
-        .container {
-            max-width: 800px;
-            margin: auto;
+        /* COLLAPSIBLE ADD GAME */
+        .collapsible {
+            background: #660000;
+            padding: 15px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .content {
+            display: none;
+            padding: 15px;
             background: #3a0000;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(255,0,0,0.2);
+            border-radius: 8px;
+            margin-bottom: 20px;
         }
 
         input, button {
@@ -43,6 +54,7 @@
             margin: 5px 0;
             width: 100%;
             font-size: 16px;
+            box-sizing: border-box;
         }
 
         button {
@@ -58,7 +70,7 @@
             background: #cc0000;
         }
 
-        /* POSTER STYLE BLOCKS */
+        /* MATCHUP BLOCKS */
         .schedule-container {
             max-width: 700px;
             margin: 40px auto;
@@ -66,44 +78,33 @@
 
         .match-block {
             background: #8b0000;
-            padding: 20px;
-            margin: 15px 0;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(255,0,0,0.3);
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(255,0,0,0.4);
             text-align: center;
         }
 
-        .match-title {
-            font-size: 28px;
+        .team-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 26px;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
-        .match-time {
-            font-size: 18px;
+        .vs-text {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 10px 0;
             color: #ffcccc;
         }
 
-        .final-score {
-            font-size: 26px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .final-label {
-            font-size: 20px;
+        .status-text {
+            font-size: 18px;
+            margin-top: 10px;
             color: #ffd1d1;
         }
-.input-row {
-    width: 100%;
-}
-.input-row input,
-.input-row button {
-    width: 100%;
-    box-sizing: border-box;
-}
-
-
     </style>
 </head>
 <body>
@@ -111,20 +112,13 @@
 <h1>GAME SCHEDULE</h1>
 <div class="subheader">OFFICIAL MATCH LIST</div>
 
-<div class="container">
-    
-<h3>Add Game</h3>
-<div class="input-row">
+<!-- COLLAPSIBLE ADD GAME -->
+<div class="collapsible" onclick="toggleAddGame()">Add Game</div>
+
+<div class="content" id="addGameSection">
     <input id="teamName" placeholder="Team Name">
-</div>
-
-<div class="input-row">
     <input id="gameId" placeholder="Game ID">
-</div>
-
-<div class="input-row">
     <button onclick="addGame()">Add Game</button>
-</div>
 </div>
 
 <div class="schedule-container" id="visualSchedule"></div>
@@ -132,44 +126,48 @@
 <script>
     const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
 
+    function toggleAddGame() {
+        const section = document.getElementById("addGameSection");
+        section.style.display = section.style.display === "block" ? "none" : "block";
+    }
+
     async function loadGames() {
-    const response = await fetch(`${apiUrl}/api/ListGames`);
-    const games = await response.json();
+        const response = await fetch(`${apiUrl}/api/ListGames`);
+        const games = await response.json();
 
-    const visual = document.getElementById("visualSchedule");
-    visual.innerHTML = "";
+        const visual = document.getElementById("visualSchedule");
+        visual.innerHTML = "";
 
-    games.forEach(game => {
-        const block = document.createElement("div");
-        block.className = "match-block";
+        games.forEach(game => {
+            const block = document.createElement("div");
+            block.className = "match-block";
 
-        // Normalize status
-        let status = game.GameStatus;
-        if (!status) status = "scheduled";
+            let status = game.GameStatus;
+            if (!status) status = "scheduled";
 
-        // COMPLETED GAME
-        if (status === "completed") {
-            block.innerHTML = `
-                <div class="final-score">${game.Score.Team} - ${game.Score.Opponent}</div>
-                <div class="match-title">${game.MyTeam} VS ${game.OpponentTeamName}</div>
-                <div class="final-label">FINAL</div>
-            `;
-        }
+            let statusText = "";
+            if (status === "completed") statusText = "FINAL";
+            else if (status === "in_progress") statusText = "LIVE";
+            else statusText = "Scheduled";
 
-        // SCHEDULED or LIVE GAME
-        else {
-            let statusText = status === "in_progress" ? "LIVE" : "Scheduled";
+            // Scores (only for completed)
+            const teamScore = status === "completed" ? game.Score.Team : "";
+            const oppScore = status === "completed" ? game.Score.Opponent : "";
 
             block.innerHTML = `
-                <div class="match-title">${game.MyTeam} VS ${game.OpponentTeamName}</div>
-                <div class="match-time">${statusText}</div>
+                <div class="team-row">
+                    <div>${game.MyTeam} ${teamScore !== "" ? teamScore : ""}</div>
+                    <div>${oppScore !== "" ? oppScore : ""} ${game.OpponentTeamName}</div>
+                </div>
+
+                <div class="vs-text">VS</div>
+
+                <div class="status-text">${statusText}</div>
             `;
-        }
 
-        visual.appendChild(block);
-    });
-}
-
+            visual.appendChild(block);
+        });
+    }
 
     async function addGame() {
         const teamName = document.getElementById("teamName").value.trim();
@@ -180,10 +178,7 @@
             return;
         }
 
-        const payload = {
-            MyTeam: teamName,
-            GameID: gameId
-        };
+        const payload = { MyTeam: teamName, GameID: gameId };
 
         try {
             const response = await fetch(`${apiUrl}/api/AddGame`, {
