@@ -134,37 +134,34 @@
     }
 
     /* ⭐ ELECTRONIC SCOREBOARD STYLES (RESTORED) */
-    
+
     .electronic-scoreboard {
         background-color: #002395;
         border: 4px solid #b22222;
-        padding: 40px 20px 20px 20px;
-        font-family: 'Digital-7', monospace;
-        color: white;
-        width: fit-content;
-        margin: 50px auto;
+        padding: 20px 15px 15px 15px;
+        width: 420px;              /* smaller width */
+        margin: 40px auto;
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: 12px;                 /* tighter spacing */
     }
     
     .digit {
         background-color: #000;
         color: #ff0000;
         font-family: 'Digital-7', monospace;
-        font-weight: bold;
-        font-size: 2.4rem;
-        padding: 5px 0;
-        border-radius: 4px;
-        text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
-        border: 1px solid #333;
-        width: 55px;
+        font-size: 1.8rem;         /* smaller digits */
+        padding: 3px 0;
+        border-radius: 3px;
+        text-shadow: 0 0 6px rgba(255, 0, 0, 0.7);
+        border: 1px solid #222;
+        width: 40px;               /* narrower */
         margin: 0 auto;
     }
     
     .digit.wide {
-        width: 80px;
-        font-size: 2.1rem;
+        width: 60px;
+        font-size: 1.6rem;
     }
     
     .top-row {
@@ -172,8 +169,8 @@
         grid-template-columns: repeat(5, 1fr);
         align-items: center;
         border-bottom: 2px solid #b22222;
-        padding-bottom: 15px;
-        font-size: 2.2rem;
+        padding-bottom: 10px;
+        font-size: 1.4rem;         /* smaller labels */
         font-weight: bold;
     }
     
@@ -183,33 +180,31 @@
     
     .innings-grid {
         display: grid;
-        grid-template-columns: 120px repeat(9, 60px) 80px;
+        grid-template-columns: 80px repeat(9, 35px) 55px; /* compact columns */
         align-items: center;
         text-align: center;
-        padding: 10px 0;
+        padding: 6px 0;
     }
     
     .innings-grid > div {
-        padding: 12px 0;
+        padding: 6px 0;
     }
     
     .label {
-        font-size: 1.6rem;
+        font-size: 1.2rem;
         font-weight: 900;
-        text-transform: uppercase;
-        color: white;
     }
     
     .inning-num {
-        font-size: 1.6rem;
+        font-size: 1.2rem;
         font-weight: bold;
-        color: white;
     }
     
     .total-digit {
-        width: 80px;
-        font-size: 2.1rem;
+        width: 55px;
+        font-size: 1.6rem;
     }
+
 
 </style>
 
