@@ -25,12 +25,12 @@
         text-align: center;
     }
 
-    /* ⭐ DIAMOND ABOVE SCOREBOARD */
+    /* ⭐ DIAMOND INSIDE MAIN SCOREBOARD */
     .diamond {
         position: relative;
         width: 120px;
         height: 120px;
-        margin: 20px auto 35px auto;
+        margin: 10px auto 25px auto;
     }
 
     .scores {
@@ -107,7 +107,7 @@
         font-family: 'Arial Narrow', sans-serif;
         color: white;
         width: fit-content;
-        margin: 40px auto; /* <-- separation from main scoreboard */
+        margin: 40px auto;
         display: flex;
         flex-direction: column;
         gap: 20px;
@@ -175,35 +175,28 @@
         width: 80px;
         font-size: 2.1rem;
     }
-
-    #updatedTime {
-        text-align: center;
-        margin-top: 10px;
-        font-size: 12px;
-        color: #aaa;
-    }
 </style>
 
 <body>
 
-<!-- ⭐ DIAMOND ABOVE EVERYTHING -->
-<div class="diamond">
-    <div class="base second" id="base2"></div>
-    <div class="base first" id="base1"></div>
-    <div class="base third" id="base3"></div>
-    <div class="base home" id="baseHome"></div>
-
-    <div class="diamond-line line-1-2"></div>
-    <div class="diamond-line line-2-3"></div>
-    <div class="diamond-line line-3-home"></div>
-    <div class="diamond-line line-home-1"></div>
-</div>
-
-<!-- ⭐ MAIN SCOREBOARD -->
+<!-- ⭐ MAIN SCOREBOARD WITH DIAMOND INSIDE -->
 <div id="scoreboard" class="scoreboard">
 
     <div class="header">
         <h2 id="teamName">Loading...</h2>
+    </div>
+
+    <!-- ⭐ DIAMOND MOVED BACK INSIDE -->
+    <div class="diamond">
+        <div class="base second" id="base2"></div>
+        <div class="base first" id="base1"></div>
+        <div class="base third" id="base3"></div>
+        <div class="base home" id="baseHome"></div>
+
+        <div class="diamond-line line-1-2"></div>
+        <div class="diamond-line line-2-3"></div>
+        <div class="diamond-line line-3-home"></div>
+        <div class="diamond-line line-home-1"></div>
     </div>
 
     <div class="scores">
@@ -226,7 +219,7 @@
 
 </div> <!-- END MAIN SCOREBOARD -->
 
-<!-- ⭐ ELECTRONIC SCOREBOARD (SEPARATED BELOW) -->
+<!-- ⭐ ELECTRONIC SCOREBOARD BELOW -->
 <div class="electronic-scoreboard">
 
     <div class="top-row">
@@ -320,17 +313,15 @@ async function loadGame() {
     document.getElementById("yourScore").textContent = game.Score.Team;
     document.getElementById("opponentScore").textContent = game.Score.Opponent;
 
-document.getElementById("pitchTeam").textContent = game.Pitches?.Team ?? 0;
-document.getElementById("pitchOpp").textContent = game.Pitches?.Opponent ?? 0;
-
-document.getElementById("pitchesHome").textContent = game.Pitches?.Team ?? 0;
-document.getElementById("pitchesGuest").textContent = game.Pitches?.Opponent ?? 0;
-
-document.getElementById("balls").textContent = game.Count?.Balls ?? 0;
-document.getElementById("strikes").textContent = game.Count?.Strikes ?? 0;
-document.getElementById("outs").textContent = game.Count?.Outs ?? 0;
-
-
+    document.getElementById("pitchTeam").textContent = game.Pitches?.Team ?? 0;
+    document.getElementById("pitchOpp").textContent = game.Pitches?.Opponent ?? 0;
+    
+    document.getElementById("pitchesHome").textContent = game.Pitches?.Team ?? 0;
+    document.getElementById("pitchesGuest").textContent = game.Pitches?.Opponent ?? 0;
+    
+    document.getElementById("balls").textContent = game.Count?.Balls ?? 0;
+    document.getElementById("strikes").textContent = game.Count?.Strikes ?? 0;
+    document.getElementById("outs").textContent = game.Count?.Outs ?? 0;
 
     // ⭐ PAD INNINGS TO 9
     const teamInn = [...game.Innings.Team];
@@ -340,8 +331,8 @@ document.getElementById("outs").textContent = game.Count?.Outs ?? 0;
     while (oppInn.length < 9) oppInn.push(0);
 
     for (let i = 0; i < 9; i++) {
-        const gVal = oppInn[i] ?? 0;
-        const hVal = teamInn[i] ?? 0;
+        const gVal = oppInn[i] ?? "";
+        const hVal = teamInn[i] ?? "";
     
         document.getElementById("g" + (i + 1)).textContent = gVal;
         document.getElementById("h" + (i + 1)).textContent = hVal;
