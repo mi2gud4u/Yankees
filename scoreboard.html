@@ -262,15 +262,15 @@
 
         <div class="innings-grid">
             <div class="label">GUEST</div>
-            <div class="digit" id="g1">1</div>
-            <div class="digit" id="g2">2</div>
-            <div class="digit" id="g3">3</div>
-            <div class="digit" id="g4">4</div>
-            <div class="digit" id="g5">5</div>
-            <div class="digit" id="g6">6</div>
-            <div class="digit" id="g7">7</div>
-            <div class="digit" id="g8">8</div>
-            <div class="digit" id="g9">9</div>
+            <div class="digit" id="g1">0</div>
+            <div class="digit" id="g2">0</div>
+            <div class="digit" id="g3">0</div>
+            <div class="digit" id="g4">0</div>
+            <div class="digit" id="g5">0</div>
+            <div class="digit" id="g6">0</div>
+            <div class="digit" id="g7">0</div>
+            <div class="digit" id="g8">0</div>
+            <div class="digit" id="g9">0</div>
             <div class="digit total-digit" id="gTotal">0</div>
         </div>
 
@@ -328,7 +328,7 @@
                 game.Innings.Opponent[i] ?? "0";
 
             document.getElementById("h" + (i + 1)).textContent =
-                game.${game.MyTeam}[i] ?? "0";
+                game.Innings.Team[i] ?? "0";
         }
 
         document.getElementById("gTotal").textContent = game.Totals.Opponent[0];
