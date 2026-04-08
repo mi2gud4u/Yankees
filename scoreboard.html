@@ -348,47 +348,46 @@
         const response = await fetch(`${apiUrl}/api/ListGames?gameID=${gameID}`);
         let games = await response.json();
     
-        // Ensure array
         if (!Array.isArray(games)) games = [games];
     
-        const game = games.find(g => String(g.GameID) === String(gameID));
+        const game = games.find(g => String(g.gameID) === String(gameID));
         if (!game) {
             console.error("Game not found", gameID);
             return;
         }
     
-        // ⭐ HOME/AWAY LOGIC
-        const isHome = game.HomeAway === "home";
+        // HOME/AWAY
+        const isHome = game.home_away === "home";
     
-        const leftTeamName  = isHome ? game.OpponentTeamName : game.MyTeam;
-        const rightTeamName = isHome ? game.MyTeam : game.OpponentTeamName;
+        const leftTeamName  = isHome ? game.opponent_team.name : game.myTeam;
+        const rightTeamName = isHome ? game.myTeam : game.opponent_team.name;
     
-        const leftScore  = isHome ? game.Score.Opponent : game.Score.Team;
-        const rightScore = isHome ? game.Score.Team : game.Score.Opponent;
+        const leftScore  = isHome ? game.score.opponent_team : game.score.team;
+        const rightScore = isHome ? game.score.team : game.score.opponent_team;
     
-        const guestInn = isHome ? game.Innings.Opponent : game.Innings.Team;
-        const homeInn  = isHome ? game.Innings.Team : game.Innings.Opponent;
+        const guestInn = isHome ? game.line_score.opponent_team.scores : game.line_score.team.scores;
+        const homeInn  = isHome ? game.line_score.team.scores : game.line_score.opponent_team.scores;
     
-        const guestTotal = isHome ? game.Totals.Opponent[0] : game.Totals.Team[0];
-        const homeTotal  = isHome ? game.Totals.Team[0] : game.Totals.Opponent[0];
+        const guestTotal = isHome ? game.line_score.opponent_team.totals[0] : game.line_score.team.totals[0];
+        const homeTotal  = isHome ? game.line_score.team.totals[0] : game.line_score.opponent_team.totals[0];
     
-        // ⭐ TOP TITLE
+        // TITLE
         document.getElementById("teamName").textContent =
-            `${game.MyTeam} vs ${game.OpponentTeamName}`;
+            `${game.myTeam} vs ${game.opponent_team.name}`;
     
-        // ⭐ LEFT/RIGHT TEAM NAMES
+        // TEAM NAMES
         document.getElementById("yourTeamName").textContent = leftTeamName;
         document.getElementById("opponentTeamName").textContent = rightTeamName;
     
-        // ⭐ LEFT/RIGHT SCORES
+        // SCORES
         document.getElementById("yourScore").textContent = leftScore;
         document.getElementById("opponentScore").textContent = rightScore;
     
-        // ⭐ ELECTRONIC BOARD TOTALS
+        // TOTALS
         document.getElementById("gTotal").textContent = guestTotal;
         document.getElementById("hTotal").textContent = homeTotal;
     
-        // ⭐ PITCHES / COUNT
+        // PITCHES / COUNT
         document.getElementById("pitchesHome").textContent = game.Pitches?.Team ?? 0;
         document.getElementById("pitchesGuest").textContent = game.Pitches?.Opponent ?? 0;
     
@@ -396,25 +395,26 @@
         document.getElementById("strikes").textContent = game.Count?.Strikes ?? 0;
         document.getElementById("outs").textContent = game.Count?.Outs ?? 0;
     
-        // ⭐ PAD INNINGS TO 9
+        // PAD INNINGS TO 9
         const gInn = [...guestInn];
         const hInn = [...homeInn];
     
         while (gInn.length < 9) gInn.push(0);
         while (hInn.length < 9) hInn.push(0);
     
-        // ⭐ FILL INNING DIGITS
+        // FILL INNING CELLS
         for (let i = 0; i < 9; i++) {
             document.getElementById("g" + (i + 1)).textContent = gInn[i];
             document.getElementById("h" + (i + 1)).textContent = hInn[i];
         }
     
-        // ⭐ TIMESTAMP
+        // TIMESTAMP
         document.getElementById("updatedTime").textContent =
             "Loaded from DynamoDB: " + new Date().toLocaleTimeString();
     }
     
     loadGame();
+
 </script>
 
 
