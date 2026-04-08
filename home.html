@@ -231,14 +231,31 @@
 
         games.forEach(game => {            
         
-            const status = game.game_status || "scheduled";
-            const statusText =
-                status === "completed" ? "FINAL" :
-                status === "in_progress" ? "LIVE" :
-                "SCHEDULED";
+            const now = new Date();
+            const start = new Date(game.start_ts);
+            const end = new Date(game.end_ts);
         
-            const teamScore = status === "completed" ? game.score.team : "";
-            const oppScore  = status === "completed" ? game.score.opponent_team : "";
+            let statusText = "";
+        
+            if (game.game_status === "completed") {
+                statusText = "FINAL";
+            } else if (
+                now.toDateString() === start.toDateString() &&
+                now >= start &&
+                now <= end
+            ) {
+                statusText = "LIVE";
+            } else if (start > now) {
+                statusText = start.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric"
+                });
+            } else {
+                statusText = "SCHEDULED";
+            }
+        
+            const teamScore = game.game_status === "completed" ? game.score.team : "";
+            const oppScore  = game.game_status === "completed" ? game.score.opponent_team : "";
         
             const block = document.createElement("div");
             block.className = "scoreboard-container";
@@ -250,7 +267,7 @@
         
             const leftScore  = isHome ? oppScore : teamScore;
             const rightScore = isHome ? teamScore : oppScore;
-        
+  
             block.innerHTML = `
                 <div class="main-bar">
         
