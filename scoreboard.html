@@ -180,10 +180,19 @@
     
     .innings-grid {
         display: grid;
-        grid-template-columns: 80px repeat(9, 35px) 55px; /* compact columns */
+        grid-template-columns:
+            80px              /* LABEL */
+            repeat(9, 40px)   /* Innings 1–9 (equal width) */
+            repeat(4, 1fr)    /* invisible spacers */
+            70px;             /* TOTAL under PITCHES HOME */
         align-items: center;
         text-align: center;
         padding: 6px 0;
+    }
+
+    /* Hide the 4 spacer cells */
+    .innings-grid > div.spacer {
+        visibility: hidden;
     }
     
     .innings-grid > div {
@@ -291,6 +300,12 @@
         <div class="inning-num">7</div>
         <div class="inning-num">8</div>
         <div class="inning-num">9</div>
+    
+        <div class="spacer"></div>
+        <div class="spacer"></div>
+        <div class="spacer"></div>
+        <div class="spacer"></div>
+    
         <div class="label">TOTAL</div>
     </div>
 
@@ -305,9 +320,15 @@
         <div class="digit" id="g7">0</div>
         <div class="digit" id="g8">0</div>
         <div class="digit" id="g9">0</div>
+    
+        <div class="spacer"></div>
+        <div class="spacer"></div>
+        <div class="spacer"></div>
+        <div class="spacer"></div>
+    
         <div class="digit total-digit" id="gTotal">0</div>
     </div>
-
+    
     <div class="innings-grid">
         <div class="label">HOME</div>
         <div class="digit" id="h1">0</div>
@@ -319,6 +340,12 @@
         <div class="digit" id="h7">0</div>
         <div class="digit" id="h8">0</div>
         <div class="digit" id="h9">0</div>
+    
+        <div class="spacer"></div>
+        <div class="spacer"></div>
+        <div class="spacer"></div>
+        <div class="spacer"></div>
+    
         <div class="digit total-digit" id="hTotal">0</div>
     </div>
 
