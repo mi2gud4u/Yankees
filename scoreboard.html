@@ -216,7 +216,7 @@
         </div>
     </div>
 
-    <!-- ⭐ ELECTRONIC SCOREBOARD (REPLACES INNING TABLE) -->
+    <!-- ⭐ ELECTRONIC SCOREBOARD -->
     <div class="electronic-scoreboard">
 
         <div class="top-row">
@@ -294,51 +294,55 @@
 </div>
 
 <script>
-    const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
+const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
 
-    const params = new URLSearchParams(window.location.search);
-    const gameID = params.get("gameID");
+const params = new URLSearchParams(window.location.search);
+const gameID = params.get("gameID");
 
-    async function loadGame() {
-        const response = await fetch(`${apiUrl}/api/ListGames?gameID=${gameID}`);
-        const games = await response.json();
-        const game = games.find(g => g.GameID === gameID);
+async function loadGame() {
+    const response = await fetch(`${apiUrl}/api/ListGames?gameID=${gameID}`);
+    const games = await response.json();
+    const game = games.find(g => g.GameID === gameID);
 
-        document.getElementById("teamName").textContent =
-            `${game.MyTeam} vs ${game.OpponentTeamName}`;
+    document.getElementById("teamName").textContent =
+        `${game.MyTeam} vs ${game.OpponentTeamName}`;
 
-        document.getElementById("yourTeamName").textContent = game.MyTeam;
-        document.getElementById("opponentTeamName").textContent = game.OpponentTeamName;
+    document.getElementById("yourTeamName").textContent = game.MyTeam;
+    document.getElementById("opponentTeamName").textContent = game.OpponentTeamName;
 
-        document.getElementById("yourScore").textContent = game.Score.Team;
-        document.getElementById("opponentScore").textContent = game.Score.Opponent;
+    document.getElementById("yourScore").textContent = game.Score.Team;
+    document.getElementById("opponentScore").textContent = game.Score.Opponent;
 
-        document.getElementById("pitchTeam").textContent = game.Pitches.Team;
-        document.getElementById("pitchOpp").textContent = game.Pitches.Opponent;
+    document.getElementById("pitchTeam").textContent = game.Pitches.Team;
+    document.getElementById("pitchOpp").textContent = game.Pitches.Opponent;
 
-        document.getElementById("pitchesHome").textContent = game.Pitches.Team;
-        document.getElementById("pitchesGuest").textContent = game.Pitches.Opponent;
+    document.getElementById("pitchesHome").textContent = game.Pitches.Team;
+    document.getElementById("pitchesGuest").textContent = game.Pitches.Opponent;
 
-        document.getElementById("balls").textContent = game.Count.Balls;
-        document.getElementById("strikes").textContent = game.Count.Strikes;
-        document.getElementById("outs").textContent = game.Count.Outs;
+    document.getElementById("balls").textContent = game.Count.Balls;
+    document.getElementById("strikes").textContent = game.Count.Strikes;
+    document.getElementById("outs").textContent = game.Count.Outs;
 
-        for (let i = 0; i < 9; i++) {
-            document.getElementById("g" + (i + 1)).textContent =
-                game.Innings.Opponent[i] ?? "0";
+    // ⭐ PAD INNINGS TO 9
+    const teamInn = [...game.Innings.Team];
+    const oppInn = [...game.Innings.Opponent];
 
-            document.getElementById("h" + (i + 1)).textContent =
-                game.Innings.Team[i] ?? "0";
-        }
+    while (teamInn.length < 9) teamInn.push(0);
+    while (oppInn.length < 9) oppInn.push(0);
 
-        document.getElementById("gTotal").textContent = game.Totals.Opponent[0];
-        document.getElementById("hTotal").textContent = game.Totals.Team[0];
-
-        document.getElementById("updatedTime").textContent =
-            "Loaded from DynamoDB: " + new Date().toLocaleTimeString();
+    for (let i = 0; i < 9; i++) {
+        document.getElementById("g" + (i + 1)).textContent = oppInn[i];
+        document.getElementById("h" + (i + 1)).textContent = teamInn[i];
     }
 
-    loadGame();
+    document.getElementById("gTotal").textContent = game.Totals.Opponent[0];
+    document.getElementById("hTotal").textContent = game.Totals.Team[0];
+
+    document.getElementById("updatedTime").textContent =
+        "Loaded from DynamoDB: " + new Date().toLocaleTimeString();
+}
+
+loadGame();
 </script>
 
 </body>
