@@ -186,19 +186,6 @@
         <h2 id="teamName">Loading...</h2>
     </div>
 
-    <!-- ⭐ DIAMOND MOVED BACK INSIDE -->
-    <div class="diamond">
-        <div class="base second" id="base2"></div>
-        <div class="base first" id="base1"></div>
-        <div class="base third" id="base3"></div>
-        <div class="base home" id="baseHome"></div>
-
-        <div class="diamond-line line-1-2"></div>
-        <div class="diamond-line line-2-3"></div>
-        <div class="diamond-line line-3-home"></div>
-        <div class="diamond-line line-home-1"></div>
-    </div>
-
     <div class="scores">
         <div class="team">
             <h3 id="yourTeamName">Your Team</h3>
@@ -206,8 +193,18 @@
             <div class="pitch-small">Pitches: <span id="pitchTeam">0</span></div>
         </div>
 
-        <div class="inning-number">
+        <div class="inning-display">
             <span id="currentInning">-</span>
+
+            <div class="base second" id="base2"></div>
+            <div class="base first" id="base1"></div>
+            <div class="base third" id="base3"></div>
+            <div class="base home" id="baseHome"></div>
+
+            <div class="diamond-line line-1-2"></div>
+            <div class="diamond-line line-2-3"></div>
+            <div class="diamond-line line-3-home"></div>
+            <div class="diamond-line line-home-1"></div>
         </div>
 
         <div class="team">
@@ -217,7 +214,19 @@
         </div>
     </div>
 
-</div> <!-- END MAIN SCOREBOARD -->
+    <table class="inning-table">
+        <thead id="inningHeader"></thead>
+        <tbody id="inningBody"></tbody>
+    </table>
+
+    <div class="bottom-bar">
+        <span>Balls: <span id="balls">0</span></span>
+        <span>Strikes: <span id="strikes">0</span></span>
+        <span>Outs: <span id="outs">0</span></span>
+    </div>
+
+    <p id="updatedTime"></p>
+</div>
 
 <!-- ⭐ ELECTRONIC SCOREBOARD BELOW -->
 <div class="electronic-scoreboard">
