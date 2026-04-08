@@ -230,30 +230,44 @@
         visual.innerHTML = "";
 
         games.forEach(game => {            
-        
             const now = new Date();
             const start = new Date(game.start_ts);
             const end = new Date(game.end_ts);
-        
+            
             let statusText = "";
-        
+            
+            // 1. Completed → FINAL
             if (game.game_status === "completed") {
                 statusText = "FINAL";
-            } else if (
+            }
+            // 2. Today + between start/end → LIVE
+            else if (
                 now.toDateString() === start.toDateString() &&
                 now >= start &&
                 now <= end
             ) {
                 statusText = "LIVE";
-            } else if (start > now) {
-                statusText = start.toLocaleDateString("en-US", {
+            }
+            // 3. Future → formatted date "mmm dd yyyy @ time"
+            else if (start > now) {
+                const datePart = start.toLocaleDateString("en-US", {
                     month: "short",
-                    day: "numeric"
+                    day: "numeric",
+                    year: "numeric"
                 });
-            } else {
+            
+                const timePart = start.toLocaleTimeString("en-US", {
+                    hour: "numeric",
+                    minute: "2-digit"
+                });
+            
+                statusText = `${datePart} @ ${timePart}`;
+            }
+            // 4. Past but not completed → SCHEDULED
+            else {
                 statusText = "SCHEDULED";
             }
-        
+    
             const teamScore = game.game_status === "completed" ? game.score.team : "";
             const oppScore  = game.game_status === "completed" ? game.score.opponent_team : "";
         
