@@ -460,8 +460,8 @@
         document.getElementById("opponentScore").textContent = rightScore;
     
         // TOTALS
-        document.getElementById("gTotal").textContent = guestTotal;
-        document.getElementById("hTotal").textContent = homeTotal;
+        document.getElementById("gTotal").textContent = guestTotal ?? 0;
+        document.getElementById("hTotal").textContent = homeTotal ?? 0;
     
         // PITCHES / COUNT
         document.getElementById("pitchesHome").textContent = game.Pitches?.Team ?? 0;
