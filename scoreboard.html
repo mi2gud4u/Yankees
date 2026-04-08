@@ -4,190 +4,189 @@
     <meta charset="UTF-8">
     <title>Live Baseball Scoreboard</title>
 
-    <style>
-        body {
-            background: #0b0b0b;
-            color: white;
-            font-family: Arial, sans-serif;
-        }
+<style>
+    body {
+        background: #0b0b0b;
+        color: white;
+        font-family: Arial, sans-serif;
+    }
 
-        .scoreboard {
-            width: 520px;
-            margin: 40px auto;
-            padding: 20px;
-            background: #1a1a1a;
-            border-radius: 12px;
-            box-shadow: 0 0 12px rgba(0,0,0,0.4);
-        }
+    .scoreboard {
+        width: 520px;
+        margin: 40px auto;
+        padding: 20px;
+        background: #1a1a1a;
+        border-radius: 12px;
+        box-shadow: 0 0 12px rgba(0,0,0,0.4);
+    }
 
-        .header h2 {
-            margin: 0;
-            text-align: center;
-        }
+    .header h2 {
+        margin: 0;
+        text-align: center;
+    }
 
-        .diamond {
-            position: relative;
-            width: 120px;
-            height: 120px;
-            margin: 20px auto 35px auto; /* spacing above & below */
-        }
+    /* ⭐ DIAMOND ABOVE SCOREBOARD */
+    .diamond {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        margin: 20px auto 35px auto;
+    }
 
+    .scores {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 25px 0;
+    }
 
-        .scores {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 25px 0;
-        }
+    .team {
+        text-align: center;
+        width: 40%;
+    }
 
-        .team {
-            text-align: center;
-            width: 40%;
-        }
+    .team h3 {
+        margin: 0;
+        font-size: 16px;
+    }
 
-        .team h3 {
-            margin: 0;
-            font-size: 16px;
-        }
+    .score {
+        display: block;
+        font-size: 40px;
+        font-weight: bold;
+        margin-top: 5px;
+    }
 
-        .score {
-            display: block;
-            font-size: 40px;
-            font-weight: bold;
-            margin-top: 5px;
-        }
+    .pitch-small {
+        font-size: 14px;
+        margin-top: 4px;
+        color: #ccc;
+    }
 
-        .pitch-small {
-            font-size: 14px;
-            margin-top: 4px;
-            color: #ccc;
-        }
+    .inning-number {
+        width: 20%;
+        text-align: center;
+        font-size: 48px;
+        font-weight: bold;
+    }
 
-        .inning-display {
-            width: 20%;
-            text-align: center;
-            font-size: 48px;
-            font-weight: bold;
-            position: relative;
-        }
+    /* ⭐ BASES */
+    .base {
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        background: #777;
+        transform: rotate(45deg);
+    }
 
-        .base {
-            position: absolute;
-            width: 18px;
-            height: 18px;
-            background: #777;
-            transform: rotate(45deg);
-        }
+    .base.on {
+        background: red !important;
+    }
 
-        .base.on {
-            background: red !important;
-        }
+    .base.second { top: -32px; left: 50%; transform: translateX(-50%) rotate(45deg); }
+    .base.first  { top: 50%; right: -32px; transform: translateY(-50%) rotate(45deg); }
+    .base.third  { top: 50%; left: -32px; transform: translateY(-50%) rotate(45deg); }
+    .base.home   { bottom: -32px; left: 50%; transform: translateX(-50%) rotate(45deg); }
 
-        .base.second { top: -32px; left: 50%; transform: translateX(-50%) rotate(45deg); }
-        .base.first  { top: 50%; right: -32px; transform: translateY(-50%) rotate(45deg); }
-        .base.third  { top: 50%; left: -32px; transform: translateY(-50%) rotate(45deg); }
-        .base.home   { bottom: -32px; left: 50%; transform: translateX(-50%) rotate(45deg); }
+    .diamond-line {
+        position: absolute;
+        background: #777;
+        height: 2px;
+    }
 
-        .diamond-line {
-            position: absolute;
-            background: #777;
-            height: 2px;
-        }
+    .line-1-2 { width: 45px; top: 8%; right: -6px; transform: rotate(35deg); }
+    .line-2-3 { width: 45px; top: 8%; left: -6px; transform: rotate(-35deg); }
+    .line-3-home { width: 45px; bottom: 8%; left: -6px; transform: rotate(35deg); }
+    .line-home-1 { width: 45px; bottom: 8%; right: -6px; transform: rotate(-35deg); }
 
-        .line-1-2 { width: 45px; top: 8%; right: -6px; transform: rotate(35deg); }
-        .line-2-3 { width: 45px; top: 8%; left: -6px; transform: rotate(-35deg); }
-        .line-3-home { width: 45px; bottom: 8%; left: -6px; transform: rotate(35deg); }
-        .line-home-1 { width: 45px; bottom: 8%; right: -6px; transform: rotate(-35deg); }
+    /* ⭐ ELECTRONIC SCOREBOARD (SEPARATED BELOW) */
+    .electronic-scoreboard {
+        background-color: #002395;
+        border: 4px solid #b22222;
+        padding: 40px 20px 20px 20px;
+        font-family: 'Arial Narrow', sans-serif;
+        color: white;
+        width: fit-content;
+        margin: 40px auto; /* <-- separation from main scoreboard */
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
 
-        /* --- ELECTRONIC SCOREBOARD --- */
+    .digit {
+        background-color: #000;
+        color: #ff0000;
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+        font-size: 2.4rem;
+        padding: 5px 0;
+        border-radius: 4px;
+        text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+        border: 1px solid #333;
+        width: 55px;
+        margin: 0 auto;
+    }
 
-        .electronic-scoreboard {
-            background-color: #002395;
-            border: 4px solid #b22222;
-            padding: 40px 20px 20px 20px;
-            font-family: 'Arial Narrow', sans-serif;
-            color: white;
-            width: fit-content;
-            margin: 20px auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+    .digit.wide {
+        width: 80px;
+        font-size: 2.1rem;
+    }
 
-        .digit {
-            background-color: #000;
-            color: #ff0000;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            font-size: 2.4rem;
-            padding: 5px 0;
-            border-radius: 4px;
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
-            border: 1px solid #333;
-            width: 55px;
-            margin: 0 auto;
-        }
+    .top-row {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        align-items: center;
+        border-bottom: 2px solid #b22222;
+        padding-bottom: 15px;
+        font-size: 2.2rem;
+        font-weight: bold;
+    }
 
-        .digit.wide {
-            width: 80px;
-            font-size: 2.1rem;
-        }
+    .top-item {
+        text-align: center;
+    }
 
-        .top-row {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            align-items: center;
-            border-bottom: 2px solid #b22222;
-            padding-bottom: 15px;
-            font-size: 2.2rem;
-            font-weight: bold;
-        }
+    .innings-grid {
+        display: grid;
+        grid-template-columns: 120px repeat(9, 60px) 80px;
+        align-items: center;
+        text-align: center;
+        padding: 10px 0;
+    }
 
-        .top-item {
-            text-align: center;
-        }
+    .innings-grid > div {
+        padding: 12px 0;
+    }
 
-        .innings-grid {
-            display: grid;
-            grid-template-columns: 120px repeat(9, 60px) 80px;
-            align-items: center;
-            text-align: center;
-            padding: 10px 0;
-        }
+    .label {
+        font-size: 1.6rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        color: white;
+    }
 
-        .innings-grid > div {
-            padding: 12px 0;
-        }
+    .inning-num {
+        font-size: 1.6rem;
+        font-weight: bold;
+        color: white;
+    }
 
-        .label {
-            font-size: 1.6rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            color: white;
-        }
+    .total-digit {
+        width: 80px;
+        font-size: 2.1rem;
+    }
 
-        .inning-num {
-            font-size: 1.6rem;
-            font-weight: bold;
-            color: white;
-        }
+    #updatedTime {
+        text-align: center;
+        margin-top: 10px;
+        font-size: 12px;
+        color: #aaa;
+    }
+</style>
 
-        .total-digit {
-            width: 80px;
-            font-size: 2.1rem;
-        }
-
-        #updatedTime {
-            text-align: center;
-            margin-top: 10px;
-            font-size: 12px;
-            color: #aaa;
-        }
-    </style>
-</head>
 <body>
 
-<!-- ⭐ DIAMOND MOVED ABOVE THE SCOREBOARD -->
+<!-- ⭐ DIAMOND ABOVE EVERYTHING -->
 <div class="diamond">
     <div class="base second" id="base2"></div>
     <div class="base first" id="base1"></div>
@@ -200,6 +199,7 @@
     <div class="diamond-line line-home-1"></div>
 </div>
 
+<!-- ⭐ MAIN SCOREBOARD -->
 <div id="scoreboard" class="scoreboard">
 
     <div class="header">
@@ -213,7 +213,6 @@
             <div class="pitch-small">Pitches: <span id="pitchTeam">0</span></div>
         </div>
 
-        <!-- ⭐ ONLY THE INNING NUMBER REMAINS HERE -->
         <div class="inning-number">
             <span id="currentInning">-</span>
         </div>
@@ -225,78 +224,78 @@
         </div>
     </div>
 
-    <!-- ⭐ ELECTRONIC SCOREBOARD -->
-    <div class="electronic-scoreboard">
-    
-        <div class="top-row">
-            <div class="top-item">
-                PITCHES GUEST
-                <div id="pitchesGuest" class="digit wide">0</div>
-            </div>
-    
-            <div class="top-item">
-                BALL
-                <div id="balls" class="digit">0</div>
-            </div>
-    
-            <div class="top-item">
-                STRIKE
-                <div id="strikes" class="digit">0</div>
-            </div>
-    
-            <div class="top-item">
-                OUT
-                <div id="outs" class="digit">0</div>
-            </div>
-    
-            <div class="top-item">
-                PITCHES HOME
-                <div id="pitchesHome" class="digit wide">0</div>
-            </div>
+</div> <!-- END MAIN SCOREBOARD -->
+
+<!-- ⭐ ELECTRONIC SCOREBOARD (SEPARATED BELOW) -->
+<div class="electronic-scoreboard">
+
+    <div class="top-row">
+        <div class="top-item">
+            PITCHES GUEST
+            <div id="pitchesGuest" class="digit wide">0</div>
         </div>
-    
-        <div class="innings-grid">
-            <div class="label"></div>
-            <div class="inning-num">1</div>
-            <div class="inning-num">2</div>
-            <div class="inning-num">3</div>
-            <div class="inning-num">4</div>
-            <div class="inning-num">5</div>
-            <div class="inning-num">6</div>
-            <div class="inning-num">7</div>
-            <div class="inning-num">8</div>
-            <div class="inning-num">9</div>
-            <div class="label">TOTAL</div>
+
+        <div class="top-item">
+            BALL
+            <div id="balls" class="digit">0</div>
         </div>
-    
-        <div class="innings-grid">
-            <div class="label">GUEST</div>
-            <div class="digit" id="g1">0</div>
-            <div class="digit" id="g2">0</div>
-            <div class="digit" id="g3">0</div>
-            <div class="digit" id="g4">0</div>
-            <div class="digit" id="g5">0</div>
-            <div class="digit" id="g6">0</div>
-            <div class="digit" id="g7">0</div>
-            <div class="digit" id="g8">0</div>
-            <div class="digit" id="g9">0</div>
-            <div class="digit total-digit" id="gTotal">0</div>
+
+        <div class="top-item">
+            STRIKE
+            <div id="strikes" class="digit">0</div>
         </div>
-    
-        <div class="innings-grid">
-            <div class="label">HOME</div>
-            <div class="digit" id="h1">0</div>
-            <div class="digit" id="h2">0</div>
-            <div class="digit" id="h3">0</div>
-            <div class="digit" id="h4">0</div>
-            <div class="digit" id="h5">0</div>
-            <div class="digit" id="h6">0</div>
-            <div class="digit" id="h7">0</div>
-            <div class="digit" id="h8">0</div>
-            <div class="digit" id="h9">0</div>
-            <div class="digit total-digit" id="hTotal">0</div>
+
+        <div class="top-item">
+            OUT
+            <div id="outs" class="digit">0</div>
         </div>
-    
+
+        <div class="top-item">
+            PITCHES HOME
+            <div id="pitchesHome" class="digit wide">0</div>
+        </div>
+    </div>
+
+    <div class="innings-grid">
+        <div class="label"></div>
+        <div class="inning-num">1</div>
+        <div class="inning-num">2</div>
+        <div class="inning-num">3</div>
+        <div class="inning-num">4</div>
+        <div class="inning-num">5</div>
+        <div class="inning-num">6</div>
+        <div class="inning-num">7</div>
+        <div class="inning-num">8</div>
+        <div class="inning-num">9</div>
+        <div class="label">TOTAL</div>
+    </div>
+
+    <div class="innings-grid">
+        <div class="label">GUEST</div>
+        <div class="digit" id="g1">0</div>
+        <div class="digit" id="g2">0</div>
+        <div class="digit" id="g3">0</div>
+        <div class="digit" id="g4">0</div>
+        <div class="digit" id="g5">0</div>
+        <div class="digit" id="g6">0</div>
+        <div class="digit" id="g7">0</div>
+        <div class="digit" id="g8">0</div>
+        <div class="digit" id="g9">0</div>
+        <div class="digit total-digit" id="gTotal">0</div>
+    </div>
+
+    <div class="innings-grid">
+        <div class="label">HOME</div>
+        <div class="digit" id="h1">0</div>
+        <div class="digit" id="h2">0</div>
+        <div class="digit" id="h3">0</div>
+        <div class="digit" id="h4">0</div>
+        <div class="digit" id="h5">0</div>
+        <div class="digit" id="h6">0</div>
+        <div class="digit" id="h7">0</div>
+        <div class="digit" id="h8">0</div>
+        <div class="digit" id="h9">0</div>
+        <div class="digit total-digit" id="hTotal">0</div>
     </div>
 
 </div>
