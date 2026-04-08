@@ -139,7 +139,7 @@
         background-color: #002395;
         border: 6px solid #b22222;
         padding: 25px 20px 20px 20px;
-        width: 620px; /* matches real board width */
+        width: 700px; /* matches real board width */
         margin: 40px auto;
         display: flex;
         flex-direction: column;
@@ -152,7 +152,7 @@
         color: #ff0000;
         font-family: 'Digital-7', monospace;
         font-size: 2rem;
-        padding: 4px 0;
+        padding: 8px 0;
         border-radius: 3px;
         text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
         border: 1px solid #222;
@@ -162,13 +162,12 @@
     
     .digit.wide {
         width: 70px;
-        font-size: 1.8rem;
     }
     
     /* Top row proportions match photo */
     .top-row {
         display: grid;
-        grid-template-columns: 120px 80px 80px 80px 120px;
+        grid-template-columns: 160px 120px 120px 120px 160px;
         align-items: center;
         border-bottom: 3px solid #b22222;
         padding-bottom: 12px;
@@ -182,15 +181,15 @@
         display: grid;
         grid-template-columns:
             120px          /* LABEL */
-            repeat(9, 45px) /* Innings 1–9 (equal width, matches photo) */
+            repeat(9, 1fr) /* Innings 1–9 (equal width, matches photo) */
             120px;         /* TOTAL under PITCHES HOME */
         align-items: center;
         text-align: center;
-        padding: 8px 0;
+        padding: 6px 0;
     }
     
     .innings-grid > div {
-        padding: 6px 0;
+        padding: 6px 5;
     }
     
     .label {
@@ -205,7 +204,7 @@
     
     .total-digit {
         width: 70px;
-        font-size: 1.8rem;
+        font-size: 2rem;
     }
 
 
@@ -295,11 +294,6 @@
         <div class="inning-num">8</div>
         <div class="inning-num">9</div>
     
-        <div class="spacer"></div>
-        <div class="spacer"></div>
-        <div class="spacer"></div>
-        <div class="spacer"></div>
-    
         <div class="label">TOTAL</div>
     </div>
 
@@ -314,12 +308,7 @@
         <div class="digit" id="g7">0</div>
         <div class="digit" id="g8">0</div>
         <div class="digit" id="g9">0</div>
-    
-        <div class="spacer"></div>
-        <div class="spacer"></div>
-        <div class="spacer"></div>
-        <div class="spacer"></div>
-    
+ 
         <div class="digit total-digit" id="gTotal">0</div>
     </div>
     
@@ -334,11 +323,7 @@
         <div class="digit" id="h7">0</div>
         <div class="digit" id="h8">0</div>
         <div class="digit" id="h9">0</div>
-    
-        <div class="spacer"></div>
-        <div class="spacer"></div>
-        <div class="spacer"></div>
-        <div class="spacer"></div>
+ 
     
         <div class="digit total-digit" id="hTotal">0</div>
     </div>
