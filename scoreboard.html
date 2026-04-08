@@ -157,15 +157,22 @@
         background-color: #000;
         color: #ff0000;
         font-family: 'FairPlay', 'Digital-7', monospace;
+    
         font-size: 5rem;
+        line-height: 0.8;        /* THIS is the key */
+        overflow: hidden;        /* prevents glow from expanding box */
+    
         text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
         border: 1px solid #222;
+    
         width: 70px;
         height: 110px;
+    
         display: flex;
         align-items: center;
         justify-content: center;
     }
+
 
 
     .digit.wide {
