@@ -340,6 +340,9 @@ async function loadGame() {
     const response = await fetch(`${apiUrl}/api/ListGames?gameID=${gameID}`);
     const games = await response.json();
     const game = games.find(g => g.GameID === gameID);
+    const guestInn = isHome ? game.Innings.Opponent : game.Innings.Team;
+    const homeInn  = isHome ? game.Innings.Team : game.Innings.Opponent;
+
 
     document.getElementById("teamName").textContent =
         `${game.MyTeam} vs ${game.OpponentTeamName}`;
@@ -349,6 +352,20 @@ async function loadGame() {
 
     document.getElementById("yourScore").textContent = game.Score.Team;
     document.getElementById("opponentScore").textContent = game.Score.Opponent;
+
+    document.getElementById("yourTeamName").textContent = leftTeamName;
+    document.getElementById("opponentTeamName").textContent = rightTeamName;
+    
+    document.getElementById("yourScore").textContent =
+        isHome ? game.Score.Opponent : game.Score.Team;
+    document.getElementById("opponentScore").textContent =
+        isHome ? game.Score.Team : game.Score.Opponent;
+
+    document.getElementById("gTotal").textContent =
+        isHome ? game.Totals.Opponent[0] : game.Totals.Team[0];
+    
+    document.getElementById("hTotal").textContent =
+        isHome ? game.Totals.Team[0] : game.Totals.Opponent[0];
 
     //document.getElementById("pitchTeam").textContent = game.Pitches?.Team ?? 0;
     //document.getElementById("pitchOpp").textContent = game.Pitches?.Opponent ?? 0;
