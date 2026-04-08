@@ -214,7 +214,28 @@
         width: 70px;
         font-size: 2rem;
     }
-
+    #gameStatus {
+        font-size: 20px;
+        font-weight: bold;
+        color: #fff;
+        letter-spacing: 1px;
+    }
+    
+    #gameStatus.live {
+        color: #ff3b3b; /* bright red */
+    }
+    
+    #gameStatus.final {
+        color: #cccccc; /* gray */
+    }
+    
+    #gameStatus.future {
+        color: #4da6ff; /* blue */
+    }
+    
+    #gameStatus.scheduled {
+        color: #f2c94c; /* yellow */
+    }
 
 </style>
 
@@ -257,6 +278,11 @@
         <thead id="inningHeader"></thead>
         <tbody id="inningBody"></tbody>
     </table>
+
+    <div class="bottom-bar">
+        <span id="gameStatus">STATUS</span>
+    </div>
+
 
 </div>
 
@@ -370,6 +396,56 @@
     
         const guestTotal = isHome ? game.line_score.opponent_team.totals[0] : game.line_score.team.totals[0];
         const homeTotal  = isHome ? game.line_score.team.totals[0] : game.line_score.opponent_team.totals[0];
+
+        // ⭐ STATUS LOGIC
+        const now = new Date();
+        const start = new Date(game.start_ts);
+        const end = new Date(game.end_ts);
+        
+        let statusText = "";
+        let statusClass = "";
+        
+        // Completed → FINAL
+        if (game.game_status === "completed") {
+            statusText = "FINAL";
+            statusClass = "final";
+        }
+        // Today + between start/end → LIVE
+        else if (
+            now.toDateString() === start.toDateString() &&
+            now >= start &&
+            now <= end
+        ) {
+            statusText = "LIVE";
+            statusClass = "live";
+        }
+        // Future → formatted date
+        else if (start > now) {
+            const datePart = start.toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric"
+            });
+        
+            const timePart = start.toLocaleTimeString("en-US", {
+                hour: "numeric",
+                minute: "2-digit"
+            });
+        
+            statusText = `${datePart} @ ${timePart}`;
+            statusClass = "future";
+        }
+        // Past but not completed → SCHEDULED
+        else {
+            statusText = "SCHEDULED";
+            statusClass = "scheduled";
+        }
+        
+        // ⭐ UPDATE BOTTOM BAR
+        const statusEl = document.getElementById("gameStatus");
+        statusEl.textContent = statusText;
+        statusEl.className = statusClass;
+
     
         // TITLE
         document.getElementById("teamName").textContent =
