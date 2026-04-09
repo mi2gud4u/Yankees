@@ -74,6 +74,12 @@
             border-radius: 5px;
             font-weight: bold;
         }
+        .completed-btn {
+            width: 600px; /* same width as your Add Game collapsible */
+            margin: 0 auto 10px auto;
+            display: block;
+        }
+
 
         button:hover {
             background: #cc0000;
@@ -209,12 +215,14 @@
 <div class="content" id="addGameSection">
     <input id="teamName" placeholder="Team Name">
     <input id="gameId" placeholder="Game ID">
-    <button onclick="addGame()">Add Game</button>
+    <button onclick="addGame()">Add Game ▼</button>
 </div>
 
 <div id="visualSchedule"></div>
+    
 <div class="completed-wrapper">
-    <button id="toggleCompleted" onclick="toggleCompleted()">Completed Games ▼</button>
+    <button id="toggleCompleted" class="completed-btn" onclick="toggleCompleted()">
+    Completed Games ▼</button>
     <div id="completedSection" style="display:none;"></div>
 </div>
 
