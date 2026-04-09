@@ -251,6 +251,7 @@
         // Split into upcoming/live vs completed
         const upcomingGames = games.filter(g => g.game_status !== "completed");
         const completedGames = games.filter(g => g.game_status === "completed");
+        completedGames.reverse();
 
         const visual = document.getElementById("visualSchedule");
         visual.innerHTML = "";
