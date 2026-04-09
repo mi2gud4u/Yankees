@@ -74,12 +74,6 @@
             border-radius: 5px;
             font-weight: bold;
         }
-        .completed-btn {
-            width: 600px; /* same width as your Add Game collapsible */
-            margin: 0 auto 10px auto;
-            display: block;
-        }
-
 
         button:hover {
             background: #cc0000;
@@ -220,11 +214,14 @@
 
 <div id="visualSchedule"></div>
     
+<div class="collapsible completed-toggle" onclick="toggleCompleted()">
+    Completed Games ▼
+</div>
+
 <div class="completed-wrapper">
-    <button id="toggleCompleted" class="completed-btn" onclick="toggleCompleted()">
-    Completed Games ▼</button>
     <div id="completedSection" style="display:none;"></div>
 </div>
+
 
 <script>
     const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
@@ -236,8 +233,8 @@
 
     function toggleCompleted() {
         const section = document.getElementById("completedSection");
-        const btn = document.getElementById("toggleCompleted");
-
+        const btn = document.querySelector(".completed-toggle");
+    
         if (section.style.display === "none") {
             section.style.display = "block";
             btn.textContent = "Completed Games ▲";
