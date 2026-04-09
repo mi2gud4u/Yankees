@@ -358,9 +358,17 @@
     }
 
     async function deleteGame(gameID) {
+        const password = prompt("Enter admin password to delete this game:");
+    
+        if (password !== "1234") {
+            alert("Incorrect password. Delete canceled.");
+            return;
+        }
+    
         await fetch(`${apiUrl}/api/DeleteGame/${gameID}`, { method: "DELETE" });
         loadGames();
     }
+
 
     loadGames();
 </script>
