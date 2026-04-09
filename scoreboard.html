@@ -377,8 +377,8 @@
         // HOME/AWAY
         const isHome = game.home_away === "home";
     
-        const leftTeamName  = isHome ? game.opponent_team.name : game.myTeam;
-        const rightTeamName = isHome ? game.myTeam : game.opponent_team.name;
+        const leftTeamName  = isHome ? game.opponent_team : game.myTeam;
+        const rightTeamName = isHome ? game.myTeam : game.opponent_team;
     
         const leftScore  = isHome ? game.score.opponent_team : game.score.team;
         const rightScore = isHome ? game.score.team : game.score.opponent_team;
