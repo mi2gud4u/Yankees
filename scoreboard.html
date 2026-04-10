@@ -364,34 +364,32 @@
     
     async function loadGame() {
         try {
-            // 1. Use the direct REST route for a single game
+            // 1. Fetch from the clean REST route
             const response = await fetch(`${apiUrl}/api/games/${gameID}`);
-            if (!response.ok) throw new Error("Game not found");
-            
             const game = await response.json();
-
-            // 2. Identify Team Names (Handle the Opponent Object)
+        
+            // 2. Map the data using the exact keys in the JSON you just sent
             const isHome = game.home_away === "home";
             const myName = game.myTeam;
-            const oppName = game.opponent_team?.name || "Opponent";
-
+            const oppName = game.opponent_team.name; // Match nested object
+        
             const leftTeamName  = isHome ? oppName : myName;
             const rightTeamName = isHome ? myName : oppName;
-
-            // 3. Scores (Matching the TeamScore/OpponentScore names in C#)
-            const teamTotalScore = game.score?.teamScore ?? 0;
-            const oppTotalScore = game.score?.opponentScore ?? 0;
-
+        
+            // 3. Score Mapping (Match 'team' and 'opponent_team' from your JSON)
+            const teamTotalScore = game.score.team;
+            const oppTotalScore = game.score.opponent_team;
+        
             const leftScore  = isHome ? oppTotalScore : teamTotalScore;
             const rightScore = isHome ? teamTotalScore : oppTotalScore;
-
-            // 4. Inning Logic
-            const guestInn = isHome ? game.line_score.opponentLine.scores : game.line_score.teamLine.scores;
-            const homeInn  = isHome ? game.line_score.teamLine.scores : game.line_score.opponentLine.scores;
-    
-            // Totals column (R)
-            const guestTotal = isHome ? game.line_score.opponentLine.totals[0] : game.line_score.teamLine.totals[0];
-            const homeTotal  = isHome ? game.line_score.teamLine.totals[0] : game.line_score.opponentLine.totals[0];
+        
+            // 4. Inning Logic (Match 'team' and 'opponent_team' inside 'line_score')
+            const guestInn = isHome ? game.line_score.opponent_team.scores : game.line_score.team.scores;
+            const homeInn  = isHome ? game.line_score.team.scores : game.line_score.opponent_team.scores;
+        
+            // 5. Totals (Match 'totals' array)
+            const guestTotal = isHome ? game.line_score.opponent_team.totals[0] : game.line_score.team.totals[0];
+            const homeTotal  = isHome ? game.line_score.team.totals[0] : game.line_score.opponent_team.totals[0];
 
             // 5. STATUS LOGIC
             const now = new Date();
