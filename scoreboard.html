@@ -363,126 +363,90 @@
     const gameID = params.get("gameID");
     
     async function loadGame() {
-        const response = await fetch(`${apiUrl}/api/ListGames?gameID=${gameID}`);
-        let games = await response.json();
-    
-        if (!Array.isArray(games)) games = [games];
-    
-        const game = games.find(g => String(g.gameID) === String(gameID));
-        if (!game) {
-            console.error("Game not found", gameID);
-            return;
-        }
-    
-        // HOME/AWAY
-        const isHome = game.home_away === "home";
-    
-        const leftTeamName  = isHome ? game.opponent_team : game.myTeam;
-        const rightTeamName = isHome ? game.myTeam : game.opponent_team;
-    
-        const leftScore  = isHome ? game.score.opponent_team : game.score.team;
-        const rightScore = isHome ? game.score.team : game.score.opponent_team;
-    
-        const guestInn = isHome ? game.line_score.opponent_team.scores : game.line_score.team.scores;
-        const homeInn  = isHome ? game.line_score.team.scores : game.line_score.opponent_team.scores;
-    
-        const guestTotal = isHome ? game.line_score.opponent_team.totals[0] : game.line_score.team.totals[0];
-        const homeTotal  = isHome ? game.line_score.team.totals[0] : game.line_score.opponent_team.totals[0];
+        try {
+            // 1. Use the direct REST route for a single game
+            const response = await fetch(`${apiUrl}/api/games/${gameID}`);
+            if (!response.ok) throw new Error("Game not found");
+            
+            const game = await response.json();
 
-        // ⭐ STATUS LOGIC
-        const now = new Date();
-        const start = new Date(game.start_ts);
-        const end = new Date(game.end_ts);
-        
-        let statusText = "";
-        let statusClass = "";
-        
-        // Completed → FINAL
-        if (game.game_status === "completed") {
-            statusText = "FINAL";
-            statusClass = "final";
-        }
-        // Today + between start/end → LIVE
-        else if (
-            now.toDateString() === start.toDateString() &&
-            now >= start &&
-            now <= end
-        ) {
-            statusText = "LIVE";
-            statusClass = "live";
-        }
-        // Future → formatted date
-        else if (start > now) {
-            const datePart = start.toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric"
-            });
-        
-            const timePart = start.toLocaleTimeString("en-US", {
-                hour: "numeric",
-                minute: "2-digit"
-            });
-        
-            statusText = `${datePart} @ ${timePart}`;
-            statusClass = "future";
-        }
-        // Past but not completed → SCHEDULED
-        else {
-            statusText = "SCHEDULED";
-            statusClass = "scheduled";
-        }
-        
-        // ⭐ UPDATE BOTTOM BAR
-        const statusEl = document.getElementById("gameStatus");
-        statusEl.textContent = statusText;
-        statusEl.className = statusClass;
+            // 2. Identify Team Names (Handle the Opponent Object)
+            const isHome = game.home_away === "home";
+            const myName = game.myTeam;
+            const oppName = game.opponent_team?.name || "Opponent";
 
+            const leftTeamName  = isHome ? oppName : myName;
+            const rightTeamName = isHome ? myName : oppName;
+
+            // 3. Scores (Matching the TeamScore/OpponentScore names in C#)
+            const teamTotalScore = game.score?.teamScore ?? 0;
+            const oppTotalScore = game.score?.opponentScore ?? 0;
+
+            const leftScore  = isHome ? oppTotalScore : teamTotalScore;
+            const rightScore = isHome ? teamTotalScore : oppTotalScore;
+
+            // 4. Inning Logic
+            const guestInn = isHome ? game.line_score.opponentLine.scores : game.line_score.teamLine.scores;
+            const homeInn  = isHome ? game.line_score.teamLine.scores : game.line_score.opponentLine.scores;
     
-        // TITLE
-        document.getElementById("teamName").textContent =
-            `${game.myTeam} vs ${game.opponent_team.name}`;
+            // Totals column (R)
+            const guestTotal = isHome ? game.line_score.opponentLine.totals[0] : game.line_score.teamLine.totals[0];
+            const homeTotal  = isHome ? game.line_score.teamLine.totals[0] : game.line_score.opponentLine.totals[0];
+
+            // 5. STATUS LOGIC
+            const now = new Date();
+            const start = new Date(game.start_ts);
+            const end = new Date(game.end_ts);
+            
+            let statusText = "";
+            let statusClass = "";
+            
+            if (game.game_status === "completed") {
+                statusText = "FINAL";
+                statusClass = "final";
+            } else if (now >= start && now <= end) {
+                statusText = "LIVE";
+                statusClass = "live";
+            } else if (start > now) {
+                statusText = start.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + 
+                             " @ " + start.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+                statusClass = "future";
+            } else {
+                statusText = "SCHEDULED";
+                statusClass = "scheduled";
+            }
+            
+            // UPDATE UI
+            document.getElementById("gameStatus").textContent = statusText;
+            document.getElementById("gameStatus").className = statusClass;
+            document.getElementById("teamName").textContent = `${myName} vs ${oppName}`;
+            document.getElementById("yourTeamName").textContent = leftTeamName;
+            document.getElementById("opponentTeamName").textContent = rightTeamName;
+            document.getElementById("yourScore").textContent = leftScore;
+            document.getElementById("opponentScore").textContent = rightScore;
+            document.getElementById("gTotal").textContent = guestTotal ?? 0;
+            document.getElementById("hTotal").textContent = homeTotal ?? 0;
+
+            // INNING PADDING
+            const gInn = [...(guestInn || [])];
+            const hInn = [...(homeInn || [])];
+            while (gInn.length < 9) gInn.push(0);
+            while (hInn.length < 9) hInn.push(0);
     
-        // TEAM NAMES
-        document.getElementById("yourTeamName").textContent = leftTeamName;
-        document.getElementById("opponentTeamName").textContent = rightTeamName;
+            for (let i = 0; i < 9; i++) {
+                document.getElementById("g" + (i + 1)).textContent = gInn[i];
+                document.getElementById("h" + (i + 1)).textContent = hInn[i];
+            }
     
-        // SCORES
-        document.getElementById("yourScore").textContent = leftScore;
-        document.getElementById("opponentScore").textContent = rightScore;
-    
-        // TOTALS
-        document.getElementById("gTotal").textContent = guestTotal ?? 0;
-        document.getElementById("hTotal").textContent = homeTotal ?? 0;
-    
-        // PITCHES / COUNT
-        document.getElementById("pitchesHome").textContent = game.Pitches?.Team ?? 0;
-        document.getElementById("pitchesGuest").textContent = game.Pitches?.Opponent ?? 0;
-    
-        document.getElementById("balls").textContent = game.Count?.Balls ?? 0;
-        document.getElementById("strikes").textContent = game.Count?.Strikes ?? 0;
-        document.getElementById("outs").textContent = game.Count?.Outs ?? 0;
-    
-        // PAD INNINGS TO 9
-        const gInn = [...guestInn];
-        const hInn = [...homeInn];
-    
-        while (gInn.length < 9) gInn.push(0);
-        while (hInn.length < 9) hInn.push(0);
-    
-        // FILL INNING CELLS
-        for (let i = 0; i < 9; i++) {
-            document.getElementById("g" + (i + 1)).textContent = gInn[i];
-            document.getElementById("h" + (i + 1)).textContent = hInn[i];
+            document.getElementById("updatedTime").textContent = "Updated: " + new Date().toLocaleTimeString();
+
+        } catch (err) {
+            console.error("Scoreboard error:", err);
+            document.getElementById("gameStatus").textContent = "Error Loading Game";
         }
-    
-        // TIMESTAMP
-        document.getElementById("updatedTime").textContent =
-            "Loaded from DynamoDB: " + new Date().toLocaleTimeString();
     }
     
     loadGame();
-
 </script>
 
 
