@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Yankees Scoreboard</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0b1020;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .scoreboard {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      background: #111;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+    }
+
+    /* Inning section */
+    .inning-box {
+      text-align: center;
+    }
+
+    .inning-label {
+      font-size: 14px;
+      opacity: 0.7;
+    }
+
+    .inning-half {
+      font-size: 18px;
+      margin-top: 4px;
+    }
+
+    .inning-number {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    /* Balls / Strikes / Outs */
+    .count-box {
+      display: flex;
+      gap: 25px;
+    }
+
+    .count {
+      text-align: center;
+    }
+
+    .label {
+      font-size: 14px;
+      opacity: 0.7;
+    }
+
+    .value {
+      font-size: 32px;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    #balls { color: #4caf50; }   /* green */
+    #strikes { color: #ff9800; } /* orange */
+    #outs { color: #f44336; }    /* red */
+
+    /* Bases */
+    .bases-box {
+      position: relative;
+      width: 90px;
+      height: 90px;
+    }
+
+    .base {
+      width: 28px;
+      height: 28px;
+      background: #333;
+      border: 2px solid #777;
+      transform: rotate(45deg);
+      position: absolute;
+    }
+
+    #second-base {
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+    }
+
+    #first-base {
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%) rotate(45deg);
+    }
+
+    #third-base {
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%) rotate(45deg);
+    }
+
+    .base.runner {
+      background: yellow;
+      border-color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="scoreboard">
+    <div class="inning-box">
+      <div class="inning-label">Inning</div>
+      <div id="inning-half" class="inning-half">Top</div>
+      <div id="inning-number" class="inning-number">1</div>
+    </div>
+
+    <div class="count-box">
+      <div class="count">
+        <div class="label">Balls</div>
+        <div id="balls" class="value">0</div>
+      </div>
+      <div class="count">
+        <div class="label">Strikes</div>
+        <div id="strikes" class="value">0</div>
+      </div>
+      <div class="count">
+        <div class="label">Outs</div>
+        <div id="outs" class="value">0</div>
+      </div>
+    </div>
+
+    <div class="bases-box">
+      <div class="base" id="second-base"></div>
+      <div class="base" id="first-base"></div>
+      <div class="base" id="third-base"></div>
+    </div>
+  </div>
+
+  <script>
+    // Simple API to update the scoreboard
+    function updateScoreboard({ balls, strikes, outs, inningHalf, inningNumber, runners }) {
+      document.getElementById("balls").textContent = balls;
+      document.getElementById("strikes").textContent = strikes;
+      document.getElementById("outs").textContent = outs;
+
+      document.getElementById("inning-half").textContent = inningHalf;
+      document.getElementById("inning-number").textContent = inningNumber;
+
+      // Clear bases
+      ["first-base", "second-base", "third-base"].forEach(id => {
+        document.getElementById(id).classList.remove("runner");
+      });
+
+      // Add runners
+      if (runners.first) document.getElementById("first-base").classList.add("runner");
+      if (runners.second) document.getElementById("second-base").classList.add("runner");
+      if (runners.third) document.getElementById("third-base").classList.add("runner");
+    }
+
+    // Example: demo state (you can remove this)
+    updateScoreboard({
+      balls: 2,
+      strikes: 1,
+      outs: 1,
+      inningHalf: "Bottom",
+      inningNumber: 3,
+      runners: { first: true, second: false, third: true }
+    });
+  </script>
+</body>
+</html>
