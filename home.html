@@ -353,11 +353,8 @@
     }
 
     function viewGame(gameID) {
-        // Open scoreboard in a new tab
-        window.open(`scoreboard.html?gameID=${gameID}`, "_blank");
-    
-        // Load live page in the current tab
         window.open(`live.html?gameID=${gameID}`, "_blank");
+        window.open(`scoreboard.html?gameID=${gameID}`, "_blank");
     }
 
 
