@@ -260,7 +260,7 @@
 
     <div class="scores">
         <div class="team">
-            <h3 id="yourTeamName">Your Team</h3>
+            <h3 id="leftTeam">Your Team</h3>
             <span id="yourScore" class="score">0</span>
         </div>
 
@@ -279,7 +279,7 @@
         </div>
 
         <div class="team">
-            <h3 id="opponentTeamName">Opponent</h3>
+            <h3 id="rightTeam">Opponent</h3>
             <span id="opponentScore" class="score">0</span>
         </div>
     </div>
@@ -384,16 +384,20 @@
     async function loadGame() {
         try {
             // 1. Fetch from the clean REST route
-            const response = await fetch(`${apiUrl}/api/games/${gameID}`);
-            const game = await response.json();
-
-            // 2. Map the data using the exact keys in the JSON you just sent
+            const res = await fetch(`${apiUrl}/api/games/${gameID}`);
+            const game = await res.json();
+            
             const isHome = game.home_away === "home";
             const myName = game.myTeam;
-            const oppName = game.opponent_team.name; // Match nested object
-        
+            const oppName = game.opponent_team.name;
+            
             const leftTeamName  = isHome ? oppName : myName;
             const rightTeamName = isHome ? myName : oppName;
+            
+            document.getElementById("game-id").textContent =`${leftTeamName} @ ${rightTeamName}`;
+            document.getElementById("leftTeam").textContent =`${leftTeamName}`;
+            document.getElementById("rightTeam").textContent =`${rightTeamName}`;
+
 
             const now = new Date();
             const start = new Date(game.start_ts);
