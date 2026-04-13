@@ -451,20 +451,24 @@ loadTeams();
       // Batter name (your existing logic sets batterName)
       document.getElementById("atbat-stats").textContent = batterName;
   
-      // --- PLAY BY PLAY (new logic) ---
+      // Play-by-play
       const pbp = document.getElementById("playByPlay");     // full list
       const latest = document.getElementById("pbp-latest");  // always visible line
-  
+      
       if (Array.isArray(sim.playByPlay) && sim.playByPlay.length > 0) {
-  
+      
           // Always show the newest line
           latest.textContent = sim.playByPlay[sim.playByPlay.length - 1];
-  
+      
           // Full list for expanded view
           pbp.innerHTML = sim.playByPlay
               .map(line => `<div class="pbp-line">${line}</div>`)
               .join("");
+      } else {
+          // Before first pitch
+          latest.textContent = "Waiting for first pitch...";
       }
+
   
       // Inning + box score
       updateInnings(sim);
@@ -504,9 +508,9 @@ document.getElementById("pbp-toggle").addEventListener("click", () => {
     pbp.classList.toggle("collapsed");
 
     if (pbp.classList.contains("collapsed")) {
-        toggle.textContent = "Play‑by‑Play ►";
+        toggle.textContent = "PLAY BY PLAY ►";
     } else {
-        toggle.textContent = "Play‑by‑Play ▼";
+        toggle.textContent = "PLAY BY PLAY ▼";
     }
 });
 
