@@ -353,18 +353,20 @@
     
         <div class="digit total-digit" id="hTotal">0</div>
     </div>
-    <div>
-        <h2>Simulate Game</h2>
-    </div>
-</div>
 
+</div>
+<div onclick="goToLive()" style="cursor: pointer;">
+    <h2>Simulate Game</h2>
+</div>
 <script>
     const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
     
     const params = new URLSearchParams(window.location.search);
     const gameID = params.get("gameID");
 
-
+    function goToLive() {
+        window.location.href = `live.html?gameID=${gameID}`;
+    }
 
     async function loadGame() {
         try {
@@ -441,10 +443,6 @@
             }
     
             document.getElementById("updatedTime").textContent = "Updated: " + new Date().toLocaleTimeString();
-
-            window.onload = () => {
-                window.open(`live.html?gameID=${gameID}`, "_blank");
-            };
 
         } catch (err) {
             console.error("Scoreboard error:", err);
