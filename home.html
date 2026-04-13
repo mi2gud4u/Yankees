@@ -353,8 +353,15 @@
     }
 
     function viewGame(gameID) {
-        window.location.href = `scoreboard.html?gameID=${gameID}`;
+        // Launch ScoreBridge
+        window.location.href = `scorebridge://run?gameID=${gameID}`;
+    
+        // After a short delay, open the scoreboard page
+        setTimeout(() => {
+            window.location.href = `scoreboard.html?gameID=${gameID}`;
+        }, 300); // 300ms is enough
     }
+
 
     async function deleteGame(gameID) {
         if (prompt("Enter admin password:") !== "1234") return;
