@@ -361,7 +361,11 @@
     
     const params = new URLSearchParams(window.location.search);
     const gameID = params.get("gameID");
-    
+
+    window.onload = () => {
+        window.open(`live.html?gameID=${gameID}`, "_blank");
+    };
+
     async function loadGame() {
         try {
             // 1. Fetch from the clean REST route
