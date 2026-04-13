@@ -35,7 +35,7 @@ header {
     background: #111;
     padding: 10px 20px 15px 20px;
     display: grid;
-    grid-template-columns: 1.5fr 1fr 1.5fr;
+    grid-template-columns: 1.5fr .5fr 1.5fr .5fr 1.5fr;
     align-items: center;
 }
 
@@ -49,7 +49,12 @@ header {
 .team-name {
     margin-bottom: 4px;
 }
-
+.score {
+    font-size: 50px;
+    font-weight: 700;
+    color: whitesmoke;
+    text-align: center;
+}
 .rhe-labels,
 .rhe-values {
     display: grid;
@@ -286,6 +291,8 @@ header {
             </div>
         </div>
 
+      <div class="score" id="gTotal">0</div>
+
         <!-- CENTER INFO -->
         <div id="center-info">
             <div id="inning-box">1ST INNING</div>
@@ -295,6 +302,8 @@ header {
                 &nbsp;O:<span id="outs">0</span>
             </div>
         </div>
+
+      <div class="score" id="hTotal">0</div>
 
         <!-- TEAM B -->
         <div class="team-block" style="text-align:right;">
