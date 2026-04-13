@@ -4,20 +4,7 @@
   <meta charset="UTF-8" />
   <title>Dummy Baseball Game</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    h1, h2 { margin-bottom: 5px; }
-    table { border-collapse: collapse; margin-bottom: 20px; }
-    th, td { border: 1px solid #ccc; padding: 4px 8px; text-align: center; }
-    .meta { margin-bottom: 15px; }
-    .label { font-weight: bold; }
-  </style>
-</head>
-<body>
-  <h1 id="game-id" data-game-id="dummy-12345">Yankees @ Red Sox</h1>
-
-    /* ⭐ ELECTRONIC SCOREBOARD — EXACT PROPORTIONS FROM PHOTO */
-    
-    .electronic-scoreboard {
+      .electronic-scoreboard {
         background-color: #002395;
         border: 6px solid #b22222;
         padding: 25px 20px 20px 20px;
@@ -116,50 +103,7 @@
 
 <body>
 
-<!-- ⭐ MAIN SCOREBOARD (ON TOP) -->
-<div id="scoreboard" class="scoreboard">
-
-    <div class="header">
-        <h2 id="teamName">Loading...</h2>
-    </div>
-
-    <div class="scores">
-        <div class="team">
-            <h3 id="yourTeamName">Your Team</h3>
-            <span id="yourScore" class="score">0</span>
-        </div>
-
-        <div class="inning-display">
-            <span id="currentInning">-</span>
-
-            <div class="base second" id="base2"></div>
-            <div class="base first" id="base1"></div>
-            <div class="base third" id="base3"></div>
-            <div class="base home" id="baseHome"></div>
-
-            <div class="diamond-line line-1-2"></div>
-            <div class="diamond-line line-2-3"></div>
-            <div class="diamond-line line-3-home"></div>
-            <div class="diamond-line line-home-1"></div>
-        </div>
-
-        <div class="team">
-            <h3 id="opponentTeamName">Opponent</h3>
-            <span id="opponentScore" class="score">0</span>
-        </div>
-    </div>
-
-    <table class="inning-table">
-        <thead id="inningHeader"></thead>
-        <tbody id="inningBody"></tbody>
-    </table>
-
-    <div class="bottom-bar">
-        <span id="gameStatus">STATUS</span>
-    </div>
-
-
-</div>
+ <h1 id="game-id" data-game-id="dummy-12345">Yankees @ Red Sox</h1>
 
 <!-- ⭐ ELECTRONIC SCOREBOARD BELOW -->
 <div class="electronic-scoreboard" id="electronicBoardContainer">
