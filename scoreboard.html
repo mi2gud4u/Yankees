@@ -386,13 +386,6 @@
             // 1. Fetch from the clean REST route
             const response = await fetch(`${apiUrl}/api/games/${gameID}`);
             const game = await response.json();
-        if (!game.score || !game.line_score) {
-    // Game has not started yet
-    document.getElementById("gameStatus").textContent = "SCHEDULED";
-    document.getElementById("yourScore").textContent = "0";
-    document.getElementById("opponentScore").textContent = "0";
-    return;
-}
 
             // 2. Map the data using the exact keys in the JSON you just sent
             const isHome = game.home_away === "home";
@@ -423,8 +416,8 @@
             }
         
             // 3. Score Mapping (Match 'team' and 'opponent_team' from your JSON)
-            const teamTotalScore = game.score.team;
-            const oppTotalScore = game.score.opponent_team;
+            const teamTotalScore = game.score?.team ?? 0;
+            const oppTotalScore = game.score?.opponent_team ?? 0;
         
             const leftScore  = isHome ? oppTotalScore : teamTotalScore;
             const rightScore = isHome ? teamTotalScore : oppTotalScore;
