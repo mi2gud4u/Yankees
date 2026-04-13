@@ -447,8 +447,13 @@
         const statusEl = document.getElementById("gameStatus");
         statusEl.textContent = statusText;
         statusEl.className = statusClass;
-    
-    
+
+        if (game.game_status === null)
+        {
+            break;
+        }
+        else
+        {
             // 3. Score Mapping (Match 'team' and 'opponent_team' from your JSON)
             const teamTotalScore = game.score?.team ?? 0;
             const oppTotalScore = game.score?.opponent_team ?? 0;
@@ -464,19 +469,15 @@
             const guestTotal = isHome ? game.line_score.opponent_team.totals[0] : game.line_score.team.totals[0];
             const homeTotal  = isHome ? game.line_score.team.totals[0] : game.line_score.opponent_team.totals[0];
 
-            // 5. STATUS LOGIC
-
-            
-            // UPDATE UI
-           //document.getElementById("gameStatus").textContent = statusText;
-           // document.getElementById("gameStatus").className = statusClass;
-           // document.getElementById("teamName").textContent = `${myName} vs ${oppName}`;
-           // document.getElementById("yourTeamName").textContent = leftTeamName;
-           // document.getElementById("opponentTeamName").textContent = rightTeamName;
-           // document.getElementById("yourScore").textContent = leftScore;
-           // document.getElementById("opponentScore").textContent = rightScore;
-           // document.getElementById("gTotal").textContent = guestTotal ?? 0;
-           // document.getElementById("hTotal").textContent = homeTotal ?? 0;
+           document.getElementById("gameStatus").textContent = statusText;
+           document.getElementById("gameStatus").className = statusClass;
+           document.getElementById("teamName").textContent = `${myName} vs ${oppName}`;
+           document.getElementById("yourTeamName").textContent = leftTeamName;
+           document.getElementById("opponentTeamName").textContent = rightTeamName;
+           document.getElementById("yourScore").textContent = leftScore;
+           document.getElementById("opponentScore").textContent = rightScore;
+           document.getElementById("gTotal").textContent = guestTotal ?? 0;
+           document.getElementById("hTotal").textContent = homeTotal ?? 0;
 
             // INNING PADDING
             const gInn = [...(guestInn || [])];
@@ -491,6 +492,7 @@
                 document.getElementById("h" + (i + 1)).innerHTML =
                     hInn[i] !== undefined && hInn[i] !== "" ? hInn[i] : "&nbsp;";
             }
+        }
     }
     
     loadGame();
