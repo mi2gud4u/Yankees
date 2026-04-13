@@ -3,148 +3,316 @@
 <head>
   <meta charset="UTF-8" />
   <title>Dummy Baseball Game</title>
-  <style>
-      body {
+<style>
+
+body {
     background: #0a0a0a;
     color: #fff;
     font-family: 'Segoe UI', sans-serif;
     margin: 0;
     padding: 0;
+    display: flex;
+    justify-content: center;
 }
 
-/* Header */
+#broadcast-container {
+    width: 1280px;
+    background: #000;
+}
+
+/* HEADER */
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: linear-gradient(to right, #b00, #004);
-    color: #fff;
     padding: 10px 20px;
+    font-size: 20px;
     font-weight: 700;
-    letter-spacing: 1px;
 }
 
-/* Scoreboard */
-.scoreboard {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* SCOREBOARD WRAPPER */
+#scoreboard {
     background: #111;
     border-top: 3px solid #00e5ff;
     border-bottom: 3px solid #00e5ff;
     padding: 10px 20px;
-    font-size: 18px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
 }
 
-.team {
-    flex: 1;
+/* TEAM BLOCKS */
+.team-block {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.score-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 40px);
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.score-grid div {
+    background: #222;
+    padding: 5px 0;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+/* INNING + COUNT BLOCK */
+#center-info {
     text-align: center;
 }
 
-.inning-box {
+#inning-box {
     background: #222;
     color: #ff0;
     padding: 6px 12px;
     border-radius: 6px;
     font-weight: 700;
+    margin-bottom: 6px;
 }
 
-/* Player Panels */
-.player-panels {
+#count-box {
+    background: #333;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+/* RUNNERS DIAMOND */
+#diamond {
+    margin-top: 8px;
+    display: grid;
+    grid-template-columns: 40px 40px 40px;
+    grid-template-rows: 40px 40px 40px;
+    justify-content: center;
+}
+
+.base {
+    width: 20px;
+    height: 20px;
+    background: #444;
+    margin: auto;
+    transform: rotate(45deg);
+}
+
+.base.active {
+    background: #ff0;
+}
+
+/* PLAYER PANELS */
+#player-panels {
     display: flex;
     justify-content: space-between;
     padding: 20px;
 }
 
 .panel {
-    flex: 1;
+    width: 48%;
     background: #111;
     border: 2px solid #00e5ff;
     border-radius: 10px;
     padding: 15px;
-    margin: 0 10px;
 }
 
-.panel h3 {
+.panel-title {
     color: #ff0;
+    font-size: 20px;
     margin-bottom: 10px;
 }
 
-/* Field View */
-.field-view {
+/* FIELD VIEW */
+#field-view {
     background: #000;
     border: 3px solid #00e5ff;
     border-radius: 10px;
-    height: 300px;
+    height: 350px;
     margin: 20px;
+    position: relative;
 }
 
-/* Control Buttons */
-.control-buttons {
+/* STRIKE ZONE */
+#strike-zone {
+    width: 140px;
+    height: 180px;
+    border: 3px solid #fff;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* PITCH SPEED */
+#pitch-speed {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #222;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 18px;
+}
+
+/* CONTROL BUTTONS */
+#control-bar {
     display: flex;
-    justify-content: space-evenly;
-    background: #000;
+    justify-content: space-between;
+    padding: 15px 20px;
+    background: #111;
     border-top: 2px solid #00e5ff;
-    padding: 15px 0;
 }
 
-.control-buttons button {
+.control-btn {
     flex: 1;
     margin: 0 10px;
     padding: 16px 0;
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 700;
-    color: #fff;
-    background: linear-gradient(to bottom, #b00, #700);
-    border: 3px solid #fff;
-    border-radius: 10px;
+    border: none;
     cursor: pointer;
-    transition: 0.2s ease;
 }
 
-.control-buttons button:hover {
-    background: linear-gradient(to bottom, #d00, #900);
-    transform: translateY(-2px);
+#start-btn { background: #b00; }
+#stop-btn  { background: #555; }
+#reset-btn { background: #004; }
+
+.control-btn:hover {
+    opacity: 0.85;
 }
 
-  </style>
+/* PLAY BY PLAY */
+#pbp-wrapper {
+    padding: 20px;
+}
+
+#playByPlay {
+    height: 200px;
+    overflow-y: auto;
+    background: #111;
+    border: 2px solid #00e5ff;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+/* TICKER */
+#ticker {
+    background: #000;
+    color: #fff;
+    padding: 10px;
+    font-size: 18px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#ticker span {
+    display: inline-block;
+    padding-left: 100%;
+    animation: ticker 15s linear infinite;
+}
+
+@keyframes ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-100%); }
+}
+
+</style>
+
 </head>
 <body>
+<div id="broadcast-container">
+
 <header>
-  <div>MLB SIMULATION</div>
-  <div>LIVE GAME 1</div>
-  <div>SPORTS NETWORK</div>
+    <div>MLB SIMULATION</div>
+    <div>LIVE GAME 1</div>
+    <div>SPORTS NETWORK</div>
 </header>
 
-<div class="scoreboard">
-  <div class="team">TEAM A — R:3 H:6 E:1</div>
-  <div class="inning-box">4TH INNING | 2-1 COUNT | 2 OUT</div>
-  <div class="team">TEAM B — R:1 H:4 E:0</div>
+<!-- SCOREBOARD -->
+<div id="scoreboard">
+
+    <!-- TEAM A -->
+    <div class="team-block">
+        <div id="teamA-name">TEAM A</div>
+        <div class="score-grid">
+            <div id="gTotal">0</div>
+            <div id="gHits">0</div>
+            <div id="gErr">0</div>
+        </div>
+    </div>
+
+    <!-- CENTER INFO -->
+    <div id="center-info">
+        <div id="inning-box">1ST INNING</div>
+        <div id="count-box">
+            B:<span id="balls">0</span> 
+            S:<span id="strikes">0</span> 
+            O:<span id="outs">0</span>
+        </div>
+
+        <div id="diamond">
+            <div></div> <div id="base2" class="base"></div> <div></div>
+            <div id="base3" class="base"></div> <div></div> <div id="base1" class="base"></div>
+            <div></div> <div></div> <div></div>
+        </div>
+    </div>
+
+    <!-- TEAM B -->
+    <div class="team-block">
+        <div id="teamB-name">TEAM B</div>
+        <div class="score-grid">
+            <div id="hTotal">0</div>
+            <div id="hHits">0</div>
+            <div id="hErr">0</div>
+        </div>
+    </div>
+
 </div>
 
-<div class="player-panels">
-  <div class="panel">
-    <h3>AT BAT</h3>
-    <p>Johnson — AVG .325 | HR 12 | RBI 38</p>
-  </div>
-  <div class="panel">
-    <h3>PITCHING</h3>
-    <p>Martinez — P:57 | ERA 2.45 | K 5</p>
-  </div>
+<!-- PLAYER PANELS -->
+<div id="player-panels">
+    <div class="panel">
+        <div class="panel-title">AT BAT</div>
+        <div id="atbat-stats">AVG .000 | HR 0 | RBI 0</div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-title">PITCHING</div>
+        <div id="pitching-stats">P:0 | ERA 0.00 | K 0</div>
+    </div>
 </div>
 
-<div class="field-view"></div>
-
-<div class="control-buttons">
-  <button onclick="startSim()">Start</button>
-  <button onclick="stopSim()">Stop</button>
-  <button onclick="resetSim()">Reset</button>
+<!-- FIELD VIEW -->
+<div id="field-view">
+    <div id="strike-zone"></div>
+    <div id="pitch-speed">0 MPH</div>
 </div>
 
-  <div class="pbp-wrapper">
-      <h2>Play‑by‑Play</h2>
-      <div id="playByPlay" class="pbp-scroll"></div>
-  </div>
+<!-- CONTROL BAR -->
+<div id="control-bar">
+    <button id="start-btn" class="control-btn" onclick="startSim()">START</button>
+    <button id="stop-btn" class="control-btn" onclick="stopSim()">STOP</button>
+    <button id="reset-btn" class="control-btn" onclick="resetSim()">RESET</button>
+</div>
+
+<!-- PLAY BY PLAY -->
+<div id="pbp-wrapper">
+    <h2>Play‑by‑Play</h2>
+    <div id="playByPlay"></div>
+</div>
+
+<!-- TICKER -->
+<div id="ticker">
+    <span>MLB SCORES: NYY 4 - BOS 2 | LAD 5 - SF 3 | TEX 1 - HOU 6</span>
+</div>
+
+</div>
+
+
 
   <script>
     
