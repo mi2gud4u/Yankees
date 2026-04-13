@@ -182,12 +182,13 @@
 <h2>Manual Controls</h2>
 
 <div class="controls">
-  <h3>Pitch Count</h3>
-  <button onclick="inc('awayPitch')">Away + Pitch</button>
-  <span id="awayPitch">0</span>
-  <br>
-  <button onclick="inc('homePitch')">Home + Pitch</button>
-  <span id="homePitch">0</span>
+<h3>Pitch Count</h3>
+<button onclick="incPitch('awayPitch')">Away + Pitch</button>
+<span id="pitchesGuest">0</span>
+<br>
+<button onclick="incPitch('homePitch')">Home + Pitch</button>
+<span id="pitchesHome">0</span>
+
 
   <h3>Count</h3>
   <button onclick="inc('balls', 0, 3)">Ball +</button>
@@ -221,67 +222,78 @@
 </div>
 
 <script>
-  // Simple increment helper
-  function inc(id, min = 0, max = null) {
+/* -----------------------------
+   BASIC INCREMENTS (BALL/STRIKE/OUT/PITCHES)
+--------------------------------*/
+function inc(id, min = 0, max = null) {
     let el = document.getElementById(id);
     let val = parseInt(el.textContent);
 
     if (max !== null && val >= max) {
-      el.textContent = min;
+        el.textContent = min;
     } else {
-      el.textContent = val + 1;
+        el.textContent = val + 1;
     }
-  }
+}
 
-  // Build inning dropdowns (1–9)
-  const innings = 9;
-  const awaySelect = document.getElementById("awayInningSelect");
-  const homeSelect = document.getElementById("homeInningSelect");
+/* Map your control IDs → scoreboard IDs */
+const pitchMap = {
+    awayPitch: "pitchesGuest",
+    homePitch: "pitchesHome"
+};
 
-  for (let i = 1; i <= innings; i++) {
+/* Override pitch increment to update scoreboard */
+function incPitch(which) {
+    const target = pitchMap[which];
+    inc(target);
+}
+
+/* -----------------------------
+   INNING SCORE CONTROLS
+--------------------------------*/
+const innings = 9;
+let awayScores = Array(innings).fill(0);
+let homeScores = Array(innings).fill(0);
+
+const awaySelect = document.getElementById("awayInningSelect");
+const homeSelect = document.getElementById("homeInningSelect");
+
+for (let i = 1; i <= innings; i++) {
     awaySelect.innerHTML += `<option value="${i}">${i}</option>`;
     homeSelect.innerHTML += `<option value="${i}">${i}</option>`;
-  }
+}
 
-  // Track inning scores
-  let awayScores = Array(innings).fill(0);
-  let homeScores = Array(innings).fill(0);
-
-  function incInning(team) {
+function incInning(team) {
     const select = document.getElementById(team + "InningSelect");
     const inning = parseInt(select.value) - 1;
 
     if (team === "away") {
-      awayScores[inning]++;
-      updateScoreboard("away", inning, awayScores[inning]);
+        awayScores[inning]++;
+        document.getElementById(`g${inning + 1}`).textContent = awayScores[inning];
     } else {
-      homeScores[inning]++;
-      updateScoreboard("home", inning, homeScores[inning]);
+        homeScores[inning]++;
+        document.getElementById(`h${inning + 1}`).textContent = homeScores[inning];
     }
 
     updateTotals();
-  }
+}
 
-  // Update scoreboard table cell
-  function updateScoreboard(team, inning, value) {
-    const row = document.querySelector(`tr[data-team="${team}"]`);
-    const cell = row.children[inning + 1]; // +1 because col 0 = team name
-    cell.textContent = value;
-  }
-
-  // Update total runs
-  function updateTotals() {
+/* -----------------------------
+   TOTAL RUNS
+--------------------------------*/
+function updateTotals() {
     const awayTotal = awayScores.reduce((a, b) => a + b, 0);
     const homeTotal = homeScores.reduce((a, b) => a + b, 0);
 
+    document.getElementById("gTotal").textContent = awayTotal;
+    document.getElementById("hTotal").textContent = homeTotal;
+
+    // Also update the text read by your scraper
     document.getElementById("awayTotal").textContent = awayTotal;
     document.getElementById("homeTotal").textContent = homeTotal;
-
-    // Also update scoreboard R column
-    document.querySelector('tr[data-team="away"] .runs').textContent = awayTotal;
-    document.querySelector('tr[data-team="home"] .runs').textContent = homeTotal;
-  }
+}
 </script>
+
 
 </body>
 </html>
