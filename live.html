@@ -33,6 +33,10 @@
       .digit.wide {
           width: 70px;
       }
+    .base {
+        will-change: background, box-shadow;
+    }
+
       .top-row {
           display: grid;
           grid-template-columns: 160px 120px 120px 120px 160px;
@@ -351,13 +355,10 @@ loadTeams();
   
       // Play-by-play
       const pbp = document.getElementById("playByPlay");
-      pbp.innerHTML = "";
-      sim.play_by_play.forEach(line => {
-          const div = document.createElement("div");
-          div.className = "pbp-line";
-          div.textContent = line;
-          pbp.appendChild(div);
-      });
+      pbp.innerHTML = sim.play_by_play
+        .map(line => `<div class="pbp-line">${line}</div>`)
+        .join("");
+
   
       // Inning + box score
       updateInnings(sim);
