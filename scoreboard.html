@@ -394,6 +394,26 @@
         
             const leftTeamName  = isHome ? oppName : myName;
             const rightTeamName = isHome ? myName : oppName;
+
+
+            let statusText = "";
+            let statusClass = "";
+            
+            if (game.game_status === "completed") {
+                statusText = "FINAL";
+                statusClass = "final";
+                document.getElementById("simulateBtn").style.display = "none";
+            } else if (now >= start && now <= end) {
+                statusText = "LIVE";
+                statusClass = "live";
+            } else if (start > now) {
+                statusText = start.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + 
+                             " @ " + start.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+                statusClass = "future";
+            } else {
+                statusText = "SCHEDULED";
+                statusClass = "scheduled";
+            }
         
             // 3. Score Mapping (Match 'team' and 'opponent_team' from your JSON)
             const teamTotalScore = game.score.team;
@@ -414,26 +434,6 @@
             const now = new Date();
             const start = new Date(game.start_ts);
             const end = new Date(game.end_ts);
-
-      
-            let statusText = "";
-            let statusClass = "";
-            
-            if (game.game_status === "completed") {
-                statusText = "FINAL";
-                statusClass = "final";
-                document.getElementById("simulateBtn").style.display = "none";
-            } else if (now >= start && now <= end) {
-                statusText = "LIVE";
-                statusClass = "live";
-            } else if (start > now) {
-                statusText = start.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + 
-                             " @ " + start.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-                statusClass = "future";
-            } else {
-                statusText = "SCHEDULED";
-                statusClass = "scheduled";
-            }
             
             // UPDATE UI
             document.getElementById("gameStatus").textContent = statusText;
