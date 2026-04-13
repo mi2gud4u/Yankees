@@ -382,7 +382,6 @@
     const gameID = params.get("gameID");
 
     async function loadGame() {
-        try {
             // 1. Fetch from the clean REST route
             const res = await fetch(`${apiUrl}/api/games/${gameID}`);
             const game = await res.json();
@@ -490,11 +489,6 @@
                 document.getElementById("h" + (i + 1)).innerHTML =
                     hInn[i] !== undefined && hInn[i] !== "" ? hInn[i] : "&nbsp;";
             }*/
-
-        } catch (err) {
-            console.error("Scoreboard error:", err);
-            document.getElementById("gameStatus").textContent = "Error Loading Game";
-        }
     }
     
     loadGame();
