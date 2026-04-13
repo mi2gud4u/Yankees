@@ -218,81 +218,152 @@
   <div>Away Total: <span id="awayTotal">0</span></div>
   <div>Home Total: <span id="homeTotal">0</span></div>
 </div>
+<button onclick="startGame()">Start Automated Game</button>
+<button onclick="stopGame()">Stop Game</button>
 
 </div>
 
 <script>
-/* -----------------------------
-   BASIC INCREMENTS (BALL/STRIKE/OUT/PITCHES)
---------------------------------*/
-function inc(id, min = 0, max = null) {
-    let el = document.getElementById(id);
-    let val = parseInt(el.textContent);
+/* ================================
+   GAME STATE
+================================ */
+let inning = 1;
+let half = "top"; // top = away batting, bottom = home batting
+let outs = 0;
+let balls = 0;
+let strikes = 0;
 
-    if (max !== null && val >= max) {
-        el.textContent = min;
-    } else {
-        el.textContent = val + 1;
+let awayScores = Array(9).fill(0);
+let homeScores = Array(9).fill(0);
+
+let pitchesGuest = 0;
+let pitchesHome = 0;
+
+let gameRunning = false;
+let gameInterval = null;
+
+/* ================================
+   UPDATE LED SCOREBOARD
+================================ */
+function updateLED() {
+    document.getElementById("balls").textContent = balls;
+    document.getElementById("strikes").textContent = strikes;
+    document.getElementById("outs").textContent = outs;
+
+    document.getElementById("pitchesGuest").textContent = pitchesGuest;
+    document.getElementById("pitchesHome").textContent = pitchesHome;
+
+    // Update inning runs
+    for (let i = 1; i <= 9; i++) {
+        document.getElementById("g" + i).textContent = awayScores[i - 1];
+        document.getElementById("h" + i).textContent = homeScores[i - 1];
+    }
+
+    // Totals
+    document.getElementById("gTotal").textContent = awayScores.reduce((a,b)=>a+b,0);
+    document.getElementById("hTotal").textContent = homeScores.reduce((a,b)=>a+b,0);
+}
+
+/* ================================
+   RANDOM PLAY GENERATOR
+================================ */
+function simulatePitch() {
+    // Random pitch outcome
+    const outcome = Math.random();
+
+    // Increment pitch count
+    if (half === "top") pitchesGuest++;
+    else pitchesHome++;
+
+    // 0–0.45 = ball
+    if (outcome < 0.45) {
+        balls++;
+        if (balls >= 4) {
+            scoreRun();
+            resetCount();
+        }
+    }
+    // 0.45–0.80 = strike
+    else if (outcome < 0.80) {
+        strikes++;
+        if (strikes >= 3) {
+            recordOut();
+            resetCount();
+        }
+    }
+    // 0.80–1.00 = ball in play
+    else {
+        const hit = Math.random();
+
+        // 20% chance of run scoring
+        if (hit < 0.20) {
+            scoreRun();
+        } else {
+            recordOut();
+        }
+        resetCount();
+    }
+
+    updateLED();
+}
+
+/* ================================
+   COUNT / OUT / INNING LOGIC
+================================ */
+function resetCount() {
+    balls = 0;
+    strikes = 0;
+}
+
+function recordOut() {
+    outs++;
+    if (outs >= 3) {
+        changeHalfInning();
     }
 }
 
-/* Map your control IDs → scoreboard IDs */
-const pitchMap = {
-    awayPitch: "pitchesGuest",
-    homePitch: "pitchesHome"
-};
+function changeHalfInning() {
+    outs = 0;
+    balls = 0;
+    strikes = 0;
 
-/* Override pitch increment to update scoreboard */
-function incPitch(which) {
-    const target = pitchMap[which];
-    inc(target);
-}
-
-/* -----------------------------
-   INNING SCORE CONTROLS
---------------------------------*/
-const innings = 9;
-let awayScores = Array(innings).fill(0);
-let homeScores = Array(innings).fill(0);
-
-const awaySelect = document.getElementById("awayInningSelect");
-const homeSelect = document.getElementById("homeInningSelect");
-
-for (let i = 1; i <= innings; i++) {
-    awaySelect.innerHTML += `<option value="${i}">${i}</option>`;
-    homeSelect.innerHTML += `<option value="${i}">${i}</option>`;
-}
-
-function incInning(team) {
-    const select = document.getElementById(team + "InningSelect");
-    const inning = parseInt(select.value) - 1;
-
-    if (team === "away") {
-        awayScores[inning]++;
-        document.getElementById(`g${inning + 1}`).textContent = awayScores[inning];
+    if (half === "top") {
+        half = "bottom";
     } else {
-        homeScores[inning]++;
-        document.getElementById(`h${inning + 1}`).textContent = homeScores[inning];
+        half = "top";
+        inning++;
     }
 
-    updateTotals();
+    if (inning > 9) {
+        stopGame();
+    }
 }
 
-/* -----------------------------
-   TOTAL RUNS
---------------------------------*/
-function updateTotals() {
-    const awayTotal = awayScores.reduce((a, b) => a + b, 0);
-    const homeTotal = homeScores.reduce((a, b) => a + b, 0);
+function scoreRun() {
+    if (half === "top") {
+        awayScores[inning - 1]++;
+    } else {
+        homeScores[inning - 1]++;
+    }
+}
 
-    document.getElementById("gTotal").textContent = awayTotal;
-    document.getElementById("hTotal").textContent = homeTotal;
+/* ================================
+   START / STOP AUTOMATION
+================================ */
+function startGame() {
+    if (gameRunning) return;
+    gameRunning = true;
 
-    // Also update the text read by your scraper
-    document.getElementById("awayTotal").textContent = awayTotal;
-    document.getElementById("homeTotal").textContent = homeTotal;
+    gameInterval = setInterval(simulatePitch, 800); // every 0.8 sec
+}
+
+function stopGame() {
+    gameRunning = false;
+    clearInterval(gameInterval);
+    alert("Game finished!");
 }
 </script>
+
 
 
 </body>
