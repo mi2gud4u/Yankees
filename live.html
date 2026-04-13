@@ -289,6 +289,9 @@
   </div>
 
   <script>
+    
+    const simApiUrl = "https://livescoreapi-2hbs.onrender.com";
+
 const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
 const params = new URLSearchParams(window.location.search);
 const gameID = params.get("gameID");
@@ -314,14 +317,15 @@ loadTeams();
      POLL SERVER SIMULATION ENGINE
   ============================================================ */
   setInterval(async () => {
-      try {
-          const res = await fetch(`${apiUrl}/api/sim-game`);
-          const sim = await res.json();
-          updateFromSim(sim);
-      } catch (err) {
-          console.error("Sim error:", err);
-      }
-  }, 1000);
+    try {
+        const res = await fetch(`${simApiUrl}/api/sim-game`);
+        const sim = await res.json();
+        updateFromSim(sim);
+    } catch (err) {
+        console.error("Sim error:", err);
+    }
+}, 1000);
+
   
   /* ============================================================
      UPDATE UI FROM SERVER SIM DATA
