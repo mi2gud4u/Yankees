@@ -186,25 +186,37 @@
 </div>
 
 <script>
-
-    const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
-    
-    const params = new URLSearchParams(window.location.search);
-    const gameID = params.get("gameID");
-    
-   const isHome = game.home_away === "home";
-    const myName = game.myTeam;
-    const oppName = game.opponent_team.name;
-    
-    const leftTeamName  = isHome ? oppName : myName;
-    const rightTeamName = isHome ? myName : oppName;
-    
-    // ⭐ UPDATE THE SCOREBOARD TITLE
-    document.getElementById("game-id").textContent =
-        `${leftTeamName} @ ${rightTeamName}`;
-
-
+  const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
   
+  const params = new URLSearchParams(window.location.search);
+  const gameID = params.get("gameID");
+  
+  async function loadGame() {
+      try {
+          const response = await fetch(`${apiUrl}/api/games/${gameID}`);
+          const game = await response.json();
+  
+          // Now game exists — safe to use it
+          const isHome = game.home_away === "home";
+          const myName = game.myTeam;
+          const oppName = game.opponent_team.name;
+  
+          const leftTeamName  = isHome ? oppName : myName;
+          const rightTeamName = isHome ? myName : oppName;
+  
+          document.getElementById("game-id").textContent =
+              `${leftTeamName} @ ${rightTeamName}`;
+  
+          // ⭐ NOW initialize your scoreboard + automation engine
+          startScoreboardEngine();
+  
+      } catch (err) {
+          console.error("Failed to load game:", err);
+      }
+  }
+  
+  loadGame(); // ⭐ Start everything
+function startScoreboardEngine() {
 /* ================================
    GAME STATE
 ================================ */
@@ -276,101 +288,102 @@ function updateLED() {
    RANDOM PLAY GENERATOR
 ================================ */
 function simulatePitch() {
-    // Random pitch outcome
-    const outcome = Math.random();
-
-    // Increment pitch count
-    if (half === "top") pitchesGuest++;
-    else pitchesHome++;
-
-    // 0–0.45 = ball
-    if (outcome < 0.45) {
-        balls++;
-        if (balls >= 4) {
-            scoreRun();
-            resetCount();
-        }
-    }
-    // 0.45–0.80 = strike
-    else if (outcome < 0.80) {
-        strikes++;
-        if (strikes >= 3) {
-            recordOut();
-            resetCount();
-        }
-    }
-    // 0.80–1.00 = ball in play
-    else {
-        const hit = Math.random();
-
-        // 20% chance of run scoring
-        if (hit < 0.20) {
-            scoreRun();
-        } else {
-            recordOut();
-        }
-        resetCount();
-    }
-
-    updateLED();
-}
-
-/* ================================
-   COUNT / OUT / INNING LOGIC
-================================ */
-function resetCount() {
-    balls = 0;
-    strikes = 0;
-}
-
-function recordOut() {
-    outs++;
-    if (outs >= 3) {
-        changeHalfInning();
-    }
-}
-
-function changeHalfInning() {
-    outs = 0;
-    balls = 0;
-    strikes = 0;
-
-    if (half === "top") {
-        half = "bottom";
-    } else {
-        half = "top";
-        inning++;
-    }
-
-    if (inning > 9) {
-        stopGame();
-    }
-  refreshInningDisplay();
-
-}
-
-function scoreRun() {
-    if (half === "top") {
-        awayScores[inning - 1]++;
-    } else {
-        homeScores[inning - 1]++;
-    }
-}
-
-/* ================================
-   START / STOP AUTOMATION
-================================ */
-function startGame() {
-    if (gameRunning) return;
-    gameRunning = true;
-
-    gameInterval = setInterval(simulatePitch, 800); // every 0.8 sec
-}
-
-function stopGame() {
-    gameRunning = false;
-    clearInterval(gameInterval);
-    alert("Game finished!");
+      // Random pitch outcome
+      const outcome = Math.random();
+  
+      // Increment pitch count
+      if (half === "top") pitchesGuest++;
+      else pitchesHome++;
+  
+      // 0–0.45 = ball
+      if (outcome < 0.45) {
+          balls++;
+          if (balls >= 4) {
+              scoreRun();
+              resetCount();
+          }
+      }
+      // 0.45–0.80 = strike
+      else if (outcome < 0.80) {
+          strikes++;
+          if (strikes >= 3) {
+              recordOut();
+              resetCount();
+          }
+      }
+      // 0.80–1.00 = ball in play
+      else {
+          const hit = Math.random();
+  
+          // 20% chance of run scoring
+          if (hit < 0.20) {
+              scoreRun();
+          } else {
+              recordOut();
+          }
+          resetCount();
+      }
+  
+      updateLED();
+  }
+  
+  /* ================================
+     COUNT / OUT / INNING LOGIC
+  ================================ */
+  function resetCount() {
+      balls = 0;
+      strikes = 0;
+  }
+  
+  function recordOut() {
+      outs++;
+      if (outs >= 3) {
+          changeHalfInning();
+      }
+  }
+  
+  function changeHalfInning() {
+      outs = 0;
+      balls = 0;
+      strikes = 0;
+  
+      if (half === "top") {
+          half = "bottom";
+      } else {
+          half = "top";
+          inning++;
+      }
+  
+      if (inning > 9) {
+          stopGame();
+      }
+    refreshInningDisplay();
+  
+  }
+  
+  function scoreRun() {
+      if (half === "top") {
+          awayScores[inning - 1]++;
+      } else {
+          homeScores[inning - 1]++;
+      }
+  }
+  
+  /* ================================
+     START / STOP AUTOMATION
+  ================================ */
+  function startGame() {
+      if (gameRunning) return;
+      gameRunning = true;
+  
+      gameInterval = setInterval(simulatePitch, 800); // every 0.8 sec
+  }
+  
+  function stopGame() {
+      gameRunning = false;
+      clearInterval(gameInterval);
+      alert("Game finished!");
+  }
 }
 </script>
 
