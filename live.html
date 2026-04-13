@@ -2,175 +2,225 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Yankees Scoreboard</title>
+  <title>Dummy Baseball Game</title>
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: #0b1020;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-
-    .scoreboard {
-      display: flex;
-      align-items: center;
-      gap: 40px;
-      background: #111;
-      padding: 20px 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.6);
-    }
-
-    /* Inning section */
-    .inning-box {
-      text-align: center;
-    }
-
-    .inning-label {
-      font-size: 14px;
-      opacity: 0.7;
-    }
-
-    .inning-half {
-      font-size: 18px;
-      margin-top: 4px;
-    }
-
-    .inning-number {
-      font-size: 32px;
-      font-weight: bold;
-    }
-
-    /* Balls / Strikes / Outs */
-    .count-box {
-      display: flex;
-      gap: 25px;
-    }
-
-    .count {
-      text-align: center;
-    }
-
-    .label {
-      font-size: 14px;
-      opacity: 0.7;
-    }
-
-    .value {
-      font-size: 32px;
-      font-weight: bold;
-      margin-top: 5px;
-    }
-
-    #balls { color: #4caf50; }   /* green */
-    #strikes { color: #ff9800; } /* orange */
-    #outs { color: #f44336; }    /* red */
-
-    /* Bases */
-    .bases-box {
-      position: relative;
-      width: 90px;
-      height: 90px;
-    }
-
-    .base {
-      width: 28px;
-      height: 28px;
-      background: #333;
-      border: 2px solid #777;
-      transform: rotate(45deg);
-      position: absolute;
-    }
-
-    #second-base {
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%) rotate(45deg);
-    }
-
-    #first-base {
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%) rotate(45deg);
-    }
-
-    #third-base {
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%) rotate(45deg);
-    }
-
-    .base.runner {
-      background: yellow;
-      border-color: white;
-    }
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1, h2 { margin-bottom: 5px; }
+    table { border-collapse: collapse; margin-bottom: 20px; }
+    th, td { border: 1px solid #ccc; padding: 4px 8px; text-align: center; }
+    .meta { margin-bottom: 15px; }
+    .label { font-weight: bold; }
   </style>
 </head>
 <body>
-  <div class="scoreboard">
-    <div class="inning-box">
-      <div class="inning-label">Inning</div>
-      <div id="inning-half" class="inning-half">Top</div>
-      <div id="inning-number" class="inning-number">1</div>
-    </div>
+  <h1 id="game-id" data-game-id="dummy-12345">Yankees @ Red Sox</h1>
 
-    <div class="count-box">
-      <div class="count">
-        <div class="label">Balls</div>
-        <div id="balls" class="value">0</div>
-      </div>
-      <div class="count">
-        <div class="label">Strikes</div>
-        <div id="strikes" class="value">0</div>
-      </div>
-      <div class="count">
-        <div class="label">Outs</div>
-        <div id="outs" class="value">0</div>
-      </div>
-    </div>
-
-    <div class="bases-box">
-      <div class="base" id="second-base"></div>
-      <div class="base" id="first-base"></div>
-      <div class="base" id="third-base"></div>
-    </div>
+  <div class="meta">
+    <div><span class="label">Status:</span> <span id="game-status">Final</span></div>
+    <div><span class="label">Date:</span> <span id="game-date">2026-04-12</span></div>
+    <div><span class="label">Venue:</span> <span id="game-venue">Fenway Park</span></div>
   </div>
 
-  <script>
-    // Simple API to update the scoreboard
-    function updateScoreboard({ balls, strikes, outs, inningHalf, inningNumber, runners }) {
-      document.getElementById("balls").textContent = balls;
-      document.getElementById("strikes").textContent = strikes;
-      document.getElementById("outs").textContent = outs;
+  <h2>Scoreboard</h2>
+  <table id="scoreboard">
+    <thead>
+      <tr>
+        <th>Team</th>
+        <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th>
+        <th>R</th><th>H</th><th>E</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-team="away">
+        <td class="team-name">Yankees</td>
+        <td>0</td><td>1</td><td>0</td><td>2</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td>
+        <td class="runs">4</td><td class="hits">7</td><td class="errors">1</td>
+      </tr>
+      <tr data-team="home">
+        <td class="team-name">Red Sox</td>
+        <td>1</td><td>0</td><td>2</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>X</td>
+        <td class="runs">4</td><td class="hits">8</td><td class="errors">0</td>
+      </tr>
+    </tbody>
+  </table>
 
-      document.getElementById("inning-half").textContent = inningHalf;
-      document.getElementById("inning-number").textContent = inningNumber;
+  <h2>Game State</h2>
+  <div id="game-state"
+       data-inning="9"
+       data-half="top"
+       data-outs="2"
+       data-balls="3"
+       data-strikes="2"
+       data-bases="1,0,0">
+    Inning: 9 (Top), 2 outs, 3-2 count, runner on first.
+  </div>
 
-      // Clear bases
-      ["first-base", "second-base", "third-base"].forEach(id => {
-        document.getElementById(id).classList.remove("runner");
-      });
+  <h2>Batting Stats</h2>
+  <table id="batting-stats-away">
+    <caption>Yankees Batting</caption>
+    <thead>
+      <tr>
+        <th>Player</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-player-id="nyy-27">
+        <td>A. Judge</td><td>4</td><td>1</td><td>2</td><td>2</td><td>1</td><td>1</td>
+      </tr>
+      <tr data-player-id="nyy-99">
+        <td>G. Stanton</td><td>4</td><td>0</td><td>1</td><td>1</td><td>0</td><td>2</td>
+      </tr>
+    </tbody>
+  </table>
 
-      // Add runners
-      if (runners.first) document.getElementById("first-base").classList.add("runner");
-      if (runners.second) document.getElementById("second-base").classList.add("runner");
-      if (runners.third) document.getElementById("third-base").classList.add("runner");
+  <table id="batting-stats-home">
+    <caption>Red Sox Batting</caption>
+    <thead>
+      <tr>
+        <th>Player</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-player-id="bos-2">
+        <td>X. Bogaerts</td><td>4</td><td>1</td><td>2</td><td>1</td><td>0</td><td>1</td>
+      </tr>
+      <tr data-player-id="bos-28">
+        <td>J. Martinez</td><td>3</td><td>1</td><td>1</td><td>2</td><td>1</td><td>0</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Pitching Stats</h2>
+  <table id="pitching-stats-away">
+    <caption>Yankees Pitching</caption>
+    <thead>
+      <tr>
+        <th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>HR</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-player-id="nyy-p1">
+        <td>G. Cole</td><td>6.0</td><td>7</td><td>4</td><td>4</td><td>1</td><td>8</td><td>1</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table id="pitching-stats-home">
+    <caption>Red Sox Pitching</caption>
+    <thead>
+      <tr>
+        <th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>HR</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-player-id="bos-p1">
+        <td>C. Sale</td><td>7.0</td><td>6</td><td>3</td><td>3</td><td>2</td><td>9</td><td>1</td>
+      </tr>
+    </tbody>
+  </table>
+
+<h2>Manual Controls</h2>
+
+<div class="controls">
+  <h3>Pitch Count</h3>
+  <button onclick="inc('awayPitch')">Away + Pitch</button>
+  <span id="awayPitch">0</span>
+  <br>
+  <button onclick="inc('homePitch')">Home + Pitch</button>
+  <span id="homePitch">0</span>
+
+  <h3>Count</h3>
+  <button onclick="inc('balls', 0, 3)">Ball +</button>
+  <span id="balls">0</span>
+  <br>
+  <button onclick="inc('strikes', 0, 2)">Strike +</button>
+  <span id="strikes">0</span>
+
+  <h3>Outs</h3>
+  <button onclick="inc('outs', 0, 2)">Out +</button>
+  <span id="outs">0</span>
+
+  <h3>Inning Scores</h3>
+  <div>
+    <label>Away Inning:</label>
+    <select id="awayInningSelect"></select>
+    <button onclick="incInning('away')">+ Run</button>
+  </div>
+
+  <div>
+    <label>Home Inning:</label>
+    <select id="homeInningSelect"></select>
+    <button onclick="incInning('home')">+ Run</button>
+  </div>
+
+  <h3>Total Runs</h3>
+  <div>Away Total: <span id="awayTotal">0</span></div>
+  <div>Home Total: <span id="homeTotal">0</span></div>
+</div>
+
+
+<script>
+  // Simple increment helper
+  function inc(id, min = 0, max = null) {
+    let el = document.getElementById(id);
+    let val = parseInt(el.textContent);
+
+    if (max !== null && val >= max) {
+      el.textContent = min;
+    } else {
+      el.textContent = val + 1;
+    }
+  }
+
+  // Build inning dropdowns (1–9)
+  const innings = 9;
+  const awaySelect = document.getElementById("awayInningSelect");
+  const homeSelect = document.getElementById("homeInningSelect");
+
+  for (let i = 1; i <= innings; i++) {
+    awaySelect.innerHTML += `<option value="${i}">${i}</option>`;
+    homeSelect.innerHTML += `<option value="${i}">${i}</option>`;
+  }
+
+  // Track inning scores
+  let awayScores = Array(innings).fill(0);
+  let homeScores = Array(innings).fill(0);
+
+  function incInning(team) {
+    const select = document.getElementById(team + "InningSelect");
+    const inning = parseInt(select.value) - 1;
+
+    if (team === "away") {
+      awayScores[inning]++;
+      updateScoreboard("away", inning, awayScores[inning]);
+    } else {
+      homeScores[inning]++;
+      updateScoreboard("home", inning, homeScores[inning]);
     }
 
-    // Example: demo state (you can remove this)
-    updateScoreboard({
-      balls: 2,
-      strikes: 1,
-      outs: 1,
-      inningHalf: "Bottom",
-      inningNumber: 3,
-      runners: { first: true, second: false, third: true }
-    });
-  </script>
+    updateTotals();
+  }
+
+  // Update scoreboard table cell
+  function updateScoreboard(team, inning, value) {
+    const row = document.querySelector(`tr[data-team="${team}"]`);
+    const cell = row.children[inning + 1]; // +1 because col 0 = team name
+    cell.textContent = value;
+  }
+
+  // Update total runs
+  function updateTotals() {
+    const awayTotal = awayScores.reduce((a, b) => a + b, 0);
+    const homeTotal = homeScores.reduce((a, b) => a + b, 0);
+
+    document.getElementById("awayTotal").textContent = awayTotal;
+    document.getElementById("homeTotal").textContent = homeTotal;
+
+    // Also update scoreboard R column
+    document.querySelector('tr[data-team="away"] .runs').textContent = awayTotal;
+    document.querySelector('tr[data-team="home"] .runs').textContent = homeTotal;
+  }
+</script>
+
 </body>
 </html>
