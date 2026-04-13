@@ -452,15 +452,15 @@
             // INNING PADDING
             const gInn = [...(guestInn || [])];
             const hInn = [...(homeInn || [])];
-            while (gInn.length < 9) gInn.push("");
-            while (hInn.length < 9) hInn.push("");
+            while (gInn.length < 9) gInn.push("&nbsp");
+            while (hInn.length < 9) hInn.push("&nbsp");
     
             for (let i = 0; i < 9; i++) {
                 document.getElementById("g" + (i + 1)).textContent =
-                    gInn[i] !== undefined ? gInn[i] : "";
+                    gInn[i] !== undefined ? gInn[i] : "&nbsp";
             
                 document.getElementById("h" + (i + 1)).textContent =
-                    hInn[i] !== undefined ? hInn[i] : "";
+                    hInn[i] !== undefined ? hInn[i] : "&nbsp";
             }
 
     
