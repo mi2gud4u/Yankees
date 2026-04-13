@@ -5,7 +5,6 @@
   <title>Dummy Baseball Game</title>
   <style>
       .electronic-scoreboard {
-        background-color: #002395;
         border: 6px solid #b22222;
         padding: 25px 20px 20px 20px;
         width: 700px; /* matches real board width */
@@ -180,6 +179,44 @@
     
         <div class="digit total-digit" id="hTotal">0</div>
     </div>
+<h2>Manual Controls</h2>
+
+<div class="controls">
+  <h3>Pitch Count</h3>
+  <button onclick="inc('awayPitch')">Away + Pitch</button>
+  <span id="awayPitch">0</span>
+  <br>
+  <button onclick="inc('homePitch')">Home + Pitch</button>
+  <span id="homePitch">0</span>
+
+  <h3>Count</h3>
+  <button onclick="inc('balls', 0, 3)">Ball +</button>
+  <span id="balls">0</span>
+  <br>
+  <button onclick="inc('strikes', 0, 2)">Strike +</button>
+  <span id="strikes">0</span>
+
+  <h3>Outs</h3>
+  <button onclick="inc('outs', 0, 2)">Out +</button>
+  <span id="outs">0</span>
+
+  <h3>Inning Scores</h3>
+  <div>
+    <label>Away Inning:</label>
+    <select id="awayInningSelect"></select>
+    <button onclick="incInning('away')">+ Run</button>
+  </div>
+
+  <div>
+    <label>Home Inning:</label>
+    <select id="homeInningSelect"></select>
+    <button onclick="incInning('home')">+ Run</button>
+  </div>
+
+  <h3>Total Runs</h3>
+  <div>Away Total: <span id="awayTotal">0</span></div>
+  <div>Home Total: <span id="homeTotal">0</span></div>
+</div>
 
 </div>
 
