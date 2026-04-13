@@ -376,8 +376,8 @@
 <button id="simulateBtn" onclick="goToLive()">Simulate Game</button>
 
 <script>
-    const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
     
+    const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
     const params = new URLSearchParams(window.location.search);
     const gameID = params.get("gameID");
 
@@ -395,6 +395,8 @@
             const leftTeamName  = isHome ? oppName : myName;
             const rightTeamName = isHome ? myName : oppName;
 
+            const start = game.start_ts;
+            const end = game.end_ts;
 
             let statusText = "";
             let statusClass = "";
