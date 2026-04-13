@@ -186,6 +186,25 @@
 </div>
 
 <script>
+
+    const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
+    
+    const params = new URLSearchParams(window.location.search);
+    const gameID = params.get("gameID");
+    
+   const isHome = game.home_away === "home";
+    const myName = game.myTeam;
+    const oppName = game.opponent_team.name;
+    
+    const leftTeamName  = isHome ? oppName : myName;
+    const rightTeamName = isHome ? myName : oppName;
+    
+    // ⭐ UPDATE THE SCOREBOARD TITLE
+    document.getElementById("game-id").textContent =
+        `${leftTeamName} @ ${rightTeamName}`;
+
+
+  
 /* ================================
    GAME STATE
 ================================ */
