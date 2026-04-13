@@ -362,9 +362,7 @@
     const params = new URLSearchParams(window.location.search);
     const gameID = params.get("gameID");
 
-    window.onload = () => {
-        window.open(`live.html?gameID=${gameID}`, "_blank");
-    };
+
 
     async function loadGame() {
         try {
@@ -441,6 +439,10 @@
             }
     
             document.getElementById("updatedTime").textContent = "Updated: " + new Date().toLocaleTimeString();
+
+            window.onload = () => {
+                window.open(`live.html?gameID=${gameID}`, "_blank");
+            };
 
         } catch (err) {
             console.error("Scoreboard error:", err);
