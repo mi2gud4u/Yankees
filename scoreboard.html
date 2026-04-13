@@ -382,8 +382,9 @@
     const gameID = params.get("gameID");
 
     function goToLive() {
-        window.location.href = `live.html?gameID=${gameID}`;
+        window.open(`live.html?gameID=${gameID}`, "_blank");
     }
+
 
     async function loadGame() {
         try {
