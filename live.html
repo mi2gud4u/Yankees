@@ -155,6 +155,28 @@
       button:hover {
           background: #333;
       }
+    .pbp-wrapper {
+    width: 900px;
+    margin: 20px auto;
+    background: #111;
+    border: 2px solid #444;
+    padding: 10px;
+}
+
+.pbp-wrapper h2 {
+    margin: 0 0 8px 0;
+    font-size: 1.2rem;
+    border-bottom: 1px solid #333;
+    padding-bottom: 4px;
+}
+
+.pbp-scroll {
+    max-height: 220px;
+    overflow-y: auto;
+    padding-right: 6px;
+    font-size: 0.9rem;
+}
+
   </style>
 </head>
 <body>
@@ -244,10 +266,6 @@
                   <h3>Pitch‑by‑Pitch</h3>
                   <div id="pitchText">Waiting for first pitch...</div>
               </div>
-              <div class="panel">
-                  <h3>Play‑by‑Play</h3>
-                  <div id="playByPlay"></div>
-              </div>
               <div class="panel players">
                   <div>
                       <strong>Guest Batter:</strong>
@@ -265,367 +283,113 @@
       <button onclick="stopGame()">Stop Game</button>
 
   </div>
+  <div class="pbp-wrapper">
+      <h2>Play‑by‑Play</h2>
+      <div id="playByPlay" class="pbp-scroll"></div>
+  </div>
 
   <script>
-    const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
-    const params = new URLSearchParams(window.location.search);
-    const gameID = params.get("gameID");
+const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
+const params = new URLSearchParams(window.location.search);
+const gameID = params.get("gameID");
 
-    let startGame; // will assign later
-    let stopGame;
+async function loadTeams() {
+    const res = await fetch(`${apiUrl}/api/games/${gameID}`);
+    const game = await res.json();
 
-    async function loadGame() {
-        try {
-            const response = await fetch(`${apiUrl}/api/games/${gameID}`);
-            const game = await response.json();
+    const isHome = game.home_away === "home";
+    const myName = game.myTeam;
+    const oppName = game.opponent_team.name;
 
-            const isHome = game.home_away === "home";
-            const myName = game.myTeam;
-            const oppName = game.opponent_team.name;
+    const leftTeamName  = isHome ? oppName : myName;
+    const rightTeamName = isHome ? myName : oppName;
 
-            const leftTeamName  = isHome ? oppName : myName;
-            const rightTeamName = isHome ? myName : oppName;
+    document.getElementById("game-id").textContent =
+        `${leftTeamName} @ ${rightTeamName}`;
+}
 
-            document.getElementById("game-id").textContent =
-                `${leftTeamName} @ ${rightTeamName}`;
+loadTeams();
 
-            startScoreboardEngine(leftTeamName, rightTeamName);
-        } catch (err) {
-            console.error("Failed to load game:", err);
-        }
+/* ============================================================
+   POLL SERVER SIMULATION ENGINE
+============================================================ */
+setInterval(async () => {
+    const res = await fetch(`${apiUrl}/api/sim-game`);
+    const sim = await res.json();
+
+    updateScoreboard(sim);
+}, 1000);
+
+/* ============================================================
+   UPDATE UI FROM SERVER SIM DATA
+============================================================ */
+function updateScoreboard(sim) {
+
+    // --------------------------
+    // Balls / Strikes / Outs
+    // --------------------------
+    document.getElementById("balls").textContent = sim.balls;
+    document.getElementById("strikes").textContent = sim.strikes;
+    document.getElementById("outs").textContent = sim.outs;
+
+    // --------------------------
+    // Pitch counts
+    // --------------------------
+    document.getElementById("pitchesGuest").textContent = sim.team_pitch_count;
+    document.getElementById("pitchesHome").textContent = sim.opponent_pitch_count;
+
+    // --------------------------
+    // Runners on base
+    // --------------------------
+    document.getElementById("base1").classList.toggle("active", sim.runner_on_1);
+    document.getElementById("base2").classList.toggle("active", sim.runner_on_2);
+    document.getElementById("base3").classList.toggle("active", sim.runner_on_3);
+
+    // --------------------------
+    // Pitch-by-pitch
+    // --------------------------
+    document.getElementById("pitchText").textContent = sim.last_pitch;
+
+    // --------------------------
+    // Play-by-play (prepend newest)
+    // --------------------------
+    const pbp = document.getElementById("playByPlay");
+    pbp.innerHTML = "";
+    sim.play_by_play.forEach(line => {
+        const div = document.createElement("div");
+        div.className = "pbp-line";
+        div.textContent = line;
+        pbp.appendChild(div);
+    });
+
+    // --------------------------
+    // Batter names
+    // --------------------------
+    document.getElementById("guestBatter").textContent = sim.guest_batter;
+    document.getElementById("homeBatter").textContent  = sim.home_batter;
+
+    // --------------------------
+    // Inning + box score
+    // --------------------------
+    updateInnings(sim);
+}
+
+/* ============================================================
+   UPDATE INNING GRID
+============================================================ */
+function updateInnings(sim) {
+    const guest = sim.team_scores;
+    const home  = sim.opponent_scores;
+
+    for (let i = 1; i <= 9; i++) {
+        document.getElementById("g" + i).textContent = guest[i - 1] ?? "";
+        document.getElementById("h" + i).textContent = home[i - 1] ?? "";
     }
 
-    loadGame();
+    document.getElementById("gTotal").textContent = guest.reduce((a,b)=>a+b,0);
+    document.getElementById("hTotal").textContent = home.reduce((a,b)=>a+b,0);
+}
 
-    function startScoreboardEngine(guestName, homeName) {
-        // =========================
-        // GAME STATE
-        // =========================
-        let inning = 1;
-        let half = "top"; // top = guest batting, bottom = home batting
-        let outs = 0;
-        let balls = 0;
-        let strikes = 0;
-
-        let awayScores = Array(9).fill(0);
-        let homeScores = Array(9).fill(0);
-
-        let pitchesGuest = 0;
-        let pitchesHome = 0;
-
-        let runner1 = false;
-        let runner2 = false;
-        let runner3 = false;
-
-        let guestHits = 0;
-        let homeHits = 0;
-        let guestErrors = 0;
-        let homeErrors = 0;
-        let guestSteals = 0;
-        let homeSteals = 0;
-
-        let gameRunning = false;
-        let gameInterval = null;
-
-        const guestLineup = ["G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9"];
-        const homeLineup  = ["H1", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9"];
-        let guestBatterIndex = 0;
-        let homeBatterIndex = 0;
-
-        const pitchTextEl = document.getElementById("pitchText");
-        const pbpEl = document.getElementById("playByPlay");
-        const base1El = document.getElementById("base1");
-        const base2El = document.getElementById("base2");
-        const base3El = document.getElementById("base3");
-        const guestBatterEl = document.getElementById("guestBatter");
-        const homeBatterEl = document.getElementById("homeBatter");
-
-        function currentBatterName() {
-            if (half === "top") {
-                return guestLineup[guestBatterIndex];
-            } else {
-                return homeLineup[homeBatterIndex];
-            }
-        }
-
-        function nextBatter() {
-            if (half === "top") {
-                guestBatterIndex = (guestBatterIndex + 1) % guestLineup.length;
-            } else {
-                homeBatterIndex = (homeBatterIndex + 1) % homeLineup.length;
-            }
-        }
-
-        function refreshBatters() {
-            guestBatterEl.textContent = guestLineup[guestBatterIndex];
-            homeBatterEl.textContent  = homeLineup[homeBatterIndex];
-        }
-
-        // =========================
-        // UI UPDATE
-        // =========================
-        function refreshInningDisplay() {
-            for (let i = 1; i <= 9; i++) {
-                const gCell = document.getElementById("g" + i);
-                const hCell = document.getElementById("h" + i);
-
-                if (i < inning) {
-                    gCell.textContent = awayScores[i - 1] || 0;
-                    hCell.textContent = homeScores[i - 1] || 0;
-                } else if (i === inning) {
-                    if (half === "top") {
-                        gCell.textContent = awayScores[i - 1] || 0;
-                        hCell.innerHTML = "&nbsp;";
-                    } else {
-                        gCell.textContent = awayScores[i - 1] || 0;
-                        hCell.textContent = homeScores[i - 1] || 0;
-                    }
-                } else {
-                    gCell.innerHTML = "&nbsp;";
-                    hCell.innerHTML = "&nbsp;";
-                }
-            }
-        }
-
-        function updateBases() {
-            base1El.classList.toggle("active", runner1);
-            base2El.classList.toggle("active", runner2);
-            base3El.classList.toggle("active", runner3);
-        }
-
-        function updateLED() {
-            document.getElementById("balls").textContent = balls;
-            document.getElementById("strikes").textContent = strikes;
-            document.getElementById("outs").textContent = outs;
-
-            document.getElementById("pitchesGuest").textContent = pitchesGuest;
-            document.getElementById("pitchesHome").textContent = pitchesHome;
-
-            refreshInningDisplay();
-            updateBases();
-            refreshBatters();
-
-            document.getElementById("gTotal").textContent = awayScores.reduce((a,b)=>a+b,0);
-            document.getElementById("hTotal").textContent = homeScores.reduce((a,b)=>a+b,0);
-        }
-
-        function addPBP(line) {
-            const div = document.createElement("div");
-            div.className = "pbp-line";
-            div.textContent = line;
-            pbpEl.prepend(div);
-        }
-
-        // =========================
-        // SIMULATION
-        // =========================
-        function simulatePitch() {
-            const pitchTypes = ["FB", "SL", "CB", "CH", "CT"];
-            const pitch = pitchTypes[Math.floor(Math.random() * pitchTypes.length)];
-            const batter = currentBatterName();
-
-            if (half === "top") pitchesGuest++;
-            else pitchesHome++;
-
-            const r = Math.random();
-
-            // Walk
-            if (r < 0.08) {
-                pitchTextEl.textContent = `${pitch} – Walk to ${batter}`;
-                addPBP(`${batter} draws a walk.`);
-                advanceRunners(1, "BB");
-                resetCount();
-                nextBatter();
-            }
-            // Strike (swinging or looking)
-            else if (r < 0.30) {
-                strikes++;
-                pitchTextEl.textContent = `${pitch} – Strike to ${batter}`;
-                if (strikes >= 3) {
-                    addPBP(`${batter} strikes out.`);
-                    recordOut();
-                    resetCount();
-                    nextBatter();
-                }
-            }
-            // Ball
-            else if (r < 0.55) {
-                balls++;
-                pitchTextEl.textContent = `${pitch} – Ball to ${batter}`;
-                if (balls >= 4) {
-                    pitchTextEl.textContent = `${pitch} – Walk to ${batter}`;
-                    addPBP(`${batter} walks.`);
-                    advanceRunners(1, "BB");
-                    resetCount();
-                    nextBatter();
-                }
-            }
-            // Ball in play
-            else {
-                const hitRoll = Math.random();
-                if (hitRoll < 0.10) {
-                    // Error
-                    pitchTextEl.textContent = `${pitch} – Error on defense, ${batter} reaches.`;
-                    addPBP(`Error in the field, ${batter} reaches.`);
-                    if (half === "top") homeErrors++; else guestErrors++;
-                    advanceRunners(1, "E");
-                    resetCount();
-                    nextBatter();
-                } else if (hitRoll < 0.40) {
-                    // Single
-                    pitchTextEl.textContent = `${pitch} – Single by ${batter}`;
-                    addPBP(`${batter} singles.`);
-                    recordHit(1);
-                    advanceRunners(1, "1B");
-                    resetCount();
-                    nextBatter();
-                } else if (hitRoll < 0.55) {
-                    // Double
-                    pitchTextEl.textContent = `${pitch} – Double by ${batter}`;
-                    addPBP(`${batter} doubles.`);
-                    recordHit(2);
-                    advanceRunners(2, "2B");
-                    resetCount();
-                    nextBatter();
-                } else if (hitRoll < 0.60) {
-                    // Triple
-                    pitchTextEl.textContent = `${pitch} – Triple by ${batter}`;
-                    addPBP(`${batter} triples!`);
-                    recordHit(3);
-                    advanceRunners(3, "3B");
-                    resetCount();
-                    nextBatter();
-                } else if (hitRoll < 0.70) {
-                    // Home run
-                    pitchTextEl.textContent = `${pitch} – HOME RUN by ${batter}!`;
-                    addPBP(`${batter} hits a HOME RUN!`);
-                    recordHit(4);
-                    homeRun();
-                    resetCount();
-                    nextBatter();
-                } else if (hitRoll < 0.80) {
-                    // Stolen base attempt
-                    if (attemptSteal(batter)) {
-                        pitchTextEl.textContent = `${pitch} – Stolen base!`;
-                    } else {
-                        pitchTextEl.textContent = `${pitch} – Caught stealing!`;
-                    }
-                } else {
-                    // Out in play
-                    pitchTextEl.textContent = `${pitch} – Out in play by ${batter}`;
-                    addPBP(`${batter} is retired.`);
-                    recordOut();
-                    resetCount();
-                    nextBatter();
-                }
-            }
-
-            updateLED();
-        }
-
-        function resetCount() {
-            balls = 0;
-            strikes = 0;
-        }
-
-        function recordOut() {
-            outs++;
-            if (outs >= 3) {
-                changeHalfInning();
-            }
-        }
-
-        function changeHalfInning() {
-            outs = 0;
-            balls = 0;
-            strikes = 0;
-            runner1 = runner2 = runner3 = false;
-
-            if (half === "top") {
-                half = "bottom";
-            } else {
-                half = "top";
-                inning++;
-            }
-
-            if (inning > 9) {
-                stopGame();
-            }
-        }
-
-        function recordHit(bases) {
-            if (half === "top") guestHits++;
-            else homeHits++;
-        }
-
-        function scoreRun() {
-            if (half === "top") {
-                awayScores[inning - 1]++;
-            } else {
-                homeScores[inning - 1]++;
-            }
-        }
-
-        function advanceRunners(bases, type) {
-            // Very simplified base advancement
-            for (let i = 0; i < bases; i++) {
-                if (runner3) {
-                    scoreRun();
-                    runner3 = false;
-                }
-                runner3 = runner2;
-                runner2 = runner1;
-                runner1 = true;
-            }
-        }
-
-        function homeRun() {
-            if (runner1) { scoreRun(); runner1 = false; }
-            if (runner2) { scoreRun(); runner2 = false; }
-            if (runner3) { scoreRun(); runner3 = false; }
-            scoreRun();
-        }
-
-        function attemptSteal(batter) {
-            // simple: if runner on 1, try to steal 2nd
-            if (runner1 && !runner2) {
-                const success = Math.random() < 0.6;
-                if (success) {
-                    runner1 = false;
-                    runner2 = true;
-                    if (half === "top") guestSteals++; else homeSteals++;
-                    addPBP(`${batter} steals second base!`);
-                    return true;
-                } else {
-                    runner1 = false;
-                    recordOut();
-                    addPBP(`${batter} is caught stealing.`);
-                    return false;
-                }
-            }
-            addPBP(`${batter} stays put.`);
-            return false;
-        }
-
-        // =========================
-        // START / STOP
-        // =========================
-        startGame = function () {
-            if (gameRunning) return;
-            gameRunning = true;
-            gameInterval = setInterval(simulatePitch, 900);
-        };
-
-        stopGame = function () {
-            gameRunning = false;
-            clearInterval(gameInterval);
-            addPBP("Game finished.");
-            alert("Game finished!");
-        };
-
-        // initial UI
-        updateLED();
-    }
   </script>
 </body>
 </html>
