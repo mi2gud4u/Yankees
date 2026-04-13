@@ -446,6 +446,9 @@
                 statusText = "CANCELLED";
                 statusClass = "cancelled";
             }
+        const statusEl = document.getElementById("gameStatus");
+        statusEl.textContent = statusText;
+        statusEl.className = statusClass;
     }
       /*  
             // 3. Score Mapping (Match 'team' and 'opponent_team' from your JSON)
