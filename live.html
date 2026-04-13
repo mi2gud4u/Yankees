@@ -104,7 +104,6 @@
 
  <h1 id="game-id" data-game-id="dummy-12345">Yankees @ Red Sox</h1>
 
-<!-- ⭐ ELECTRONIC SCOREBOARD BELOW -->
 <div class="electronic-scoreboard" id="electronicBoardContainer">
 
     <div class="top-row">
@@ -179,45 +178,8 @@
     
         <div class="digit total-digit" id="hTotal">0</div>
     </div>
-<h2>Manual Controls</h2>
-
-<div class="controls">
-<h3>Pitch Count</h3>
-<button onclick="incPitch('awayPitch')">Away + Pitch</button>
-<span id="pitchesGuest">0</span>
-<br>
-<button onclick="incPitch('homePitch')">Home + Pitch</button>
-<span id="pitchesHome">0</span>
 
 
-  <h3>Count</h3>
-  <button onclick="inc('balls', 0, 3)">Ball +</button>
-  <span id="balls">0</span>
-  <br>
-  <button onclick="inc('strikes', 0, 2)">Strike +</button>
-  <span id="strikes">0</span>
-
-  <h3>Outs</h3>
-  <button onclick="inc('outs', 0, 2)">Out +</button>
-  <span id="outs">0</span>
-
-  <h3>Inning Scores</h3>
-  <div>
-    <label>Away Inning:</label>
-    <select id="awayInningSelect"></select>
-    <button onclick="incInning('away')">+ Run</button>
-  </div>
-
-  <div>
-    <label>Home Inning:</label>
-    <select id="homeInningSelect"></select>
-    <button onclick="incInning('home')">+ Run</button>
-  </div>
-
-  <h3>Total Runs</h3>
-  <div>Away Total: <span id="awayTotal">0</span></div>
-  <div>Home Total: <span id="homeTotal">0</span></div>
-</div>
 <button onclick="startGame()">Start Automated Game</button>
 <button onclick="stopGame()">Stop Game</button>
 
