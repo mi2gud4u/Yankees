@@ -220,25 +220,23 @@ function refreshInningDisplay() {
 
         // CURRENT inning
         else if (i === inning) {
-            // Top of inning → only away shows
             if (half === "top") {
                 gCell.textContent = awayScores[i - 1] || 0;
-                hCell.textContent = "";
-            }
-            // Bottom of inning → both show
-            else {
+                hCell.innerHTML = "&nbsp;"; // hide home until bottom
+            } else {
                 gCell.textContent = awayScores[i - 1] || 0;
                 hCell.textContent = homeScores[i - 1] || 0;
             }
         }
 
-        // AFTER current inning → blank
+        // FUTURE innings → keep LED box but hide number
         else {
-            gCell.textContent = "";
-            hCell.textContent = "";
+            gCell.innerHTML = "&nbsp;";
+            hCell.innerHTML = "&nbsp;";
         }
     }
 }
+
 
 function updateLED() {
     document.getElementById("balls").textContent = balls;
