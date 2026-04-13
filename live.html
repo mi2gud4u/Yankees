@@ -346,11 +346,7 @@ header {
     <!-- PLAY BY PLAY -->
     <div id="pbp-wrapper">
         <h2 id="pbp-toggle">PLAY BY PLAY ▼</h2>
-    
-        <!-- Always visible last line -->
         <div id="pbp-latest" class="pbp-line"></div>
-    
-        <!-- Collapsible full list -->
         <div id="playByPlay" class="collapsed"></div>
     </div>
 
@@ -432,8 +428,24 @@ loadTeams();
       
       // Update your HTML element
       document.getElementById("batterName").textContent = currentBatter;
-
+    
+      const pbp = document.getElementById("playByPlay");
+      const latest = document.getElementById("pbp-latest");
       
+      if (Array.isArray(sim.playByPlay) && sim.playByPlay.length > 0) {
+      
+          // newest line always visible
+          latest.textContent = sim.playByPlay[sim.playByPlay.length - 1];
+      
+          // full list inside collapsible panel
+          pbp.innerHTML = sim.playByPlay
+              .map(line => `<div class="pbp-line">${line}</div>`)
+              .join("");
+      
+      } else {
+          latest.textContent = "Waiting for first pitch...";
+      }
+           
       // Inning + box score
       updateInnings(sim);
   }
