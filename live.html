@@ -283,7 +283,7 @@
           </div>
       </div>
 
-      <button onclick="startGame()">Start Automated Game</button>
+      <button onclick="startSim()">Start Simulation</button>
       <button onclick="stopGame()">Stop Game</button>
 
   </div>
@@ -376,7 +376,10 @@ loadTeams();
       document.getElementById("gTotal").textContent = guest.reduce((a,b)=>a+b,0);
       document.getElementById("hTotal").textContent = home.reduce((a,b)=>a+b,0);
   }
-
+    
+  function startSim() {
+      fetch(`${simApiUrl}/api/sim/start`, { method: "POST" });
+  }
 
   </script>
 </body>
