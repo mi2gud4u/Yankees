@@ -419,7 +419,8 @@
             const now = new Date();
             const start = new Date(game.start_ts);
             const end = new Date(game.end_ts);
-            
+
+      
             let statusText = "";
             let statusClass = "";
             
@@ -463,10 +464,6 @@
                 document.getElementById("h" + (i + 1)).innerHTML =
                     hInn[i] !== undefined && hInn[i] !== "" ? hInn[i] : "&nbsp;";
             }
-
-
-    
-            document.getElementById("updatedTime").textContent = "Updated: " + new Date().toLocaleTimeString();
 
         } catch (err) {
             console.error("Scoreboard error:", err);
