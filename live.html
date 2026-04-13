@@ -15,149 +15,229 @@
 <body>
   <h1 id="game-id" data-game-id="dummy-12345">Yankees @ Red Sox</h1>
 
-  <div class="meta">
-    <div><span class="label">Status:</span> <span id="game-status">Final</span></div>
-    <div><span class="label">Date:</span> <span id="game-date">2026-04-12</span></div>
-    <div><span class="label">Venue:</span> <span id="game-venue">Fenway Park</span></div>
-  </div>
+    /* ⭐ ELECTRONIC SCOREBOARD — EXACT PROPORTIONS FROM PHOTO */
+    
+    .electronic-scoreboard {
+        background-color: #002395;
+        border: 6px solid #b22222;
+        padding: 25px 20px 20px 20px;
+        width: 700px; /* matches real board width */
+        margin: 40px auto;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+    
+    /* LED digits */
+    .digit {
+        background-color: #000;
+        color: #ff0000;
+        font-family: 'Digital-7', monospace;
+        font-size: 2rem;
+        padding: 8px 0;
+        border-radius: 3px;
+        text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+        border: 1px solid #222;
+        width: 48px;
+        margin: 0 auto;
+    }
+    
+    .digit.wide {
+        width: 70px;
+    }
+    
+    /* Top row proportions match photo */
+    .top-row {
+        display: grid;
+        grid-template-columns: 160px 120px 120px 120px 160px;
+        align-items: center;
+        border-bottom: 3px solid #b22222;
+        padding-bottom: 12px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-align: center;
+    }
+    
+    /* Innings grid EXACT spacing */
+    .innings-grid {
+        display: grid;
+        grid-template-columns:
+            120px          /* LABEL */
+            repeat(9, 1fr) /* Innings 1–9 (equal width, matches photo) */
+            120px;         /* TOTAL under PITCHES HOME */
+        align-items: center;
+        text-align: center;
+        padding: 6px 0;
+    }
+    
+    .innings-grid > div {
+        padding: 6px 5;
+    }
+    
+    .label {
+        font-size: 1.3rem;
+        font-weight: 900;
+    }
+    
+    .inning-num {
+        font-size: 1.3rem;
+        font-weight: bold;
+    }
+    
+    .total-digit {
+        width: 70px;
+        font-size: 2rem;
+    }
 
-  <h2>Scoreboard</h2>
-  <table id="scoreboard">
-    <thead>
-      <tr>
-        <th>Team</th>
-        <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th>
-        <th>R</th><th>H</th><th>E</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr data-team="away">
-        <td class="team-name">Yankees</td>
-        <td>0</td><td>1</td><td>0</td><td>2</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td>
-        <td class="runs">4</td><td class="hits">7</td><td class="errors">1</td>
-      </tr>
-      <tr data-team="home">
-        <td class="team-name">Red Sox</td>
-        <td>1</td><td>0</td><td>2</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>X</td>
-        <td class="runs">4</td><td class="hits">8</td><td class="errors">0</td>
-      </tr>
-    </tbody>
-  </table>
+    #gameStatus {
+        font-size: 20px;
+        font-weight: bold;
+        color: #fff;
+        letter-spacing: 1px;
+    }
+    
+    #gameStatus.live {
+        color: #ff3b3b; /* bright red */
+    }
+    
+    #gameStatus.final {
+        color: #cccccc; /* gray */
+    }
+    
+    #gameStatus.future {
+        color: #4da6ff; /* blue */
+    }
+    
+    #gameStatus.scheduled {
+        color: #f2c94c; /* yellow */
+    }
 
-  <h2>Game State</h2>
-  <div id="game-state"
-       data-inning="9"
-       data-half="top"
-       data-outs="2"
-       data-balls="3"
-       data-strikes="2"
-       data-bases="1,0,0">
-    Inning: 9 (Top), 2 outs, 3-2 count, runner on first.
-  </div>
+</style>
 
-  <h2>Batting Stats</h2>
-  <table id="batting-stats-away">
-    <caption>Yankees Batting</caption>
-    <thead>
-      <tr>
-        <th>Player</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr data-player-id="nyy-27">
-        <td>A. Judge</td><td>4</td><td>1</td><td>2</td><td>2</td><td>1</td><td>1</td>
-      </tr>
-      <tr data-player-id="nyy-99">
-        <td>G. Stanton</td><td>4</td><td>0</td><td>1</td><td>1</td><td>0</td><td>2</td>
-      </tr>
-    </tbody>
-  </table>
+<body>
 
-  <table id="batting-stats-home">
-    <caption>Red Sox Batting</caption>
-    <thead>
-      <tr>
-        <th>Player</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr data-player-id="bos-2">
-        <td>X. Bogaerts</td><td>4</td><td>1</td><td>2</td><td>1</td><td>0</td><td>1</td>
-      </tr>
-      <tr data-player-id="bos-28">
-        <td>J. Martinez</td><td>3</td><td>1</td><td>1</td><td>2</td><td>1</td><td>0</td>
-      </tr>
-    </tbody>
-  </table>
+<!-- ⭐ MAIN SCOREBOARD (ON TOP) -->
+<div id="scoreboard" class="scoreboard">
 
-  <h2>Pitching Stats</h2>
-  <table id="pitching-stats-away">
-    <caption>Yankees Pitching</caption>
-    <thead>
-      <tr>
-        <th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>HR</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr data-player-id="nyy-p1">
-        <td>G. Cole</td><td>6.0</td><td>7</td><td>4</td><td>4</td><td>1</td><td>8</td><td>1</td>
-      </tr>
-    </tbody>
-  </table>
+    <div class="header">
+        <h2 id="teamName">Loading...</h2>
+    </div>
 
-  <table id="pitching-stats-home">
-    <caption>Red Sox Pitching</caption>
-    <thead>
-      <tr>
-        <th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>HR</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr data-player-id="bos-p1">
-        <td>C. Sale</td><td>7.0</td><td>6</td><td>3</td><td>3</td><td>2</td><td>9</td><td>1</td>
-      </tr>
-    </tbody>
-  </table>
+    <div class="scores">
+        <div class="team">
+            <h3 id="yourTeamName">Your Team</h3>
+            <span id="yourScore" class="score">0</span>
+        </div>
 
-<h2>Manual Controls</h2>
+        <div class="inning-display">
+            <span id="currentInning">-</span>
 
-<div class="controls">
-  <h3>Pitch Count</h3>
-  <button onclick="inc('awayPitch')">Away + Pitch</button>
-  <span id="awayPitch">0</span>
-  <br>
-  <button onclick="inc('homePitch')">Home + Pitch</button>
-  <span id="homePitch">0</span>
+            <div class="base second" id="base2"></div>
+            <div class="base first" id="base1"></div>
+            <div class="base third" id="base3"></div>
+            <div class="base home" id="baseHome"></div>
 
-  <h3>Count</h3>
-  <button onclick="inc('balls', 0, 3)">Ball +</button>
-  <span id="balls">0</span>
-  <br>
-  <button onclick="inc('strikes', 0, 2)">Strike +</button>
-  <span id="strikes">0</span>
+            <div class="diamond-line line-1-2"></div>
+            <div class="diamond-line line-2-3"></div>
+            <div class="diamond-line line-3-home"></div>
+            <div class="diamond-line line-home-1"></div>
+        </div>
 
-  <h3>Outs</h3>
-  <button onclick="inc('outs', 0, 2)">Out +</button>
-  <span id="outs">0</span>
+        <div class="team">
+            <h3 id="opponentTeamName">Opponent</h3>
+            <span id="opponentScore" class="score">0</span>
+        </div>
+    </div>
 
-  <h3>Inning Scores</h3>
-  <div>
-    <label>Away Inning:</label>
-    <select id="awayInningSelect"></select>
-    <button onclick="incInning('away')">+ Run</button>
-  </div>
+    <table class="inning-table">
+        <thead id="inningHeader"></thead>
+        <tbody id="inningBody"></tbody>
+    </table>
 
-  <div>
-    <label>Home Inning:</label>
-    <select id="homeInningSelect"></select>
-    <button onclick="incInning('home')">+ Run</button>
-  </div>
+    <div class="bottom-bar">
+        <span id="gameStatus">STATUS</span>
+    </div>
 
-  <h3>Total Runs</h3>
-  <div>Away Total: <span id="awayTotal">0</span></div>
-  <div>Home Total: <span id="homeTotal">0</span></div>
+
 </div>
 
+<!-- ⭐ ELECTRONIC SCOREBOARD BELOW -->
+<div class="electronic-scoreboard" id="electronicBoardContainer">
+
+    <div class="top-row">
+        <div class="top-item">
+            PITCHES GUEST
+            <div id="pitchesGuest" class="digit wide">0</div>
+        </div>
+
+        <div class="top-item">
+            BALL
+            <div id="balls" class="digit">0</div>
+        </div>
+
+        <div class="top-item">
+            STRIKE
+            <div id="strikes" class="digit">0</div>
+        </div>
+
+        <div class="top-item">
+            OUT
+            <div id="outs" class="digit">0</div>
+        </div>
+
+        <div class="top-item">
+            PITCHES HOME
+            <div id="pitchesHome" class="digit wide">0</div>
+        </div>
+    </div>
+
+    <div class="innings-grid">
+        <div class="label"></div>
+        <div class="inning-num">1</div>
+        <div class="inning-num">2</div>
+        <div class="inning-num">3</div>
+        <div class="inning-num">4</div>
+        <div class="inning-num">5</div>
+        <div class="inning-num">6</div>
+        <div class="inning-num">7</div>
+        <div class="inning-num">8</div>
+        <div class="inning-num">9</div>
+    
+        <div class="label">TOTAL</div>
+    </div>
+
+    <div class="innings-grid">
+        <div class="label">GUEST</div>
+        <div class="digit" id="g1">0</div>
+        <div class="digit" id="g2">0</div>
+        <div class="digit" id="g3">0</div>
+        <div class="digit" id="g4">0</div>
+        <div class="digit" id="g5">0</div>
+        <div class="digit" id="g6">0</div>
+        <div class="digit" id="g7">0</div>
+        <div class="digit" id="g8">0</div>
+        <div class="digit" id="g9">0</div>
+ 
+        <div class="digit total-digit" id="gTotal">0</div>
+    </div>
+    
+    <div class="innings-grid">
+        <div class="label">HOME</div>
+        <div class="digit" id="h1">0</div>
+        <div class="digit" id="h2">0</div>
+        <div class="digit" id="h3">0</div>
+        <div class="digit" id="h4">0</div>
+        <div class="digit" id="h5">0</div>
+        <div class="digit" id="h6">0</div>
+        <div class="digit" id="h7">0</div>
+        <div class="digit" id="h8">0</div>
+        <div class="digit" id="h9">0</div>
+ 
+    
+        <div class="digit total-digit" id="hTotal">0</div>
+    </div>
+
+</div>
 
 <script>
   // Simple increment helper
