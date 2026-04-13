@@ -39,7 +39,7 @@
 
       .top-row {
           display: grid;
-          grid-template-columns: 160px 120px 120px 120px 160px;
+          grid-template-columns: 300px 120px 120px 120px 300px;
           align-items: center;
           justify-items: center;
           border-bottom: 3px solid #b22222;
@@ -162,10 +162,29 @@
       }
       .control-buttons {
           display: flex;
-          justify-content: space-between; /* spreads buttons evenly */
+          justify-content: space-between;
           width: 100%;
-          margin-top: 10px;
+          margin-top: 15px;
       }
+      
+      .control-buttons button {
+          flex: 1;
+          margin: 0 10px;
+          padding: 14px 0;
+          font-size: 20px;
+          font-weight: 600;
+          background: transparent;
+          color: #00e5ff; /* turquoise text */
+          border: 3px solid #00e5ff; /* turquoise border */
+          border-radius: 12px;
+          cursor: pointer;
+          transition: 0.2s ease;
+      }
+      
+      .control-buttons button:hover {
+          background: rgba(0, 229, 255, 0.15);
+      }
+
 
       .pbp-wrapper {
           width: 900px;
