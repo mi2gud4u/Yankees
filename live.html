@@ -419,11 +419,11 @@ loadTeams();
 
       if(sim.top == true)
       {
-        currentBatter = gameState.oppBatters[gameState.oppBatterIndex];
+        document.getElementById("currentBatter").textContent = gameState.teamBatters[gameState.teamBatterIndex];
       }
       else
       {
-        currentBatter = gameState.teamBatters[gameState.teamBatterIndex];
+        document.getElementById("currentBatter").textContent = gameState.teamBatters[gameState.teamBatterIndex];
       }
       
       // Inning + box score
