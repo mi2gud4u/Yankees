@@ -4,378 +4,628 @@
   <meta charset="UTF-8" />
   <title>Dummy Baseball Game</title>
   <style>
-
-        body {
+      body {
           background: #0b0b0b;
           color: white;
           font-family: Arial, sans-serif;
       }
       .electronic-scoreboard {
-        border: 6px solid #b22222;
-        padding: 25px 20px 20px 20px;
-        width: 700px; /* matches real board width */
-        margin: 40px auto;
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-    }
-    
-    /* LED digits */
-    .digit {
-        background-color: #000;
-        color: #ff0000;
-        font-family: 'Digital-7', monospace;
-        font-size: 2rem;
-        padding: 8px 0;
-        border-radius: 3px;
-        text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
-        border: 1px solid #222;
-        width: 48px;
-        margin: 0 auto;
-    }
-    
-    .digit.wide {
-        width: 70px;
-    }
-    
-    /* Top row proportions match photo */
-    .top-row {
-        display: grid;
-        grid-template-columns: 160px 120px 120px 120px 160px;
-        align-items: center;
-        border-bottom: 3px solid #b22222;
-        padding-bottom: 12px;
-        font-size: 1.5rem;
-        font-weight: bold;
-        text-align: center;
-    }
-    
-    /* Innings grid EXACT spacing */
-    .innings-grid {
-        display: grid;
-        grid-template-columns:
-            120px          /* LABEL */
-            repeat(9, 1fr) /* Innings 1–9 (equal width, matches photo) */
-            120px;         /* TOTAL under PITCHES HOME */
-        align-items: center;
-        text-align: center;
-        padding: 6px 0;
-    }
-    
-    .innings-grid > div {
-        padding: 6px 5;
-    }
-    
-    .label {
-        font-size: 1.3rem;
-        font-weight: 900;
-    }
-    
-    .inning-num {
-        font-size: 1.3rem;
-        font-weight: bold;
-    }
-    
-    .total-digit {
-        width: 70px;
-        font-size: 2rem;
-    }
-    
-    #game-id {
-        text-align: center;
-    }
+          border: 6px solid #b22222;
+          padding: 25px 20px 20px 20px;
+          width: 900px;
+          margin: 40px auto;
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+      }
+      .digit {
+          background-color: #000;
+          color: #ff0000;
+          font-family: 'Digital-7', monospace;
+          font-size: 2rem;
+          padding: 8px 0;
+          border-radius: 3px;
+          text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+          border: 1px solid #222;
+          width: 48px;
+          margin: 0 auto;
+      }
+      .digit.wide {
+          width: 70px;
+      }
+      .top-row {
+          display: grid;
+          grid-template-columns: 160px 120px 120px 120px 160px;
+          align-items: center;
+          border-bottom: 3px solid #b22222;
+          padding-bottom: 12px;
+          font-size: 1.5rem;
+          font-weight: bold;
+          text-align: center;
+      }
+      .innings-grid {
+          display: grid;
+          grid-template-columns:
+              120px
+              repeat(9, 1fr)
+              120px;
+          align-items: center;
+          text-align: center;
+          padding: 6px 0;
+      }
+      .innings-grid > div {
+          padding: 6px 5px;
+      }
+      .label {
+          font-size: 1.3rem;
+          font-weight: 900;
+      }
+      .inning-num {
+          font-size: 1.3rem;
+          font-weight: bold;
+      }
+      .total-digit {
+          width: 70px;
+          font-size: 2rem;
+      }
+      #game-id {
+          text-align: center;
+      }
 
+      /* Bases / field */
+      .field-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          gap: 20px;
+          margin-top: 10px;
+      }
+      .bases {
+          width: 220px;
+          height: 220px;
+          border: 2px solid #555;
+          position: relative;
+          margin-left: 20px;
+      }
+      .base {
+          width: 30px;
+          height: 30px;
+          border: 2px solid #777;
+          position: absolute;
+          transform: rotate(45deg);
+          background: #111;
+      }
+      .base.active {
+          background: #00ff00;
+          box-shadow: 0 0 10px #00ff00;
+      }
+      .base.first  { bottom: 20px; right: 20px; }
+      .base.second { top: 20px; right: 50%; transform: translateX(50%) rotate(45deg); }
+      .base.third  { bottom: 20px; left: 20px; }
 
-</style>
+      /* Panels */
+      .panels {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+      }
+      .panel {
+          border: 1px solid #444;
+          padding: 8px;
+          background: #111;
+          font-size: 0.9rem;
+      }
+      .panel h3 {
+          margin: 0 0 4px 0;
+          font-size: 1rem;
+          border-bottom: 1px solid #333;
+          padding-bottom: 3px;
+      }
+      #pitchText {
+          font-family: monospace;
+          color: #0ff;
+      }
+      #playByPlay {
+          max-height: 160px;
+          overflow-y: auto;
+          font-size: 0.85rem;
+      }
+      .pbp-line {
+          margin-bottom: 3px;
+      }
 
+      .players {
+          display: flex;
+          justify-content: space-between;
+          font-size: 0.9rem;
+      }
+      .players div {
+          width: 48%;
+      }
+
+      button {
+          margin-top: 10px;
+          padding: 6px 10px;
+          background: #222;
+          color: #fff;
+          border: 1px solid #555;
+          cursor: pointer;
+      }
+      button:hover {
+          background: #333;
+      }
+  </style>
+</head>
 <body>
   
   <h1 id="game-id" data-game-id="dummy-12345">Yankees @ Red Sox</h1>
 
-<div class="electronic-scoreboard" id="electronicBoardContainer">
+  <div class="electronic-scoreboard" id="electronicBoardContainer">
 
-    <div class="top-row">
-        <div class="top-item">
-            PITCHES GUEST
-            <div id="pitchesGuest" class="digit wide">0</div>
-        </div>
+      <div class="top-row">
+          <div class="top-item">
+              PITCHES GUEST
+              <div id="pitchesGuest" class="digit wide">0</div>
+          </div>
 
-        <div class="top-item">
-            BALL
-            <div id="balls" class="digit">0</div>
-        </div>
+          <div class="top-item">
+              BALL
+              <div id="balls" class="digit">0</div>
+          </div>
 
-        <div class="top-item">
-            STRIKE
-            <div id="strikes" class="digit">0</div>
-        </div>
+          <div class="top-item">
+              STRIKE
+              <div id="strikes" class="digit">0</div>
+          </div>
 
-        <div class="top-item">
-            OUT
-            <div id="outs" class="digit">0</div>
-        </div>
+          <div class="top-item">
+              OUT
+              <div id="outs" class="digit">0</div>
+          </div>
 
-        <div class="top-item">
-            PITCHES HOME
-            <div id="pitchesHome" class="digit wide">0</div>
-        </div>
-    </div>
+          <div class="top-item">
+              PITCHES HOME
+              <div id="pitchesHome" class="digit wide">0</div>
+          </div>
+      </div>
 
-    <div class="innings-grid">
-        <div class="label"></div>
-        <div class="inning-num">1</div>
-        <div class="inning-num">2</div>
-        <div class="inning-num">3</div>
-        <div class="inning-num">4</div>
-        <div class="inning-num">5</div>
-        <div class="inning-num">6</div>
-        <div class="inning-num">7</div>
-        <div class="inning-num">8</div>
-        <div class="inning-num">9</div>
-    
-        <div class="label">TOTAL</div>
-    </div>
+      <div class="innings-grid">
+          <div class="label"></div>
+          <div class="inning-num">1</div>
+          <div class="inning-num">2</div>
+          <div class="inning-num">3</div>
+          <div class="inning-num">4</div>
+          <div class="inning-num">5</div>
+          <div class="inning-num">6</div>
+          <div class="inning-num">7</div>
+          <div class="inning-num">8</div>
+          <div class="inning-num">9</div>
+          <div class="label">TOTAL</div>
+      </div>
 
-    <div class="innings-grid">
-        <div class="label">GUEST</div>
-        <div class="digit" id="g1">0</div>
-        <div class="digit" id="g2">0</div>
-        <div class="digit" id="g3">0</div>
-        <div class="digit" id="g4">0</div>
-        <div class="digit" id="g5">0</div>
-        <div class="digit" id="g6">0</div>
-        <div class="digit" id="g7">0</div>
-        <div class="digit" id="g8">0</div>
-        <div class="digit" id="g9">0</div>
- 
-        <div class="digit total-digit" id="gTotal">0</div>
-    </div>
-    
-    <div class="innings-grid">
-        <div class="label">HOME</div>
-        <div class="digit" id="h1">0</div>
-        <div class="digit" id="h2">0</div>
-        <div class="digit" id="h3">0</div>
-        <div class="digit" id="h4">0</div>
-        <div class="digit" id="h5">0</div>
-        <div class="digit" id="h6">0</div>
-        <div class="digit" id="h7">0</div>
-        <div class="digit" id="h8">0</div>
-        <div class="digit" id="h9">0</div>
- 
-    
-        <div class="digit total-digit" id="hTotal">0</div>
-    </div>
+      <div class="innings-grid">
+          <div class="label">GUEST</div>
+          <div class="digit" id="g1">0</div>
+          <div class="digit" id="g2">0</div>
+          <div class="digit" id="g3">0</div>
+          <div class="digit" id="g4">0</div>
+          <div class="digit" id="g5">0</div>
+          <div class="digit" id="g6">0</div>
+          <div class="digit" id="g7">0</div>
+          <div class="digit" id="g8">0</div>
+          <div class="digit" id="g9">0</div>
+          <div class="digit total-digit" id="gTotal">0</div>
+      </div>
+      
+      <div class="innings-grid">
+          <div class="label">HOME</div>
+          <div class="digit" id="h1">0</div>
+          <div class="digit" id="h2">0</div>
+          <div class="digit" id="h3">0</div>
+          <div class="digit" id="h4">0</div>
+          <div class="digit" id="h5">0</div>
+          <div class="digit" id="h6">0</div>
+          <div class="digit" id="h7">0</div>
+          <div class="digit" id="h8">0</div>
+          <div class="digit" id="h9">0</div>
+          <div class="digit total-digit" id="hTotal">0</div>
+      </div>
 
+      <div class="field-row">
+          <div class="bases">
+              <div class="base first"  id="base1"></div>
+              <div class="base second" id="base2"></div>
+              <div class="base third"  id="base3"></div>
+          </div>
 
-<button onclick="startGame()">Start Automated Game</button>
-<button onclick="stopGame()">Stop Game</button>
+          <div class="panels">
+              <div class="panel">
+                  <h3>Pitch‑by‑Pitch</h3>
+                  <div id="pitchText">Waiting for first pitch...</div>
+              </div>
+              <div class="panel">
+                  <h3>Play‑by‑Play</h3>
+                  <div id="playByPlay"></div>
+              </div>
+              <div class="panel players">
+                  <div>
+                      <strong>Guest Batter:</strong>
+                      <div id="guestBatter">Player 1</div>
+                  </div>
+                  <div>
+                      <strong>Home Batter:</strong>
+                      <div id="homeBatter">Player 1</div>
+                  </div>
+              </div>
+          </div>
+      </div>
 
-</div>
+      <button onclick="startGame()">Start Automated Game</button>
+      <button onclick="stopGame()">Stop Game</button>
 
-<script>
-  const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
-  
-  const params = new URLSearchParams(window.location.search);
-  const gameID = params.get("gameID");
-  
-  async function loadGame() {
-      try {
-          const response = await fetch(`${apiUrl}/api/games/${gameID}`);
-          const game = await response.json();
-  
-          // Now game exists — safe to use it
-          const isHome = game.home_away === "home";
-          const myName = game.myTeam;
-          const oppName = game.opponent_team.name;
-  
-          const leftTeamName  = isHome ? oppName : myName;
-          const rightTeamName = isHome ? myName : oppName;
-  
-          document.getElementById("game-id").textContent =
-              `${leftTeamName} @ ${rightTeamName}`;
-  
-          // ⭐ NOW initialize your scoreboard + automation engine
-          startScoreboardEngine();
-  
-      } catch (err) {
-          console.error("Failed to load game:", err);
-      }
-  }
-  
-  loadGame(); // ⭐ Start everything
-function startScoreboardEngine() {
-/* ================================
-   GAME STATE
-================================ */
-let inning = 1;
-let half = "top"; // top = away batting, bottom = home batting
-let outs = 0;
-let balls = 0;
-let strikes = 0;
+  </div>
 
-let awayScores = Array(9).fill(0);
-let homeScores = Array(9).fill(0);
+  <script>
+    const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
+    const params = new URLSearchParams(window.location.search);
+    const gameID = params.get("gameID");
 
-let pitchesGuest = 0;
-let pitchesHome = 0;
+    let startGame; // will assign later
+    let stopGame;
 
-let gameRunning = false;
-let gameInterval = null;
+    async function loadGame() {
+        try {
+            const response = await fetch(`${apiUrl}/api/games/${gameID}`);
+            const game = await response.json();
 
-/* ================================
-   UPDATE LED SCOREBOARD
-================================ */
-function refreshInningDisplay() {
-    for (let i = 1; i <= 9; i++) {
-        const gCell = document.getElementById("g" + i);
-        const hCell = document.getElementById("h" + i);
+            const isHome = game.home_away === "home";
+            const myName = game.myTeam;
+            const oppName = game.opponent_team.name;
 
-        // BEFORE current inning → show scores
-        if (i < inning) {
-            gCell.textContent = awayScores[i - 1] || 0;
-            hCell.textContent = homeScores[i - 1] || 0;
+            const leftTeamName  = isHome ? oppName : myName;
+            const rightTeamName = isHome ? myName : oppName;
+
+            document.getElementById("game-id").textContent =
+                `${leftTeamName} @ ${rightTeamName}`;
+
+            startScoreboardEngine(leftTeamName, rightTeamName);
+        } catch (err) {
+            console.error("Failed to load game:", err);
         }
+    }
 
-        // CURRENT inning
-        else if (i === inning) {
+    loadGame();
+
+    function startScoreboardEngine(guestName, homeName) {
+        // =========================
+        // GAME STATE
+        // =========================
+        let inning = 1;
+        let half = "top"; // top = guest batting, bottom = home batting
+        let outs = 0;
+        let balls = 0;
+        let strikes = 0;
+
+        let awayScores = Array(9).fill(0);
+        let homeScores = Array(9).fill(0);
+
+        let pitchesGuest = 0;
+        let pitchesHome = 0;
+
+        let runner1 = false;
+        let runner2 = false;
+        let runner3 = false;
+
+        let guestHits = 0;
+        let homeHits = 0;
+        let guestErrors = 0;
+        let homeErrors = 0;
+        let guestSteals = 0;
+        let homeSteals = 0;
+
+        let gameRunning = false;
+        let gameInterval = null;
+
+        const guestLineup = ["G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9"];
+        const homeLineup  = ["H1", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9"];
+        let guestBatterIndex = 0;
+        let homeBatterIndex = 0;
+
+        const pitchTextEl = document.getElementById("pitchText");
+        const pbpEl = document.getElementById("playByPlay");
+        const base1El = document.getElementById("base1");
+        const base2El = document.getElementById("base2");
+        const base3El = document.getElementById("base3");
+        const guestBatterEl = document.getElementById("guestBatter");
+        const homeBatterEl = document.getElementById("homeBatter");
+
+        function currentBatterName() {
             if (half === "top") {
-                gCell.textContent = awayScores[i - 1] || 0;
-                hCell.innerHTML = "&nbsp;"; // hide home until bottom
+                return guestLineup[guestBatterIndex];
             } else {
-                gCell.textContent = awayScores[i - 1] || 0;
-                hCell.textContent = homeScores[i - 1] || 0;
+                return homeLineup[homeBatterIndex];
             }
         }
 
-        // FUTURE innings → keep LED box but hide number
-        else {
-            gCell.innerHTML = "&nbsp;";
-            hCell.innerHTML = "&nbsp;";
+        function nextBatter() {
+            if (half === "top") {
+                guestBatterIndex = (guestBatterIndex + 1) % guestLineup.length;
+            } else {
+                homeBatterIndex = (homeBatterIndex + 1) % homeLineup.length;
+            }
         }
+
+        function refreshBatters() {
+            guestBatterEl.textContent = guestLineup[guestBatterIndex];
+            homeBatterEl.textContent  = homeLineup[homeBatterIndex];
+        }
+
+        // =========================
+        // UI UPDATE
+        // =========================
+        function refreshInningDisplay() {
+            for (let i = 1; i <= 9; i++) {
+                const gCell = document.getElementById("g" + i);
+                const hCell = document.getElementById("h" + i);
+
+                if (i < inning) {
+                    gCell.textContent = awayScores[i - 1] || 0;
+                    hCell.textContent = homeScores[i - 1] || 0;
+                } else if (i === inning) {
+                    if (half === "top") {
+                        gCell.textContent = awayScores[i - 1] || 0;
+                        hCell.innerHTML = "&nbsp;";
+                    } else {
+                        gCell.textContent = awayScores[i - 1] || 0;
+                        hCell.textContent = homeScores[i - 1] || 0;
+                    }
+                } else {
+                    gCell.innerHTML = "&nbsp;";
+                    hCell.innerHTML = "&nbsp;";
+                }
+            }
+        }
+
+        function updateBases() {
+            base1El.classList.toggle("active", runner1);
+            base2El.classList.toggle("active", runner2);
+            base3El.classList.toggle("active", runner3);
+        }
+
+        function updateLED() {
+            document.getElementById("balls").textContent = balls;
+            document.getElementById("strikes").textContent = strikes;
+            document.getElementById("outs").textContent = outs;
+
+            document.getElementById("pitchesGuest").textContent = pitchesGuest;
+            document.getElementById("pitchesHome").textContent = pitchesHome;
+
+            refreshInningDisplay();
+            updateBases();
+            refreshBatters();
+
+            document.getElementById("gTotal").textContent = awayScores.reduce((a,b)=>a+b,0);
+            document.getElementById("hTotal").textContent = homeScores.reduce((a,b)=>a+b,0);
+        }
+
+        function addPBP(line) {
+            const div = document.createElement("div");
+            div.className = "pbp-line";
+            div.textContent = line;
+            pbpEl.prepend(div);
+        }
+
+        // =========================
+        // SIMULATION
+        // =========================
+        function simulatePitch() {
+            const pitchTypes = ["FB", "SL", "CB", "CH", "CT"];
+            const pitch = pitchTypes[Math.floor(Math.random() * pitchTypes.length)];
+            const batter = currentBatterName();
+
+            if (half === "top") pitchesGuest++;
+            else pitchesHome++;
+
+            const r = Math.random();
+
+            // Walk
+            if (r < 0.08) {
+                pitchTextEl.textContent = `${pitch} – Walk to ${batter}`;
+                addPBP(`${batter} draws a walk.`);
+                advanceRunners(1, "BB");
+                resetCount();
+                nextBatter();
+            }
+            // Strike (swinging or looking)
+            else if (r < 0.30) {
+                strikes++;
+                pitchTextEl.textContent = `${pitch} – Strike to ${batter}`;
+                if (strikes >= 3) {
+                    addPBP(`${batter} strikes out.`);
+                    recordOut();
+                    resetCount();
+                    nextBatter();
+                }
+            }
+            // Ball
+            else if (r < 0.55) {
+                balls++;
+                pitchTextEl.textContent = `${pitch} – Ball to ${batter}`;
+                if (balls >= 4) {
+                    pitchTextEl.textContent = `${pitch} – Walk to ${batter}`;
+                    addPBP(`${batter} walks.`);
+                    advanceRunners(1, "BB");
+                    resetCount();
+                    nextBatter();
+                }
+            }
+            // Ball in play
+            else {
+                const hitRoll = Math.random();
+                if (hitRoll < 0.10) {
+                    // Error
+                    pitchTextEl.textContent = `${pitch} – Error on defense, ${batter} reaches.`;
+                    addPBP(`Error in the field, ${batter} reaches.`);
+                    if (half === "top") homeErrors++; else guestErrors++;
+                    advanceRunners(1, "E");
+                    resetCount();
+                    nextBatter();
+                } else if (hitRoll < 0.40) {
+                    // Single
+                    pitchTextEl.textContent = `${pitch} – Single by ${batter}`;
+                    addPBP(`${batter} singles.`);
+                    recordHit(1);
+                    advanceRunners(1, "1B");
+                    resetCount();
+                    nextBatter();
+                } else if (hitRoll < 0.55) {
+                    // Double
+                    pitchTextEl.textContent = `${pitch} – Double by ${batter}`;
+                    addPBP(`${batter} doubles.`);
+                    recordHit(2);
+                    advanceRunners(2, "2B");
+                    resetCount();
+                    nextBatter();
+                } else if (hitRoll < 0.60) {
+                    // Triple
+                    pitchTextEl.textContent = `${pitch} – Triple by ${batter}`;
+                    addPBP(`${batter} triples!`);
+                    recordHit(3);
+                    advanceRunners(3, "3B");
+                    resetCount();
+                    nextBatter();
+                } else if (hitRoll < 0.70) {
+                    // Home run
+                    pitchTextEl.textContent = `${pitch} – HOME RUN by ${batter}!`;
+                    addPBP(`${batter} hits a HOME RUN!`);
+                    recordHit(4);
+                    homeRun();
+                    resetCount();
+                    nextBatter();
+                } else if (hitRoll < 0.80) {
+                    // Stolen base attempt
+                    if (attemptSteal(batter)) {
+                        pitchTextEl.textContent = `${pitch} – Stolen base!`;
+                    } else {
+                        pitchTextEl.textContent = `${pitch} – Caught stealing!`;
+                    }
+                } else {
+                    // Out in play
+                    pitchTextEl.textContent = `${pitch} – Out in play by ${batter}`;
+                    addPBP(`${batter} is retired.`);
+                    recordOut();
+                    resetCount();
+                    nextBatter();
+                }
+            }
+
+            updateLED();
+        }
+
+        function resetCount() {
+            balls = 0;
+            strikes = 0;
+        }
+
+        function recordOut() {
+            outs++;
+            if (outs >= 3) {
+                changeHalfInning();
+            }
+        }
+
+        function changeHalfInning() {
+            outs = 0;
+            balls = 0;
+            strikes = 0;
+            runner1 = runner2 = runner3 = false;
+
+            if (half === "top") {
+                half = "bottom";
+            } else {
+                half = "top";
+                inning++;
+            }
+
+            if (inning > 9) {
+                stopGame();
+            }
+        }
+
+        function recordHit(bases) {
+            if (half === "top") guestHits++;
+            else homeHits++;
+        }
+
+        function scoreRun() {
+            if (half === "top") {
+                awayScores[inning - 1]++;
+            } else {
+                homeScores[inning - 1]++;
+            }
+        }
+
+        function advanceRunners(bases, type) {
+            // Very simplified base advancement
+            for (let i = 0; i < bases; i++) {
+                if (runner3) {
+                    scoreRun();
+                    runner3 = false;
+                }
+                runner3 = runner2;
+                runner2 = runner1;
+                runner1 = true;
+            }
+        }
+
+        function homeRun() {
+            if (runner1) { scoreRun(); runner1 = false; }
+            if (runner2) { scoreRun(); runner2 = false; }
+            if (runner3) { scoreRun(); runner3 = false; }
+            scoreRun();
+        }
+
+        function attemptSteal(batter) {
+            // simple: if runner on 1, try to steal 2nd
+            if (runner1 && !runner2) {
+                const success = Math.random() < 0.6;
+                if (success) {
+                    runner1 = false;
+                    runner2 = true;
+                    if (half === "top") guestSteals++; else homeSteals++;
+                    addPBP(`${batter} steals second base!`);
+                    return true;
+                } else {
+                    runner1 = false;
+                    recordOut();
+                    addPBP(`${batter} is caught stealing.`);
+                    return false;
+                }
+            }
+            addPBP(`${batter} stays put.`);
+            return false;
+        }
+
+        // =========================
+        // START / STOP
+        // =========================
+        startGame = function () {
+            if (gameRunning) return;
+            gameRunning = true;
+            gameInterval = setInterval(simulatePitch, 900);
+        };
+
+        stopGame = function () {
+            gameRunning = false;
+            clearInterval(gameInterval);
+            addPBP("Game finished.");
+            alert("Game finished!");
+        };
+
+        // initial UI
+        updateLED();
     }
-}
-
-
-function updateLED() {
-    document.getElementById("balls").textContent = balls;
-    document.getElementById("strikes").textContent = strikes;
-    document.getElementById("outs").textContent = outs;
-
-    document.getElementById("pitchesGuest").textContent = pitchesGuest;
-    document.getElementById("pitchesHome").textContent = pitchesHome;
-
-    refreshInningDisplay(); // ← NEW LINE
-
-    document.getElementById("gTotal").textContent = awayScores.reduce((a,b)=>a+b,0);
-    document.getElementById("hTotal").textContent = homeScores.reduce((a,b)=>a+b,0);
-}
-
-
-/* ================================
-   RANDOM PLAY GENERATOR
-================================ */
-function simulatePitch() {
-      // Random pitch outcome
-      const outcome = Math.random();
-  
-      // Increment pitch count
-      if (half === "top") pitchesGuest++;
-      else pitchesHome++;
-  
-      // 0–0.45 = ball
-      if (outcome < 0.45) {
-          balls++;
-          if (balls >= 4) {
-              scoreRun();
-              resetCount();
-          }
-      }
-      // 0.45–0.80 = strike
-      else if (outcome < 0.80) {
-          strikes++;
-          if (strikes >= 3) {
-              recordOut();
-              resetCount();
-          }
-      }
-      // 0.80–1.00 = ball in play
-      else {
-          const hit = Math.random();
-  
-          // 20% chance of run scoring
-          if (hit < 0.20) {
-              scoreRun();
-          } else {
-              recordOut();
-          }
-          resetCount();
-      }
-  
-      updateLED();
-  }
-  
-  /* ================================
-     COUNT / OUT / INNING LOGIC
-  ================================ */
-  function resetCount() {
-      balls = 0;
-      strikes = 0;
-  }
-  
-  function recordOut() {
-      outs++;
-      if (outs >= 3) {
-          changeHalfInning();
-      }
-  }
-  
-  function changeHalfInning() {
-      outs = 0;
-      balls = 0;
-      strikes = 0;
-  
-      if (half === "top") {
-          half = "bottom";
-      } else {
-          half = "top";
-          inning++;
-      }
-  
-      if (inning > 9) {
-          stopGame();
-      }
-    refreshInningDisplay();
-  
-  }
-  
-  function scoreRun() {
-      if (half === "top") {
-          awayScores[inning - 1]++;
-      } else {
-          homeScores[inning - 1]++;
-      }
-  }
-  
-  /* ================================
-     START / STOP AUTOMATION
-  ================================ */
-  function startGame() {
-      if (gameRunning) return;
-      gameRunning = true;
-  
-      gameInterval = setInterval(simulatePitch, 800); // every 0.8 sec
-  }
-  
-  function stopGame() {
-      gameRunning = false;
-      clearInterval(gameInterval);
-      alert("Game finished!");
-  }
-}
-</script>
-
-
-
+  </script>
 </body>
 </html>
