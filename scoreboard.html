@@ -452,8 +452,8 @@
             // INNING PADDING
             const gInn = [...(guestInn || [])];
             const hInn = [...(homeInn || [])];
-            while (gInn.length < 9) gInn.push(0);
-            while (hInn.length < 9) hInn.push(0);
+            while (gInn.length < 9) gInn.push("");
+            while (hInn.length < 9) hInn.push("");
     
             for (let i = 0; i < 9; i++) {
                 document.getElementById("g" + (i + 1)).innerHTML =
