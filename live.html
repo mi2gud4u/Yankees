@@ -281,12 +281,14 @@
                       <div id="homeBatter">Player 1</div>
                   </div>
               </div>
+            <div class="control-buttons">
+                <button onclick="startSim()">Start</button>
+                <button onclick="stopSim()">Stop</button>
+                <button onclick="resetSim()">Reset</button>
+            </div>
+
           </div>
       </div>
-
-      <button onclick="startSim()">Start Simulation</button>
-      <button onclick="stopSim()">Stop Game</button>
-
   </div>
   <div class="pbp-wrapper">
       <h2>Play‑by‑Play</h2>
@@ -378,14 +380,17 @@ loadTeams();
     document.getElementById("hTotal").textContent = home.reduce((a,b)=>a+b,0);
 }
 
+ function startSim() {
+        fetch(`${simApiUrl}/api/sim/start`, { method: "POST" });
+    }
     
-  function startSim() {
-      fetch(`${simApiUrl}/api/sim/start`, { method: "POST" });
-  }
-
-     function stopSim() {
-      fetch(`${simApiUrl}/api/sim/stop`, { method: "POST" });
-  }
+    function stopSim() {
+        fetch(`${simApiUrl}/api/sim/stop`, { method: "POST" });
+    }
+    
+    function resetSim() {
+        fetch(`${simApiUrl}/api/sim/reset`, { method: "POST" });
+    }
 
 
   </script>
