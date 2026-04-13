@@ -395,62 +395,60 @@
         document.getElementById("teamName").textContent =`${leftTeamName} @ ${rightTeamName}`;
         document.getElementById("leftTeam").textContent =`${leftTeamName}`;
         document.getElementById("rightTeam").textContent =`${rightTeamName}`;
-    
-    
-  
 
-            const now = new Date();
-            const start = new Date(game.start_ts);
-            const end = new Date(game.end_ts);
-                
-            let statusText = "";
-            let statusClass = "";
+        const now = new Date();
+        const start = new Date(game.start_ts);
+        const end = new Date(game.end_ts);
             
-            // 1. Completed
-            if (game.game_status === "completed") {
-                statusText = "FINAL";
-                statusClass = "final";
-                document.getElementById("simulateBtn").style.display = "none";
-            }
-            
-            // 2. Live
-            else if (now >= start && now <= end) {
-                statusText = "LIVE";
-                statusClass = "live";
-            }
-            
-            // 3. Null status → future = show date, past = cancelled
-            else if (game.game_status === null) {
-            
-                if (start > now) {
-                    // Future game → show date/time
-                    statusText = start.toLocaleDateString("en-US", { month: "short", day: "numeric" }) +
-                                 " @ " + start.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-                    statusClass = "future";
-                } else {
-                    // Past game with no status → cancelled
-                    statusText = "CANCELLED";
-                    statusClass = "cancelled";
-                }
-            }
-            
-            // 4. Everything else → show date/time (non-null but future)
-            else if (start > now) {
+        let statusText = "";
+        let statusClass = "";
+        
+        // 1. Completed
+        if (game.game_status === "completed") {
+            statusText = "FINAL";
+            statusClass = "final";
+            document.getElementById("simulateBtn").style.display = "none";
+        }
+        
+        // 2. Live
+        else if (now >= start && now <= end) {
+            statusText = "LIVE";
+            statusClass = "live";
+        }
+        
+        // 3. Null status → future = show date, past = cancelled
+        else if (game.game_status === null) {
+        
+            if (start > now) {
+                // Future game → show date/time
                 statusText = start.toLocaleDateString("en-US", { month: "short", day: "numeric" }) +
                              " @ " + start.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
                 statusClass = "future";
-            }
-            
-            // 5. Past but not completed → cancelled
-            else {
+            } else {
+                // Past game with no status → cancelled
                 statusText = "CANCELLED";
                 statusClass = "cancelled";
             }
+        }
+        
+        // 4. Everything else → show date/time (non-null but future)
+        else if (start > now) {
+            statusText = start.toLocaleDateString("en-US", { month: "short", day: "numeric" }) +
+                         " @ " + start.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+            statusClass = "future";
+        }
+        
+        // 5. Past but not completed → cancelled
+        else {
+            statusText = "CANCELLED";
+            statusClass = "cancelled";
+        }
+        
         const statusEl = document.getElementById("gameStatus");
         statusEl.textContent = statusText;
         statusEl.className = statusClass;
-    }
-      /*  
+    
+    
             // 3. Score Mapping (Match 'team' and 'opponent_team' from your JSON)
             const teamTotalScore = game.score?.team ?? 0;
             const oppTotalScore = game.score?.opponent_team ?? 0;
@@ -493,7 +491,9 @@
                 document.getElementById("h" + (i + 1)).innerHTML =
                     hInn[i] !== undefined && hInn[i] !== "" ? hInn[i] : "&nbsp;";
             }*/
-loadGame();
+    }
+    
+    loadGame();
     
     function goToLive() {
         window.open(`live.html?gameID=${gameID}`, "_blank");
