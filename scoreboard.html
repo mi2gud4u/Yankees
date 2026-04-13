@@ -469,15 +469,10 @@
             const guestTotal = isHome ? game.line_score.opponent_team.totals[0] : game.line_score.team.totals[0];
             const homeTotal  = isHome ? game.line_score.team.totals[0] : game.line_score.opponent_team.totals[0];
 
-           document.getElementById("gameStatus").textContent = statusText;
-           document.getElementById("gameStatus").className = statusClass;
-           document.getElementById("teamName").textContent = `${myName} vs ${oppName}`;
-           document.getElementById("yourTeamName").textContent = leftTeamName;
-           document.getElementById("opponentTeamName").textContent = rightTeamName;
-           document.getElementById("yourScore").textContent = leftScore;
-           document.getElementById("opponentScore").textContent = rightScore;
-           document.getElementById("gTotal").textContent = guestTotal ?? 0;
-           document.getElementById("hTotal").textContent = homeTotal ?? 0;
+            document.getElementById("yourScore").textContent = leftScore;
+            document.getElementById("opponentScore").textContent = rightScore;
+            document.getElementById("gTotal").textContent = guestTotal ?? 0;
+            document.getElementById("hTotal").textContent = homeTotal ?? 0;
 
             // INNING PADDING
             const gInn = [...(guestInn || [])];
