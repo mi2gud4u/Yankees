@@ -363,7 +363,7 @@ header {
                 <div id="base3" class="base"></div> <div></div> <div id="base1" class="base"></div>
                 <div></div> <div></div> <div></div>
             </div>
-        <div id="pitchText">—</div>
+        <div id="pitchType">—</div>
     </div>
 
     <!-- CONTROL BAR -->
@@ -435,23 +435,16 @@ loadTeams();
       document.getElementById("strikes").textContent = sim.strikes;
       document.getElementById("outs").textContent = sim.outs;
   
-      // Pitch counts
-      document.getElementById("pitchesGuest").textContent = sim.teamPitchCount;
-      document.getElementById("pitchesHome").textContent = sim.oppPitchCount;
-  
       // Bases
       document.getElementById("base1").classList.toggle("active", sim.runnerOn1);
       document.getElementById("base2").classList.toggle("active", sim.runnerOn2);
       document.getElementById("base3").classList.toggle("active", sim.runnerOn3);
   
       // Pitch-by-pitch
-      document.getElementById("pitchText").textContent = sim.lastPitch;
+      document.getElementById("pitchType").textContent = sim.lastPitch;
   
       // Batter name (your existing logic sets batterName)
       document.getElementById("atbat-stats").textContent = batterName;
-  
-
-
   
       // Inning + box score
       updateInnings(sim);
@@ -462,11 +455,6 @@ loadTeams();
  function updateInnings(sim) {
     const guest = sim.teamScores;
     const home  = sim.oppScores;
-
-    for (let i = 1; i <= 9; i++) {
-        document.getElementById("g" + i).textContent = guest[i - 1] ?? "";
-        document.getElementById("h" + i).textContent = home[i - 1] ?? "";
-    }
 
     document.getElementById("gTotal").textContent = guest.reduce((a,b)=>a+b,0);
     document.getElementById("hTotal").textContent = home.reduce((a,b)=>a+b,0);
