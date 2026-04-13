@@ -207,6 +207,39 @@ let gameInterval = null;
 /* ================================
    UPDATE LED SCOREBOARD
 ================================ */
+function refreshInningDisplay() {
+    for (let i = 1; i <= 9; i++) {
+        const gCell = document.getElementById("g" + i);
+        const hCell = document.getElementById("h" + i);
+
+        // BEFORE current inning → show scores
+        if (i < inning) {
+            gCell.textContent = awayScores[i - 1] || 0;
+            hCell.textContent = homeScores[i - 1] || 0;
+        }
+
+        // CURRENT inning
+        else if (i === inning) {
+            // Top of inning → only away shows
+            if (half === "top") {
+                gCell.textContent = awayScores[i - 1] || 0;
+                hCell.textContent = "";
+            }
+            // Bottom of inning → both show
+            else {
+                gCell.textContent = awayScores[i - 1] || 0;
+                hCell.textContent = homeScores[i - 1] || 0;
+            }
+        }
+
+        // AFTER current inning → blank
+        else {
+            gCell.textContent = "";
+            hCell.textContent = "";
+        }
+    }
+}
+
 function updateLED() {
     document.getElementById("balls").textContent = balls;
     document.getElementById("strikes").textContent = strikes;
@@ -215,16 +248,12 @@ function updateLED() {
     document.getElementById("pitchesGuest").textContent = pitchesGuest;
     document.getElementById("pitchesHome").textContent = pitchesHome;
 
-    // Update inning runs
-    for (let i = 1; i <= 9; i++) {
-        document.getElementById("g" + i).textContent = awayScores[i - 1];
-        document.getElementById("h" + i).textContent = homeScores[i - 1];
-    }
+    refreshInningDisplay(); // ← NEW LINE
 
-    // Totals
     document.getElementById("gTotal").textContent = awayScores.reduce((a,b)=>a+b,0);
     document.getElementById("hTotal").textContent = homeScores.reduce((a,b)=>a+b,0);
 }
+
 
 /* ================================
    RANDOM PLAY GENERATOR
@@ -299,6 +328,8 @@ function changeHalfInning() {
     if (inning > 9) {
         stopGame();
     }
+  refreshInningDisplay();
+
 }
 
 function scoreRun() {
