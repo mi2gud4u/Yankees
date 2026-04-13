@@ -353,14 +353,13 @@
     }
 
     function viewGame(gameID) {
-        // Launch ScoreBridge
-        window.location.href = `scorebridge://run?gameID=${gameID}`;
+        // Open scoreboard in a new tab
+        window.open(`scoreboard.html?gameID=${gameID}`, "_blank");
     
-        // After a short delay, open the scoreboard page
-        setTimeout(() => {
-            window.location.href = `scoreboard.html?gameID=${gameID}`;
-        }, 300); // 300ms is enough
+        // Load live page in the current tab
+        window.open(`live.html?gameID=${gameID}`, "_blank");
     }
+
 
 
     async function deleteGame(gameID) {
