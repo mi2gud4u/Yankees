@@ -395,8 +395,9 @@
             const leftTeamName  = isHome ? oppName : myName;
             const rightTeamName = isHome ? myName : oppName;
 
+            const now = new Date();
             const start = new Date(game.start_ts);
-                const end = new Date(game.end_ts);
+            const end = new Date(game.end_ts);
                 
             let statusText = "";
             let statusClass = "";
@@ -459,9 +460,7 @@
             const homeTotal  = isHome ? game.line_score.team.totals[0] : game.line_score.opponent_team.totals[0];
 
             // 5. STATUS LOGIC
-            const now = new Date();
-            const start = new Date(game.start_ts);
-            const end = new Date(game.end_ts);
+
             
             // UPDATE UI
             document.getElementById("gameStatus").textContent = statusText;
