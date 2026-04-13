@@ -284,7 +284,7 @@
       </div>
 
       <button onclick="startSim()">Start Simulation</button>
-      <button onclick="stopGame()">Stop Game</button>
+      <button onclick="stopSim()">Stop Game</button>
 
   </div>
   <div class="pbp-wrapper">
@@ -364,22 +364,28 @@ loadTeams();
 }
 
   
-  function updateInnings(sim) {
-      const guest = sim.team_scores;
-      const home  = sim.opponent_scores;
-  
-      for (let i = 1; i <= 9; i++) {
-          document.getElementById("g" + i).textContent = guest[i - 1] ?? "";
-          document.getElementById("h" + i).textContent = home[i - 1] ?? "";
-      }
-  
-      document.getElementById("gTotal").textContent = guest.reduce((a,b)=>a+b,0);
-      document.getElementById("hTotal").textContent = home.reduce((a,b)=>a+b,0);
-  }
+ function updateInnings(sim) {
+    const guest = sim.teamScores;
+    const home  = sim.oppScores;
+
+    for (let i = 1; i <= 9; i++) {
+        document.getElementById("g" + i).textContent = guest[i - 1] ?? "";
+        document.getElementById("h" + i).textContent = home[i - 1] ?? "";
+    }
+
+    document.getElementById("gTotal").textContent = guest.reduce((a,b)=>a+b,0);
+    document.getElementById("hTotal").textContent = home.reduce((a,b)=>a+b,0);
+}
+
     
   function startSim() {
       fetch(`${simApiUrl}/api/sim/start`, { method: "POST" });
   }
+
+     function stopSim() {
+      fetch(`${simApiUrl}/api/sim/stop`, { method: "POST" });
+  }
+
 
   </script>
 </body>
