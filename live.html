@@ -30,17 +30,6 @@ header {
     font-weight: 700;
 }
 
-/* SCOREBOARD TOP BAR (MATCHES MOCKUP TEXT) */
-#top-bar {
-    background: #111;
-    border-top: 3px solid #00e5ff;
-    border-bottom: 3px solid #00e5ff;
-    padding: 8px 20px;
-    display: flex;
-    justify-content: space-between;
-    font-size: 18px;
-}
-
 /* MAIN SCOREBOARD */
 #scoreboard {
     background: #111;
@@ -273,17 +262,10 @@ header {
 <div id="broadcast-container">
 
     <header>
-        <div>MLB SIMULATION</div>
+        <div>BASEBALL SIMULATION</div>
         <div id="game-id">TEAM A @ TEAM B</div>
-        <div>SPORTS NETWORK</div>
+        <div>BASEBALL NETWORK</div>
     </header>
-
-    <!-- TOP BAR (LIKE MOCKUP: GAME 1, ETC.) -->
-    <div id="top-bar">
-        <div>GAME 1</div>
-        <div>LIVE</div>
-        <div>MLB</div>
-    </div>
 
     <!-- MAIN SCOREBOARD -->
     <div id="scoreboard">
@@ -309,12 +291,6 @@ header {
                 &nbsp;S:<span id="strikes">0</span>
                 &nbsp;O:<span id="outs">0</span>
             </div>
-
-            <div id="diamond">
-                <div></div> <div id="base2" class="base"></div> <div></div>
-                <div id="base3" class="base"></div> <div></div> <div id="base1" class="base"></div>
-                <div></div> <div></div> <div></div>
-            </div>
         </div>
 
         <!-- TEAM B -->
@@ -335,14 +311,16 @@ header {
     <!-- PLAYER PANELS -->
     <div id="player-panels">
         <div class="panel">
-            <div class="panel-title">AT BAT</div>
+            <div class="panel-title">BATTING</div>
             <div class="panel-body" id="atbat-stats">
                 Johnson — AVG .325 | HR 12 | RBI 38
             </div>
         </div>
 
         <div class="panel">
-            <div class="panel-title">PITCHING</div>
+            <div class="panel-title" id="atbat-stats">
+                Johnson — AVG .325 | HR 12 | RBI 38
+            </div>
             <div class="panel-body" id="pitching-stats">
                 Martinez — P:<span id="pitchesGuest">57</span> | ERA 2.45 | K 5
             </div>
@@ -351,15 +329,12 @@ header {
 
     <!-- FIELD VIEW WITH STRIKE ZONE AND PITCH SPEED -->
     <div id="field-view">
-        <div id="strike-zone">
-            <div class="pitch-marker">1</div>
-            <div class="pitch-marker">2</div>
-            <div class="pitch-marker">3</div>
-            <div></div><div></div><div></div>
-            <div></div><div></div><div></div>
-        </div>
+            <div id="diamond">
+                <div></div> <div id="base2" class="base"></div> <div></div>
+                <div id="base3" class="base"></div> <div></div> <div id="base1" class="base"></div>
+                <div></div> <div></div> <div></div>
+            </div>
         <div id="pitch-speed">94 MPH</div>
-        <div id="pitchText">Last pitch: Fastball low and away</div>
     </div>
 
     <!-- CONTROL BAR -->
