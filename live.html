@@ -316,7 +316,7 @@ header {
             </div>
     
             <div class="panel-right">
-                <span id="currentBatter">Waiting for batter...</span>
+                <span id="batterName">Waiting for batter...</span>
             </div>
         </div>
     </div>
@@ -400,7 +400,15 @@ loadTeams();
      UPDATE UI FROM SERVER SIM DATA
   ============================================================ */
   function updateFromSim(sim) {
-      document.getElementById("inning-box").textContent = sim.inning;
+      if(sim.inning === 1)
+      {
+           document.getElementById("inning-box").textContent = `${sim.inning}ST INNING`;
+      } else if(sim.inning === 2) {
+           document.getElementById("inning-box").textContent = `${sim.inning}ND INNING`;
+      } else if{sim.inning === 3) {
+           document.getElementById("inning-box").textContent = `${sim.inning}RD INNING`;
+      } else {
+           document.getElementById("inning-box").textContent = `${sim.inning}TH INNING`;
   
       // Balls / Strikes / Outs
       document.getElementById("balls").textContent = sim.balls;
