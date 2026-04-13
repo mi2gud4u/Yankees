@@ -183,31 +183,9 @@ header {
     position: relative;
 }
 
-/* STRIKE ZONE */
-#strike-zone {
-    width: 140px;
-    height: 180px;
-    border: 3px solid #fff;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-}
 
-/* PITCH MARKERS (1,2,3 ETC.) */
-.pitch-marker {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    color: #ff0;
-}
-
-/* PITCH SPEED */
-#pitch-type {
+/* PITCH TYPE */
+.pitch-style {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -219,18 +197,6 @@ header {
     font-weight: 700;
 }
 
-
-/* PITCH TEXT (LAST PITCH DESCRIPTION) */
-#pitchText {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #111;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 16px;
-}
 
 /* CONTROL BAR */
 #control-bar {
@@ -350,7 +316,7 @@ header {
             </div>
     
             <div class="panel-right">
-                <span id="atbat-stats">Waiting for batter...</span>
+                <span id="currentBatter">Waiting for batter...</span>
             </div>
         </div>
     </div>
@@ -358,12 +324,16 @@ header {
 
     <!-- FIELD VIEW WITH STRIKE ZONE AND PITCH SPEED -->
     <div id="field-view">
-            <div id="diamond">
-                <div></div> <div id="base2" class="base"></div> <div></div>
-                <div id="base3" class="base"></div> <div></div> <div id="base1" class="base"></div>
-                <div></div> <div></div> <div></div>
-            </div>
-        <div id="pitchType">—</div>
+        <div class="pitch-style" id="pitchType">—</div>
+
+        <div id="diamond">
+            <div></div><div id="base2" class="base"></div><div></div>
+            <div id="base3" class="base"></div><div></div><div id="base1" class="base"></div>
+            <div></div>                        
+            <div></div>
+            <div></div>               
+        </div>
+        
     </div>
 
     <!-- CONTROL BAR -->
@@ -444,8 +414,17 @@ loadTeams();
       document.getElementById("pitchType").textContent = sim.lastPitch;
   
       // Batter name (your existing logic sets batterName)
-      document.getElementById("atbat-stats").textContent = batterName;
-  
+      let currentBatter;
+
+      if(sim.top == true)
+      {
+        currentBatter = gameState.oppBatters[gameState.oppBatterIndex];
+      }
+      else
+      {
+        currentBatter = gameState.teamBatters[gameState.teamBatterIndex];
+      }
+      
       // Inning + box score
       updateInnings(sim);
   }
