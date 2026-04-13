@@ -359,25 +359,26 @@ header {
   <script>
     
     const simApiUrl = "https://livescoreapi-2hbs.onrender.com";
+    
+    const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
+    const params = new URLSearchParams(window.location.search);
+    const gameID = params.get("gameID");
 
-const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
-const params = new URLSearchParams(window.location.search);
-const gameID = params.get("gameID");
-
-async function loadTeams() {
-    const res = await fetch(`${apiUrl}/api/games/${gameID}`);
-    const game = await res.json();
-
-    const isHome = game.home_away === "home";
-    const myName = game.myTeam;
-    const oppName = game.opponent_team.name;
-
-    const leftTeamName  = isHome ? oppName : myName;
-    const rightTeamName = isHome ? myName : oppName;
-
-    document.getElementById("game-id").textContent =
-        `${leftTeamName} @ ${rightTeamName}`;
-}
+    async function loadTeams() {
+        const res = await fetch(`${apiUrl}/api/games/${gameID}`);
+        const game = await res.json();
+        
+        const isHome = game.home_away === "home";
+        const myName = game.myTeam;
+        const oppName = game.opponent_team.name;
+        
+        const leftTeamName  = isHome ? oppName : myName;
+        const rightTeamName = isHome ? myName : oppName;
+        
+        document.getElementById("game-id").textContent =`${leftTeamName} @ ${rightTeamName}`;
+        document.getElementById("leftTeam").textContent =`${leftTeamName}`;
+        document.getElementById("rightTeam").textContent =`${rightTeamName}`;
+    }
 
 loadTeams();
 
