@@ -381,7 +381,7 @@
     const params = new URLSearchParams(window.location.search);
     const gameID = params.get("gameID");
     
-    async function loadTeams() {
+    async function loadGame() {
         const res = await fetch(`${apiUrl}/api/games/${gameID}`);
         const game = await res.json();
         
@@ -397,8 +397,8 @@
         document.getElementById("rightTeam").textContent =`${rightTeamName}`;
     }
     
-    loadTeams();
-/*
+  
+
             const now = new Date();
             const start = new Date(game.start_ts);
             const end = new Date(game.end_ts);
@@ -447,7 +447,7 @@
                 statusClass = "cancelled";
             }
 
-        
+      /*  
             // 3. Score Mapping (Match 'team' and 'opponent_team' from your JSON)
             const teamTotalScore = game.score?.team ?? 0;
             const oppTotalScore = game.score?.opponent_team ?? 0;
@@ -490,6 +490,7 @@
                 document.getElementById("h" + (i + 1)).innerHTML =
                     hInn[i] !== undefined && hInn[i] !== "" ? hInn[i] : "&nbsp;";
             }*/
+loadGame();
     
     function goToLive() {
         window.open(`live.html?gameID=${gameID}`, "_blank");
