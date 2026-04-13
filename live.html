@@ -400,6 +400,7 @@ loadTeams();
      UPDATE UI FROM SERVER SIM DATA
   ============================================================ */
   function updateFromSim(sim) {
+      document.getElementById("inning-box").textContent = sim.inning;
   
       // Balls / Strikes / Outs
       document.getElementById("balls").textContent = sim.balls;
@@ -415,16 +416,14 @@ loadTeams();
       document.getElementById("pitchType").textContent = sim.lastPitch;
   
       // Batter name (your existing logic sets batterName)
-      let currentBatter;
+      // Determine the batter based on the inning half
+      const currentBatter = (sim.inningHalf === "top") 
+          ? sim.oppBatters[sim.oppBatterIndex] 
+          : sim.teamBatters[sim.teamBatterIndex];
+      
+      // Update your HTML element
+      document.getElementById("batterName").textContent = currentBatter;
 
-      if(sim.top == true)
-      {
-        document.getElementById("currentBatter").textContent = gameState.teamBatters[gameState.teamBatterIndex];
-      }
-      else
-      {
-        document.getElementById("currentBatter").textContent = gameState.teamBatters[gameState.teamBatterIndex];
-      }
       
       // Inning + box score
       updateInnings(sim);
