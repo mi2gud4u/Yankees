@@ -450,23 +450,7 @@ loadTeams();
       // Batter name (your existing logic sets batterName)
       document.getElementById("atbat-stats").textContent = batterName;
   
-      // Play-by-play
-      const pbp = document.getElementById("playByPlay");     // full list
-      const latest = document.getElementById("pbp-latest");  // always visible line
-      
-      if (Array.isArray(sim.playByPlay) && sim.playByPlay.length > 0) {
-      
-          // Always show the newest line
-          latest.textContent = sim.playByPlay[sim.playByPlay.length - 1];
-      
-          // Full list for expanded view
-          pbp.innerHTML = sim.playByPlay
-              .map(line => `<div class="pbp-line">${line}</div>`)
-              .join("");
-      } else {
-          // Before first pitch
-          latest.textContent = "Waiting for first pitch...";
-      }
+
 
   
       // Inning + box score
