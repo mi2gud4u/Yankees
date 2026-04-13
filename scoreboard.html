@@ -205,6 +205,24 @@
         width: 70px;
         font-size: 2rem;
     }
+    #simulateBtn {
+        display: block;
+        margin: 20px auto;
+        padding: 12px 24px;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        background-color: #1e90ff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        transition: 0.2s;
+    }
+    
+    #simulateBtn:hover {
+        background-color: #0d6efd;
+    }
+
 
     #gameStatus {
         font-size: 20px;
@@ -355,9 +373,8 @@
     </div>
 
 </div>
-<div onclick="goToLive()" style="cursor: pointer;">
-    <h2>Simulate Game</h2>
-</div>
+<button id="simulateBtn" onclick="goToLive()">Simulate Game</button>
+
 <script>
     const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
     
@@ -408,6 +425,7 @@
             if (game.game_status === "completed") {
                 statusText = "FINAL";
                 statusClass = "final";
+                document.getElementById("simulateBtn").style.display = "none";
             } else if (now >= start && now <= end) {
                 statusText = "LIVE";
                 statusClass = "live";
