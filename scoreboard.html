@@ -492,9 +492,29 @@
     
     loadGame();
     
-    function goToLive() {
-        window.open(`live.html?gameID=${gameID}`, "_blank");
-    }
+    const simUrl = "https://livescoreapi-2hbs.onrender.com";
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        const simulateBtn = document.querySelector("button"); // or #simulateBtn if it has an ID
+    
+        if (simulateBtn) {
+            simulateBtn.addEventListener("click", () => {
+                console.log("Simulate Game clicked");
+                simulateGame();
+            });
+        }
+    });
+
+    function simulateGame() {
+    
+    fetch(`${simUrl}/sim-start`)
+        .then(res => res.json())
+        .then(data => {
+            console.log("Simulation result:", data);
+            updateScoreboard(data);
+        })
+        .catch(err => console.error("Simulation error:", err));
+}
 
 
 </script>
