@@ -37,6 +37,7 @@ async function loadGame() {
 
     isHomeGlobal = game.home_away === "home";
     const isHome = isHomeGlobal;
+    const isSimulated = game.game_status === "simulated";
 
     const myName = game.myTeam;
     const oppName = game.opponent_team.name;
@@ -88,7 +89,7 @@ async function loadGame() {
     statusEl.textContent = statusText;
     statusEl.className = statusClass;
 
-    if (gameStatus != "simulated")
+    if (!isSimulated)
     {
         const guestInn = isHome ? game.line_score.opponent_team.scores : game.line_score.team.scores;
         const homeInn  = isHome ? game.line_score.team.scores : game.line_score.opponent_team.scores;
