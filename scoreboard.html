@@ -526,6 +526,7 @@
   
     function updateFromSim(sim) {
         document.getElementById("currentInning").textContent = sim.inning;
+        document.getElementById("gameStatus").textContent = "SIMULATED";
 
         document.getElementById("pitchesGuest").textContent = sim.oppPitchCount;
         document.getElementById("pitchesHome").textContent = sim.teamPitchCount;
