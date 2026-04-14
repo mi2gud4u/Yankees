@@ -24,10 +24,10 @@ function renderInnings(guest, home) {
     document.getElementById("gTotal").textContent = gTotal;
     document.getElementById("hTotal").textContent = hTotal;
 
-    document.getElementById("yourScore").textContent =
+    document.getElementById("opponentScore").textContent =
         isHomeGlobal ? gTotal : hTotal;
 
-    document.getElementById("opponentScore").textContent =
+    document.getElementById("yourScore").textContent =
         isHomeGlobal ? hTotal : gTotal;
 }
 
