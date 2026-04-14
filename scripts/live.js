@@ -57,7 +57,7 @@ function updateFromSim(sim) {
     document.getElementById("teamHits").textContent = sim.teamHits;
     document.getElementById("oppHits").textContent = sim.oppHits;
     
-    const currentBatter = (sim.inningHalf === "top") 
+    const currentBatter = (sim.inning === "top") 
       ? sim.oppBatters[sim.oppBatterIndex] 
       : sim.teamBatters[sim.teamBatterIndex];
     
@@ -81,8 +81,8 @@ function updateFromSim(sim) {
 }
 
 function updateInnings(sim) {
-    const guest = sim.teamScores;
-    const home  = sim.oppScores;
+    const guest = sim.oppScores;
+    const home  = sim.teamScores;
 
     const gRuns = guest.reduce((a,b)=>a+b,0);
     const hRuns = home.reduce((a,b)=>a+b,0);
