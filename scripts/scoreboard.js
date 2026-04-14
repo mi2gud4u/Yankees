@@ -120,17 +120,19 @@ function simulateGame() {
             home_away: isHomeGlobal ? "home" : "away"
         })
     });
+
+    setInterval(async () => {
+        try {
+            const res = await fetch(`${simApiUrl}/api/sim-game`);
+            const sim = await res.json();
+            updateFromSim(sim);
+        } catch (err) {
+            console.error("Sim error:", err);
+        }
+    }, 1000);
 }
 
-setInterval(async () => {
-    try {
-        const res = await fetch(`${simApiUrl}/api/sim-game`);
-        const sim = await res.json();
-        updateFromSim(sim);
-    } catch (err) {
-        console.error("Sim error:", err);
-    }
-}, 1000);
+
 
 function updateFromSim(sim) {
     document.getElementById("currentInning").textContent = sim.inning;
