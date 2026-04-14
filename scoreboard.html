@@ -546,27 +546,31 @@
         const guest = sim.teamScores;   // array of numbers per inning
         const home  = sim.oppScores;    // array of numbers per inning
     
-        // Update totals
+        // Totals
         const gRuns = guest.reduce((a,b)=>a+b,0);
         const hRuns = home.reduce((a,b)=>a+b,0);
     
         document.getElementById("gTotal").textContent = gRuns;
         document.getElementById("hTotal").textContent = hRuns;
-
+    
         document.getElementById("opponentScore").textContent = gRuns;
         document.getElementById("yourScore").textContent = hRuns;
     
-        // Update inning-by-inning scores
-        for (let i = 0; i < guest.length; i++) {
+        // Always show 9 innings, blank if not reached
+        for (let i = 0; i < 9; i++) {
             const inningNum = i + 1;
     
             const gCell = document.getElementById(`g${inningNum}`);
             const hCell = document.getElementById(`h${inningNum}`);
     
-            if (gCell) gCell.textContent = guest[i];
-            if (hCell) hCell.textContent = home[i];
+            const gVal = guest[i];
+            const hVal = home[i];
+    
+            gCell.innerHTML = gVal !== undefined ? gVal : "&nbsp;";
+            hCell.innerHTML = hVal !== undefined ? hVal : "&nbsp;";
         }
     }
+
 
 
 
