@@ -28,7 +28,7 @@ function renderInnings(guest, home) {
         isHomeGlobal ? gTotal : hTotal;
 
     document.getElementById("yourScore").textContent =
-        isHomeGlobal ? hTotal : gTotal;
+        isHomeGlobal ? gTotal : hTotal;
 }
 
 async function loadGame() {
