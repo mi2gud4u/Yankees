@@ -543,8 +543,8 @@
     }
     
     function updateInnings(sim) {
-        const guest = sim.teamScores;   // array of numbers per inning
-        const home  = sim.oppScores;    // array of numbers per inning
+        const guest = sim.teamScores || [];
+        const home  = sim.oppScores || [];
     
         // Totals
         const gRuns = guest.reduce((a,b)=>a+b,0);
@@ -556,7 +556,7 @@
         document.getElementById("opponentScore").textContent = gRuns;
         document.getElementById("yourScore").textContent = hRuns;
     
-        // Always show 9 innings, blank if not reached
+        // Always show 9 innings
         for (let i = 0; i < 9; i++) {
             const inningNum = i + 1;
     
@@ -570,6 +570,7 @@
             hCell.innerHTML = hVal !== undefined ? hVal : "&nbsp;";
         }
     }
+
 
 
 
