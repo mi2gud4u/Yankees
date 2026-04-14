@@ -1,11 +1,13 @@
     const apiUrl = "https://gamefunction-fzdkbcguh9bmhsgx.westus-01.azurewebsites.net";
     const params = new URLSearchParams(window.location.search);
     const gameID = params.get("gameID");
+    let isHomeGlobal = null;
     
     async function loadGame() {
         const res = await fetch(`${apiUrl}/api/games/${gameID}`);
         const game = await res.json();
-        
+
+        isHomeGlobal = game.home_away === "home";
         const isHome = game.home_away === "home";
         const myName = game.myTeam;
         const oppName = game.opponent_team.name;
@@ -128,10 +130,18 @@
 
     function simulateGame() {
         const gameID = new URLSearchParams(window.location.search).get("gameID");
-
+    
         window.open(`live.html?gameID=${gameID}`, "_blank");
-        fetch(`${simApiUrl}/api/sim/start`, { method: "POST" });
+    
+        fetch(`${simApiUrl}/api/sim/start`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                home_away: isHomeGlobal ? "home" : "away"
+            })
+        });
     }
+
 
 
     setInterval(async () => {
