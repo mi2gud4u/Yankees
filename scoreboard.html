@@ -507,11 +507,8 @@
 
     function simulateGame() {
         const gameID = new URLSearchParams(window.location.search).get("gameID");
-    
-        // Open live.html in a new tab with the correct gameID
+
         window.open(`live.html?gameID=${gameID}`, "_blank");
-    
-        // Trigger simulation API
         fetch(`${simApiUrl}/api/sim/start`, { method: "POST" });
     }
 
@@ -529,6 +526,9 @@
   
     function updateFromSim(sim) {
         document.getElementById("currentInning").textContent = sim.inning;
+
+        document.getElementById("pitchesGuest").textContent = sim.oppPitchCount;
+        document.getElementById("pitchesHome").textContent = sim.teamPitchCount;
         
         document.getElementById("balls").textContent = sim.balls;
         document.getElementById("strikes").textContent = sim.strikes;
@@ -542,15 +542,28 @@
     }
     
     function updateInnings(sim) {
-        const guest = sim.teamScores;
-        const home  = sim.oppScores;
+        const guest = sim.teamScores;   // array of numbers per inning
+        const home  = sim.oppScores;    // array of numbers per inning
     
+        // Update totals
         const gRuns = guest.reduce((a,b)=>a+b,0);
         const hRuns = home.reduce((a,b)=>a+b,0);
     
         document.getElementById("gTotal").textContent = gRuns;
         document.getElementById("hTotal").textContent = hRuns;
+    
+        // Update inning-by-inning scores
+        for (let i = 0; i < guest.length; i++) {
+            const inningNum = i + 1;
+    
+            const gCell = document.getElementById(`g${inningNum}`);
+            const hCell = document.getElementById(`h${inningNum}`);
+    
+            if (gCell) gCell.textContent = guest[i];
+            if (hCell) hCell.textContent = home[i];
+        }
     }
+
 
 
 </script>
