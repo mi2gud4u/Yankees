@@ -1,0 +1,240 @@
+    body {
+        background: #0b0b0b;
+        color: white;
+        font-family: Arial, sans-serif;
+    }
+
+    .scoreboard {
+        width: 520px;
+        margin: 40px auto;
+        padding: 20px;
+        background: #1a1a1a;
+        border-radius: 12px;
+        box-shadow: 0 0 12px rgba(0,0,0,0.4);
+    }
+
+    .header h2 {
+        margin: 0 0 30px 0;
+        text-align: center;
+    }
+
+    .scores {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 50px 0 35px 0;
+    }
+
+    .team {
+        text-align: center;
+        width: 40%;
+    }
+
+    .team h3 {
+        margin: 0;
+        font-size: 16px;
+    }
+
+    .score {
+        display: block;
+        font-size: 40px;
+        font-weight: bold;
+        margin-top: 5px;
+    }
+
+    .pitch-small {
+        font-size: 14px;
+        margin-top: 4px;
+        color: #ccc;
+    }
+
+    .inning-display {
+        width: 20%;
+        text-align: center;
+        font-size: 48px;
+        font-weight: bold;
+        position: relative;
+    }
+
+    /* ⭐ BASES + DIAMOND */
+    .base {
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        background: #777;
+        transform: rotate(45deg);
+    }
+
+    .base.on {
+        background: red !important;
+    }
+
+    .base.second { top: -32px; left: 50%; transform: translateX(-50%) rotate(45deg); }
+    .base.first  { top: 50%; right: -32px; transform: translateY(-50%) rotate(45deg); }
+    .base.third  { top: 50%; left: -32px; transform: translateY(-50%) rotate(45deg); }
+    .base.home   { bottom: -32px; left: 50%; transform: translateX(-50%) rotate(45deg); }
+
+    .diamond-line {
+        position: absolute;
+        background: #777;
+        height: 2px;
+    }
+
+    .line-1-2 { width: 45px; top: 8%; right: -6px; transform: rotate(35deg); }
+    .line-2-3 { width: 45px; top: 8%; left: -6px; transform: rotate(-35deg); }
+    .line-3-home { width: 45px; bottom: 8%; left: -6px; transform: rotate(35deg); }
+    .line-home-1 { width: 45px; bottom: 8%; right: -6px; transform: rotate(-35deg); }
+
+    .inning-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        font-size: 14px;
+    }
+
+    .inning-table th,
+    .inning-table td {
+        border: 1px solid #444;
+        padding: 6px;
+        text-align: center;
+    }
+
+    .inning-table th {
+        background: #333;
+    }
+
+    .bottom-bar {
+        margin-top: 20px;
+        padding: 12px;
+        background: #222;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .bottom-bar span {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 0 15px;
+    }
+
+    #updatedTime {
+        text-align: center;
+        margin-top: 10px;
+        font-size: 12px;
+        color: #aaa;
+    }
+
+    /* ⭐ ELECTRONIC SCOREBOARD — EXACT PROPORTIONS FROM PHOTO */
+    
+    .electronic-scoreboard {
+        background-color: #002395;
+        border: 6px solid #b22222;
+        padding: 25px 20px 20px 20px;
+        width: 700px; /* matches real board width */
+        margin: 40px auto;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+    
+    /* LED digits */
+    .digit {
+        background-color: #000;
+        color: #ff0000;
+        font-family: 'Digital-7', monospace;
+        font-size: 2rem;
+        padding: 8px 0;
+        border-radius: 3px;
+        text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+        border: 1px solid #222;
+        width: 48px;
+        margin: 0 auto;
+    }
+    
+    .digit.wide {
+        width: 70px;
+    }
+    
+    /* Top row proportions match photo */
+    .top-row {
+        display: grid;
+        grid-template-columns: 160px 120px 120px 120px 160px;
+        align-items: center;
+        border-bottom: 3px solid #b22222;
+        padding-bottom: 12px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-align: center;
+    }
+    
+    /* Innings grid EXACT spacing */
+    .innings-grid {
+        display: grid;
+        grid-template-columns:
+            120px          /* LABEL */
+            repeat(9, 1fr) /* Innings 1–9 (equal width, matches photo) */
+            120px;         /* TOTAL under PITCHES HOME */
+        align-items: center;
+        text-align: center;
+        padding: 6px 0;
+    }
+    
+    .innings-grid > div {
+        padding: 6px 5;
+    }
+    
+    .label {
+        font-size: 1.3rem;
+        font-weight: 900;
+    }
+    
+    .inning-num {
+        font-size: 1.3rem;
+        font-weight: bold;
+    }
+    
+    .total-digit {
+        width: 70px;
+        font-size: 2rem;
+    }
+    #simulateBtn {
+        display: block;
+        margin: 20px auto;
+        padding: 12px 24px;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        background-color: #1e90ff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        transition: 0.2s;
+    }
+    
+    #simulateBtn:hover {
+        background-color: #0d6efd;
+    }
+
+
+    #gameStatus {
+        font-size: 20px;
+        font-weight: bold;
+        color: #fff;
+        letter-spacing: 1px;
+    }
+    
+    #gameStatus.live {
+        color: #ff3b3b; /* bright red */
+    }
+    
+    #gameStatus.final {
+        color: #cccccc; /* gray */
+    }
+    
+    #gameStatus.future {
+        color: #4da6ff; /* blue */
+    }
+    
+    #gameStatus.scheduled {
+        color: #f2c94c; /* yellow */
+    }
