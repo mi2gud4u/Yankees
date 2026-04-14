@@ -1,0 +1,191 @@
+        :root {
+            --red: #b30000;
+            --black: #000000;
+            --white: #ffffff;
+            --skew-angle: -10deg;
+        }
+
+        body {
+            background-color: #330000;
+            margin: 0;
+            padding: 20px;
+            font-family: 'Arial Black', sans-serif;
+            text-transform: uppercase;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 42px;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .subheader {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: #ff4d4d;
+            margin-bottom: 30px;
+        }
+
+        /* COLLAPSIBLE ADD GAME */
+        .collapsible {
+            background: #660000;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            width: 600px;
+            margin: 0 auto 10px auto;
+        }
+
+        .content {
+            display: none;
+            padding: 15px;
+            background: #3a0000;
+            border-radius: 8px;
+            width: 600px;
+            margin: 0 auto 20px auto;
+        }
+
+        input, button {
+            padding: 10px;
+            margin: 5px 0;
+            width: 100%;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            cursor: pointer;
+            background: #ff1a1a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #cc0000;
+        }
+
+        /* MATCHUP BLOCK */
+        .scoreboard-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 40px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .main-bar {
+            display: flex;
+            margin-bottom: -20px;
+            width: 100%;
+            height: 120px; 
+            filter: drop-shadow(5px 5px 10px rgba(0,0,0,0.5));
+            align-items: center;
+        }
+
+        /* SCORE OUTSIDE BOXES */
+        .score {
+            font-size: 2.2rem; 
+            font-weight: 900;
+            padding: 0 20px;
+            color: var(--white);
+        }
+
+        .player-box {
+            flex: 1;
+            height: 100%;
+            background-color: var(--red);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .left {
+            transform: skew(var(--skew-angle));
+            margin-right: -20px;
+            padding-left: 20px;
+        }
+
+        .right {
+            transform: skew(var(--skew-angle));
+            margin-left: -20px;
+            padding-right: 20px;
+        }
+
+        .player-name {
+            transform: skew(calc(var(--skew-angle) * -1));
+            white-space: nowrap;
+        }
+
+        .vs-block {
+            width: 80px;
+            background-color: var(--black);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            border-left: 3px solid #1a1a1a;
+            border-right: 3px solid #1a1a1a;
+        }
+
+        .vs-text {
+            color: var(--red);
+            font-size: 2.5rem;
+            font-weight: 900;
+        }
+
+        /* BOTTOM BAR: VIEW | FINAL | DELETE */
+        .info-bar {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 12px 20px;
+            font-size: 1rem;
+            letter-spacing: 3px;
+            margin-top: 0px;
+            border-radius: 0 0 5px 5px;
+            z-index: 3;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+
+            width: 60%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-link {
+            color: #00ff99;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            padding: 6px 12px;
+        }
+        .info-link:hover {
+            color: #66ffcc;
+        }
+
+        .delete-link {
+            color: #ff1a1a;
+        }
+
+        .delete-link:hover {
+            color: #ff6666;
+        }
+
+        .info-label {
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+        }
