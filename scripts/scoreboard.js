@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function simulateGame() {
     const gameID = new URLSearchParams(window.location.search).get("gameID");
 
-    window.open(`live.html?gameID=${gameID}`, "_blank");
+    window.open(`live.html?gameID=${gameID}`, "_blank", "noopener,noreferrer");
 
     fetch(`${simApiUrl}/api/sim/start`, {
         method: "POST",
