@@ -506,30 +506,45 @@
     });
 
     function simulateGame() {
-
         window.open(`live.html?gameID=${gameID}`, "_blank");
-    
-        fetch(`${simUrl}/sim-start`)
-            .then(res => res.json())
-            .then(data => {
-                console.log("Simulation result:", data);
-                updateScoreboard(data);
-            })
-            .catch(err => console.error("Simulation error:", err));
+        fetch(`${simApiUrl}/api/sim/start`, { method: "POST" });
     }
 
-    function updateScoreboard(data) {
-        document.getElementById("guestTotal").textContent = data.guestTotal;
-        document.getElementById("homeTotal").textContent = data.homeTotal;
-    
-        if (data.innings) {
-            data.innings.forEach((inning, i) => {
-                document.getElementById(`guestInning${i+1}`).textContent = inning.guest;
-                document.getElementById(`homeInning${i+1}`).textContent = inning.home;
-            });
-        }
-    }
+    setInterval(async () => {
+      try {
+          const res = await fetch(`${simApiUrl}/api/sim-game`);
+          const sim = await res.json();
+          updateFromSim(sim);
+      } catch (err) {
+          console.error("Sim error:", err);
+      }
+    }, 1000);
 
+  
+    function updateFromSim(sim) {
+        document.getElementById("currentInning").textContent = sim.inning;
+        
+        document.getElementById("balls").textContent = sim.balls;
+        document.getElementById("strikes").textContent = sim.strikes;
+        document.getElementById("outs").textContent = sim.outs;
+        
+        document.getElementById("base1").classList.toggle("active", sim.runnerOn1);
+        document.getElementById("base2").classList.toggle("active", sim.runnerOn2);
+        document.getElementById("base3").classList.toggle("active", sim.runnerOn3);
+        
+        updateInnings(sim);
+    }
+    
+    function updateInnings(sim) {
+        const guest = sim.teamScores;
+        const home  = sim.oppScores;
+    
+        const gRuns = guest.reduce((a,b)=>a+b,0);
+        const hRuns = home.reduce((a,b)=>a+b,0);
+    
+        document.getElementById("gTotal").textContent = gRuns;
+        document.getElementById("hTotal").textContent = hRuns;
+    }
 
 
 </script>
