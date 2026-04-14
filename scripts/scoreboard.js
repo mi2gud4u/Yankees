@@ -88,8 +88,11 @@ async function loadGame() {
     statusEl.textContent = statusText;
     statusEl.className = statusClass;
 
-    const guestInn = isHome ? game.line_score.opponent_team.scores : game.line_score.team.scores;
-    const homeInn  = isHome ? game.line_score.team.scores : game.line_score.opponent_team.scores;
+    if (gameStatus != "simulated")
+    {
+        const guestInn = isHome ? game.line_score.opponent_team.scores : game.line_score.team.scores;
+        const homeInn  = isHome ? game.line_score.team.scores : game.line_score.opponent_team.scores;
+    }
 
     renderInnings(guestInn, homeInn);
 }
