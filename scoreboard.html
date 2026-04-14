@@ -506,15 +506,17 @@
     });
 
     function simulateGame() {
+
+        window.open(`live.html?gameID=${gameID}`, "_blank");
     
-    fetch(`${simUrl}/sim-start`)
-        .then(res => res.json())
-        .then(data => {
-            console.log("Simulation result:", data);
-            updateScoreboard(data);
-        })
-        .catch(err => console.error("Simulation error:", err));
-}
+        fetch(`${simUrl}/sim-start`)
+            .then(res => res.json())
+            .then(data => {
+                console.log("Simulation result:", data);
+                updateScoreboard(data);
+            })
+            .catch(err => console.error("Simulation error:", err));
+    }
 
 
 </script>
