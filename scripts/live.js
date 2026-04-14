@@ -96,7 +96,7 @@ function updateInnings(sim) {
 
 
 function startSim() {
-    fetch(`${simApiUrl}/api/sim/start`, { method: "POST" });
+    fetch(`${simApiUrl}/api/sim/continue`, { method: "POST" });
 }
 
 function stopSim() {
