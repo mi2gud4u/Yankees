@@ -542,21 +542,26 @@
         updateInnings(sim);
     }
     
-    function updateInnings(sim) {
-        const guest = sim.teamScores || [];
-        const home  = sim.oppScores || [];
+    function updateInnings(sim, isHome) {
+        let guest, home;
     
-        // Totals
+        if (isHome) {
+            guest = sim.oppScores || [];  // opponent bats first
+            home  = sim.teamScores || []; // you bat second
+        } else {
+            guest = sim.teamScores || []; // you bat first
+            home  = sim.oppScores || [];  // opponent bats second
+        }
+    
         const gRuns = guest.reduce((a,b)=>a+b,0);
         const hRuns = home.reduce((a,b)=>a+b,0);
     
         document.getElementById("gTotal").textContent = gRuns;
         document.getElementById("hTotal").textContent = hRuns;
     
-        document.getElementById("opponentScore").textContent = gRuns;
-        document.getElementById("yourScore").textContent = hRuns;
+        document.getElementById("opponentScore").textContent = isHome ? gRuns : hRuns;
+        document.getElementById("yourScore").textContent     = isHome ? hRuns : gRuns;
     
-        // Always show 9 innings
         for (let i = 0; i < 9; i++) {
             const inningNum = i + 1;
     
