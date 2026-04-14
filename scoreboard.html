@@ -518,6 +518,19 @@
             .catch(err => console.error("Simulation error:", err));
     }
 
+    function updateScoreboard(data) {
+        document.getElementById("guestTotal").textContent = data.guestTotal;
+        document.getElementById("homeTotal").textContent = data.homeTotal;
+    
+        if (data.innings) {
+            data.innings.forEach((inning, i) => {
+                document.getElementById(`guestInning${i+1}`).textContent = inning.guest;
+                document.getElementById(`homeInning${i+1}`).textContent = inning.home;
+            });
+        }
+    }
+
+
 
 </script>
 
