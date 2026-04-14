@@ -506,9 +506,15 @@
     });
 
     function simulateGame() {
+        const gameID = new URLSearchParams(window.location.search).get("gameID");
+    
+        // Open live.html in a new tab with the correct gameID
         window.open(`live.html?gameID=${gameID}`, "_blank");
+    
+        // Trigger simulation API
         fetch(`${simApiUrl}/api/sim/start`, { method: "POST" });
     }
+
 
     setInterval(async () => {
       try {
