@@ -534,9 +534,9 @@
         document.getElementById("strikes").textContent = sim.strikes;
         document.getElementById("outs").textContent = sim.outs;
         
-        document.getElementById("base1").classList.toggle("active", sim.runnerOn1);
-        document.getElementById("base2").classList.toggle("active", sim.runnerOn2);
-        document.getElementById("base3").classList.toggle("active", sim.runnerOn3);
+        document.getElementById("base1").classList.toggle("on", sim.runnerOn1);
+        document.getElementById("base2").classList.toggle("on", sim.runnerOn2);
+        document.getElementById("base3").classList.toggle("on", sim.runnerOn3);
         
         updateInnings(sim);
     }
@@ -551,6 +551,9 @@
     
         document.getElementById("gTotal").textContent = gRuns;
         document.getElementById("hTotal").textContent = hRuns;
+
+        document.getElementById("opponentScore").textContent = gRuns;
+        document.getElementById("yourScore").textContent = hRuns;
     
         // Update inning-by-inning scores
         for (let i = 0; i < guest.length; i++) {
