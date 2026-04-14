@@ -147,8 +147,16 @@ function updateFromSim(sim) {
     document.getElementById("base2").classList.toggle("on", sim.runnerOn2);
     document.getElementById("base3").classList.toggle("on", sim.runnerOn3);
 
-    const guest = isHomeGlobal ? sim.oppScores : sim.teamScores;
-    const home  = isHomeGlobal ? sim.teamScores : sim.oppScores;
+    // FIXED BATTING ORDER LOGIC
+    let guest, home;
+
+    if (isHomeGlobal) {
+        guest = sim.oppScores;  // opponent bats first
+        home  = sim.teamScores; // home bats second
+    } else {
+        guest = sim.teamScores; // away bats first
+        home  = sim.oppScores;  // opponent bats second
+    }
 
     renderInnings(guest, home);
 }
