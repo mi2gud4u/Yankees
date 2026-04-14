@@ -448,7 +448,7 @@
         statusEl.textContent = statusText;
         statusEl.className = statusClass;
 
-        if (game.game_status === null)
+        if (game.game_status === null || game.game_status === "SIMULATED")
         {
             return;
         }
