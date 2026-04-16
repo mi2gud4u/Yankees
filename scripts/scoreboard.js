@@ -101,7 +101,7 @@ async function loadGame() {
     renderInnings(guestInn, homeInn);
 }
 
-loadGame();
+document.addEventListener("DOMContentLoaded", loadGame);
 
 const simApiUrl = "https://livescoreapi-2hbs.onrender.com";
 
