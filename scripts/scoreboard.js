@@ -89,12 +89,15 @@ async function loadGame() {
     statusEl.textContent = statusText;
     statusEl.className = statusClass;
 
-    if (!isSimulated)
-    {
-        const guestInn = isHome ? game.line_score.opponent_team.scores : game.line_score.team.scores;
-        const homeInn  = isHome ? game.line_score.team.scores : game.line_score.opponent_team.scores;
+    let guestInn, homeInn;
+    
+    if (!isSimulated) {
+        guestInn = isHome ? game.line_score.opponent_team.scores : game.line_score.team.scores;
+        homeInn  = isHome ? game.line_score.team.scores : game.line_score.opponent_team.scores;
+    
+        updateLineScore(game); // FIXED: use the actual game object
     }
-
+    
     renderInnings(guestInn, homeInn);
 }
 
@@ -165,4 +168,22 @@ function updateFromSim(sim) {
     }
 
     renderInnings(guest, home);
+}
+
+function updateLineScore(data) {
+    const team = data.line_score.team;
+    const opp  = data.line_score.opponent_team;
+
+    // Fill innings 1–9
+    for (let i = 0; i < 9; i++) {
+        document.getElementById(`g${i+1}`).textContent =
+            team.scores[i] !== undefined ? team.scores[i] : "";
+
+        document.getElementById(`h${i+1}`).textContent =
+            opp.scores[i] !== undefined ? opp.scores[i] : "";
+    }
+
+    // Totals (runs only)
+    document.getElementById("gTotal").textContent = team.totals[0];
+    document.getElementById("hTotal").textContent = opp.totals[0];
 }
