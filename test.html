@@ -2,65 +2,56 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Game Data Viewer</title>
+    <title>Pitch Count Viewer</title>
     <style>
         body { font-family: Arial; margin: 20px; }
-        #output { margin-top: 20px; padding: 15px; border: 1px solid #ccc; background: #fafafa; }
+        .pitcher-block { 
+            margin-top: 10px; 
+            padding: 10px; 
+            border: 1px solid #ddd; 
+            background: #f0f0f0; 
+        }
         #hiddenDom { display: none; }
-        .pitcher-block { margin-top: 10px; padding: 10px; border: 1px solid #ddd; background: #f0f0f0; }
     </style>
 </head>
 <body>
 
-<h2>Game Data Viewer</h2>
+<h2>Pitch Counts</h2>
 
-<label>Game ID:</label>
-<input id="gameID" type="text" placeholder="Enter game ID" style="width: 250px;">
-
-<br><br>
-
-<button onclick="loadPlays()">Load Plays</button>
-<button onclick="loadBoxScore()">Load Box Score</button>
-
-<h3>Extracted Data</h3>
-<div id="parsed">
-    <strong>Inning:</strong> <span id="inning">—</span><br>
-    <strong>Away Score:</strong> <span id="awayScore">—</span><br>
-    <strong>Home Score:</strong> <span id="homeScore">—</span><br>
-
-    <h3>Pitch Counts</h3>
-    <div id="pitchers"></div>
-</div>
-
-<h3>Raw HTML</h3>
-<div id="output">Results will appear here...</div>
+<div id="pitchers">Loading…</div>
 
 <!-- Hidden DOM container for parsing -->
 <div id="hiddenDom"></div>
 
 <script>
+// Auto-run on page load
+window.onload = async () => {
+    const html = await fetchHtml("/api/box-score");
+    parseDom(html);
+};
+
 async function fetchHtml(endpoint) {
-    const gameID = document.getElementById("gameID").value;
-    const res = await fetch(`${endpoint}?gameID=${gameID}`);
+    const res = await fetch(endpoint);
     return await res.text();
 }
 
+// Extract pitch counts using full-text scan
 function extractPitchCounts() {
     const hidden = document.getElementById("hiddenDom");
-    const text = hidden.textContent;
+    const text = hidden.innerText; // innerText works better for GC
 
     const results = [];
 
-    // Matches patterns like: "A Woolner 64-38"
-    const regex = /([A-Z][a-z]+(?: [A-Z][a-z]+)?)\s+#?\d*\s+(\d+)-(\d+)/g;
+    // Matches: "A Woolner 64-38" or "G Sigfried #25 60-36"
+    const regex = /([A-Z][a-z]+(?: [A-Z][a-z]+)?)\s*(?:#\d+)?\s+(\d+)-(\d+)/g;
     let match;
 
     while ((match = regex.exec(text)) !== null) {
         results.push({
             name: match[1],
-            pitches: parseInt(match[2], 10),
-            strikes: parseInt(match[3], 10),
-            strikePct: ((parseInt(match[3], 10) / parseInt(match[2], 10)) * 100).toFixed(1)
+            pitches: parseInt(match[2]),
+            strikes: parseInt(match[3]),
+            strikePct: ((parseInt(match[3]) / parseInt(match[2])) * 100).toFixed(1)
         });
     }
 
@@ -70,6 +61,11 @@ function extractPitchCounts() {
 function renderPitchCounts(pitchers) {
     const container = document.getElementById("pitchers");
     container.innerHTML = "";
+
+    if (pitchers.length === 0) {
+        container.innerHTML = "No pitch count data found.";
+        return;
+    }
 
     pitchers.forEach(p => {
         const div = document.createElement("div");
@@ -88,29 +84,8 @@ function parseDom(html) {
     const hidden = document.getElementById("hiddenDom");
     hidden.innerHTML = html;
 
-    const inning = hidden.querySelector(".inning, .current-inning, #inning")?.textContent?.trim() || "N/A";
-    const awayScore = hidden.querySelector(".away .score, #awayScore")?.textContent?.trim() || "N/A";
-    const homeScore = hidden.querySelector(".home .score, #homeScore")?.textContent?.trim() || "N/A";
-
-    document.getElementById("inning").textContent = inning;
-    document.getElementById("awayScore").textContent = awayScore;
-    document.getElementById("homeScore").textContent = homeScore;
-
-    // NEW: Pitch count extraction
     const pitchCounts = extractPitchCounts();
     renderPitchCounts(pitchCounts);
-}
-
-async function loadPlays() {
-    const html = await fetchHtml("/api/plays");
-    document.getElementById("output").innerHTML = html;
-    parseDom(html);
-}
-
-async function loadBoxScore() {
-    const html = await fetchHtml("/api/box-score");
-    document.getElementById("output").innerHTML = html;
-    parseDom(html);
 }
 </script>
 
