@@ -1,1 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game Data Viewer</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        #output { margin-top: 20px; padding: 15px; border: 1px solid #ccc; background: #fafafa; }
+        #hiddenDom { display: none; }
+    </style>
+</head>
+<body>
 
+<h2>Game Data Viewer</h2>
+
+<label>Game ID:</label>
+<input id="gameID" type="text" placeholder="Enter game ID" style="width: 250px;">
+
+<br><br>
+
+<button onclick="loadPlays()">Load Plays</button>
+<button onclick="loadBoxScore()">Load Box Score</button>
+
+<h3>Extracted Data</h3>
+<div id="parsed">
+    <strong>Inning:</strong> <span id="inning">—</span><br>
+    <strong>Away Score:</strong> <span id="awayScore">—</span><br>
+    <strong>Home Score:</strong> <span id="homeScore">—</span><br>
+</div>
+
+<h3>Raw HTML</h3>
+<div id="output">Results will appear here...</div>
+
+<!-- Hidden DOM container for parsing -->
+<div id="hiddenDom"></div>
+
+<script>
+async function fetchHtml(endpoint) {
+    const gameID = document.getElementById("gameID").value;
+    const res = await fetch(`${endpoint}?gameID=${gameID}`);
+    return await res.text();
+}
+
+function parseDom(html) {
+    const hidden = document.getElementById("hiddenDom");
+    hidden.innerHTML = html;
+
+    // TODO: Update these selectors once we see the real HTML structure
+    const inning = hidden.querySelector(".inning, .current-inning, #inning")?.textContent?.trim() || "N/A";
+    const awayScore = hidden.querySelector(".away .score, #awayScore")?.textContent?.trim() || "N/A";
+    const homeScore = hidden.querySelector(".home .score, #homeScore")?.textContent?.trim() || "N/A";
+
+    document.getElementById("inning").textContent = inning;
+    document.getElementById("awayScore").textContent = awayScore;
+    document.getElementById("homeScore").textContent = homeScore;
+}
+
+async function loadPlays() {
+    const html = await fetchHtml("/api/plays");
+    document.getElementById("output").innerHTML = html;
+    parseDom(html);
+}
+
+async function loadBoxScore() {
+    const html = await fetchHtml("/api/box-score");
+    document.getElementById("output").innerHTML = html;
+    parseDom(html);
+}
+</script>
+
+</body>
+</html>
