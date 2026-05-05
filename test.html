@@ -7,6 +7,7 @@
         body { font-family: Arial; margin: 20px; }
         #output { margin-top: 20px; padding: 15px; border: 1px solid #ccc; background: #fafafa; }
         #hiddenDom { display: none; }
+        .pitcher-block { margin-top: 10px; padding: 10px; border: 1px solid #ddd; background: #f0f0f0; }
     </style>
 </head>
 <body>
@@ -26,6 +27,9 @@
     <strong>Inning:</strong> <span id="inning">—</span><br>
     <strong>Away Score:</strong> <span id="awayScore">—</span><br>
     <strong>Home Score:</strong> <span id="homeScore">—</span><br>
+
+    <h3>Pitch Counts</h3>
+    <div id="pitchers"></div>
 </div>
 
 <h3>Raw HTML</h3>
@@ -41,11 +45,49 @@ async function fetchHtml(endpoint) {
     return await res.text();
 }
 
+function extractPitchCounts() {
+    const hidden = document.getElementById("hiddenDom");
+    const text = hidden.textContent;
+
+    const results = [];
+
+    // Matches patterns like: "A Woolner 64-38"
+    const regex = /([A-Z][a-z]+(?: [A-Z][a-z]+)?)\s+#?\d*\s+(\d+)-(\d+)/g;
+    let match;
+
+    while ((match = regex.exec(text)) !== null) {
+        results.push({
+            name: match[1],
+            pitches: parseInt(match[2], 10),
+            strikes: parseInt(match[3], 10),
+            strikePct: ((parseInt(match[3], 10) / parseInt(match[2], 10)) * 100).toFixed(1)
+        });
+    }
+
+    return results;
+}
+
+function renderPitchCounts(pitchers) {
+    const container = document.getElementById("pitchers");
+    container.innerHTML = "";
+
+    pitchers.forEach(p => {
+        const div = document.createElement("div");
+        div.className = "pitcher-block";
+        div.innerHTML = `
+            <strong>${p.name}</strong><br>
+            Pitches: ${p.pitches}<br>
+            Strikes: ${p.strikes}<br>
+            Strike %: ${p.strikePct}%
+        `;
+        container.appendChild(div);
+    });
+}
+
 function parseDom(html) {
     const hidden = document.getElementById("hiddenDom");
     hidden.innerHTML = html;
 
-    // TODO: Update these selectors once we see the real HTML structure
     const inning = hidden.querySelector(".inning, .current-inning, #inning")?.textContent?.trim() || "N/A";
     const awayScore = hidden.querySelector(".away .score, #awayScore")?.textContent?.trim() || "N/A";
     const homeScore = hidden.querySelector(".home .score, #homeScore")?.textContent?.trim() || "N/A";
@@ -53,6 +95,10 @@ function parseDom(html) {
     document.getElementById("inning").textContent = inning;
     document.getElementById("awayScore").textContent = awayScore;
     document.getElementById("homeScore").textContent = homeScore;
+
+    // NEW: Pitch count extraction
+    const pitchCounts = extractPitchCounts();
+    renderPitchCounts(pitchCounts);
 }
 
 async function loadPlays() {
